@@ -1,5 +1,7 @@
 use crate::compat::io;
-use crate::compat::io::Read;
+// use crate::compat::io::Read;
+use portable_io::Read;
+// use crate::compat::io1::Read;
 use crate::msgs::message::OutboundChunks;
 use alloc::collections::VecDeque;
 use alloc::vec::Vec;

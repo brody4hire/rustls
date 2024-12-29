@@ -683,7 +683,19 @@ mod hash_map {
 }
 
 pub mod compat {
+    extern crate portable_io;
     pub mod io {
+        // ---
+        // XXX TBD ??? ???
+        // pub use portable_io::{Error, ErrorKind, IoSlice, Read, Result, Write};
+        pub use portable_io::Error;
+        pub use portable_io::ErrorKind;
+        pub use portable_io::IoSlice;
+        pub use portable_io::Read;
+        pub use portable_io::Result;
+        pub use portable_io::Write;
+    }
+    pub mod io1 {
         #[cfg(feature = "std")]
         pub use std::io::{Error, ErrorKind, IoSlice, Read, Result, Write};
 

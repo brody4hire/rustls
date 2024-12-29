@@ -31,6 +31,7 @@ webpki = { workspace = true }
 pki-types = { workspace = true }
 zeroize = { workspace = true }
 zlib-rs = { workspace = true, optional = true }
+portable-io = { version = "0.0.2", features = ["alloc"] }
 
 [features]
 default = ["aws_lc_rs", "logging", "std", "tls12"]
