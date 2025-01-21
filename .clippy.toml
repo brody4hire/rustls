@@ -1,1 +1,6 @@
 upper-case-acronyms-aggressive = true
+
+# only intended to affect main rustls crate
+disallowed-types = [
+  { path = "std::sync::Arc", reason = "must use Arc from atomic_sync module to support downstream forks targetting architectures without atomic ptrs" },
+]

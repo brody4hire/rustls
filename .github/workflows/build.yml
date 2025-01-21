@@ -464,9 +464,13 @@ jobs:
         with:
           components: clippy
       # - we want to be free of any warnings, so deny them
-      # - disable incompatible_msrv as it does not understand that we apply our
+      # - allow clippy::disallowed_types as workaround since disallowed_types configured in .clippy.toml
+      #   is only intended for main rustls crate
+      # - allow clippy::incompatible_msrv as it does not understand that we apply our
       #   MSRV to the just the core crate.
-      - run: ./admin/clippy -- --deny warnings --allow clippy::incompatible_msrv
+      - run: ./admin/clippy -- --deny warnings --allow clippy::disallowed_types --allow clippy::incompatible_msrv
+      # - now deny all warnings in main crate
+      - run: cargo clippy -p rustls -- --deny warnings
 
   clippy-nightly:
     name: Clippy (Nightly)
