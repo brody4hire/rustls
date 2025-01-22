@@ -466,7 +466,10 @@ jobs:
       # - we want to be free of any warnings, so deny them
       # - disable incompatible_msrv as it does not understand that we apply our
       #   MSRV to the just the core crate.
+      # TODO: configure this in .clippy.toml & Cargo.toml files instead.
       - run: ./admin/clippy -- --deny warnings --allow clippy::incompatible_msrv
+      # keep the main crate free of all Clippy warnings
+      - run: cargo clippy -p rustls -- --deny warnings
 
   clippy-nightly:
     name: Clippy (Nightly)
