@@ -6,8 +6,9 @@ permissions:
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    # GONE FROM THIS FORK:
+    # branches:
+    #   - main
   schedule:
     - cron: '0 18 * * *'
 
@@ -24,10 +25,9 @@ jobs:
       - name: Install rust toolchain
         uses: dtolnay/rust-toolchain@nightly
 
-      - name: Install zola
-        uses: taiki-e/install-action@v2
-        with:
-          tool: zola@0.19.1
+      # GONE FROM THIS FORK:
+      # - name: Install zola
+      # ...
 
       - name: Generate version information
         run: |
@@ -39,49 +39,18 @@ jobs:
 
       - name: cargo doc
         # keep features in sync with Cargo.toml `[package.metadata.docs.rs]` section
-        run: cargo doc --locked --features read_buf,ring --no-deps --package rustls
+        run: cargo doc --locked --features read_buf,ring --no-deps --package portable-rustls
         env:
           RUSTDOCFLAGS: -Dwarnings --cfg=docsrs --html-after-content tag.html
 
-      - name: Generate other pages
-        run: |
-          cd website && zola build --output-dir ../target/website/
-
-      - name: Restore lychee cache
-        uses: actions/cache@v4
-        with:
-          path: .lycheecache
-          key: cache-lychee-${{ github.sha }}
-          restore-keys: cache-lychee-
-
-      - name: Check links
-        uses: lycheeverse/lychee-action@v2
-        with:
-          args: >
-            --accept 200..=204,403,429,500
-            --cache
-            --max-cache-age 1d
-            --exclude-path 'website/content/'
-            '**/*.md'
-            'target/doc/**/*.html'
-          fail: true
-
-      - name: Massage rustdoc output
-        run: |
-          # lockfile causes deployment step to go wrong, due to permissions
-          rm -f target/doc/.lock
-          # move the result into website root
-          mv target/doc/rustls target/website/docs
-
-      - name: Package and upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./target/website/
+      # GONE FROM THIS FORK: Generate other pages for website (etc.)
 
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    if: github.repository == 'rustls/rustls'
+    # SKIP IN THIS FORK
+    # if: github.repository == 'rustls/rustls'
+    if: false
     needs: generate
     permissions:
       pages: write
