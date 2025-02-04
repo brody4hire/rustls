@@ -196,7 +196,12 @@ jobs:
     name: Portable build test
     runs-on: ubuntu-latest
     steps:
-      - name: Install rust nightly toolchain
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install nightly toolchain
         uses: dtolnay/rust-toolchain@nightly
         with:
           target: riscv32imc-unknown-none-elf # with no atomic ptr
