@@ -208,6 +208,7 @@ jobs:
 
       # WORKAROUND FIRST BUILD ISSUE FOR NOW
       - run: cargo add once_cell -F critical-section -p rustls
+      - run: cargo add portable-atomic -F critical-section -p rustls
 
       - name: cargo build (debug; no default features; no-std) # no std; no built-in provider; XXX TBD hashbrown - ???
         run: cargo build --locked --no-default-features --target riscv32imc-unknown-none-elf
