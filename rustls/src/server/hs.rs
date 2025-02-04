@@ -261,7 +261,7 @@ impl ExtensionProcessing {
             client_supports.contains(&CertificateType::X509),
         ) {
             (true, true, _) => Ok((extension_type, CertificateType::RawPublicKey)),
-            (false, _, true) => Ok((extension_type, CertificateType::X509)),
+            (false, _, true) => Ok((extension_type, CertificateType::RawPublicKey)),
             (false, true, false) => Err(Error::PeerIncompatible(
                 PeerIncompatible::IncorrectCertificateTypeExtension,
             )),
