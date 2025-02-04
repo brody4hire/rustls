@@ -16,7 +16,7 @@ exclude = ["src/testdata", "tests/**"]
 build = "build.rs"
 
 [features]
-default = ["aws_lc_rs", "logging", "std", "tls12"]
+default = []
 
 aws-lc-rs = ["aws_lc_rs"] # Alias because Cargo features commonly use `-`
 aws_lc_rs = ["dep:aws-lc-rs", "webpki/aws_lc_rs"]
@@ -27,7 +27,7 @@ logging = ["log"]
 prefer-post-quantum = ["aws_lc_rs"]
 read_buf = ["rustversion", "std"]
 ring = ["dep:ring", "webpki/ring"]
-std = ["webpki/std", "pki-types/std", "once_cell/std"]
+std = ["logging", "webpki/std", "pki-types/std", "once_cell/std"]
 tls12 = []
 zlib = ["dep:zlib-rs"]
 
@@ -112,8 +112,8 @@ name = "unbuffered"
 path = "tests/runners/unbuffered.rs"
 
 [package.metadata.docs.rs]
-# all non-default features except fips (cannot build on docs.rs environment)
-features = ["read_buf", "ring"]
+# all (non-default) features except fips (cannot build on docs.rs environment)
+features = ["aws_lc_rs", "std", "tls12", "read_buf", "ring"]
 rustdoc-args = ["--cfg", "docsrs"]
 
 [package.metadata.cargo_check_external_types]

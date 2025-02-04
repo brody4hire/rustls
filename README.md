@@ -107,7 +107,7 @@ builder types. See the [`crypto::CryptoProvider`] documentation for more details
 
 Rustls ships with two built-in providers controlled with associated feature flags:
 
-* [`aws-lc-rs`] - enabled by default, available with the `aws_lc_rs` feature flag enabled.
+* [`aws-lc-rs`] - available with the `aws_lc_rs` feature flag enabled.
 * [`ring`] - available with the `ring` feature flag enabled.
 
 See the documentation for [`crypto::CryptoProvider`] for details on how providers are
