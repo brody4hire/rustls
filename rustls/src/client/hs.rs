@@ -1197,10 +1197,6 @@ fn process_cert_type_extension(
             AlertDescription::HandshakeFailure,
             Error::PeerIncompatible(PeerIncompatible::IncorrectCertificateTypeExtension),
         )),
-        (_, Some(CertificateType::RawPublicKey)) => Err(common.send_fatal_alert(
-            AlertDescription::HandshakeFailure,
-            Error::PeerIncompatible(PeerIncompatible::UnsolicitedCertificateTypeExtension),
-        )),
         (_, _) => Ok(None),
     }
 }
