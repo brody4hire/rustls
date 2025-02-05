@@ -538,10 +538,8 @@ jobs:
       - name: Install rust toolchain
         uses: dtolnay/rust-toolchain@stable
       - run: cargo install typos-cli --locked
-      # XXX XXX BRODY: it looks to me like `typos` command misses .*.toml - XXX XXX USING A BAD WORKAROUND FOR NOW
-      - run: typos .*.toml || echo 'ignore errors for now; need to check the result if normal `typos` succeeds'
-      - run: typos
       - run: typos .*.toml
+      - run: typos
 
   openssl-tests:
     name: Run openssl-tests
