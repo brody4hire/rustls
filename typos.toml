@@ -9,9 +9,10 @@ extend-ignore-re = [
   "mis-*",
   "thr",
   "ture dat",
-  # XXX TODO
-  ".*encrypter.*",
+  # XXX TBD encrypter -> encryptor - XXX TBD ???
   ".*Encrypter.*",
+  ".*encrypter.*",
+  # XXX TODO RESOLVE IF & WHEN POSSIBLE:
   "negotation",
   "Negotation",
   "fictious",
