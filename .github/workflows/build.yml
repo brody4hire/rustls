@@ -537,8 +537,7 @@ jobs:
 
       - name: Install rust toolchain
         uses: dtolnay/rust-toolchain@stable
-      # XXX TBD ??? ???
-      # - run: cargo install typos-cli --locked
+      - run: cargo install typos-cli --locked
       - run: typos
 
   openssl-tests:
