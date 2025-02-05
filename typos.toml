@@ -1,5 +1,7 @@
 [default]
 extend-ignore-re = [
+  ".*Encrypter.*",
+  ".*encrypter.*",
   ".*_nd",
   "pn_*",
   "EDE_*",
@@ -9,10 +11,7 @@ extend-ignore-re = [
   "mis-*",
   "thr",
   "ture dat",
-  # XXX TBD encrypter -> encryptor - XXX TBD ???
-  ".*Encrypter.*",
-  ".*encrypter.*",
-  # XXX TODO RESOLVE IF & WHEN POSSIBLE:
+  # TODO resolve these in rustls/src
   "negotation",
   "Negotation",
 ]
