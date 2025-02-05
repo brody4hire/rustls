@@ -12,7 +12,6 @@ extend-ignore-re = [
   # XXX TODO
   ".*encrypter.*",
   ".*Encrypter.*",
-  "gratuitious",
   "negotation",
   "Negotation",
   "fictious",

@@ -6139,7 +6139,7 @@ fn bad_client_max_fragment_sizes() {
 }
 
 #[test]
-fn handshakes_complete_and_data_flows_with_gratuitious_max_fragment_sizes() {
+fn handshakes_complete_and_data_flows_with_gratuitous_max_fragment_sizes() {
     // general exercising of msgs::fragmenter and msgs::deframer
     for kt in ALL_KEY_TYPES {
         for version in rustls::ALL_VERSIONS {
