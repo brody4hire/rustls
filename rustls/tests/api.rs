@@ -8246,7 +8246,7 @@ fn large_client_hello_acceptor() {
 }
 
 #[test]
-fn hybrid_kx_component_share_offered_if_supported_seperately() {
+fn hybrid_kx_component_share_offered_if_supported_separately() {
     let kt = KeyType::Rsa2048;
     let client_config = finish_client_config(
         kt,
@@ -8272,7 +8272,7 @@ fn hybrid_kx_component_share_offered_if_supported_seperately() {
 }
 
 #[test]
-fn hybrid_kx_component_share_not_offered_unless_supported_seperately() {
+fn hybrid_kx_component_share_not_offered_unless_supported_separately() {
     let kt = KeyType::Rsa2048;
     let client_config = finish_client_config(
         kt,
