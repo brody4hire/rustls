@@ -15,7 +15,6 @@ extend-ignore-re = [
   # XXX TODO RESOLVE IF & WHEN POSSIBLE:
   "negotation",
   "Negotation",
-  "succesfully",
 ]
 
 [files]
