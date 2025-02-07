@@ -46,6 +46,8 @@ impl SigningKey for EcdsaSigningKeyP256 {
 
 impl Signer for EcdsaSigningKeyP256 {
     fn sign(&self, message: &[u8]) -> Result<Vec<u8>, rustls::Error> {
+        // XXX NEED OLDER `rand_core` here:
+        use signature::rand_core;
         self.key
             .try_sign_with_rng(&mut rand_core::OsRng, message)
             .map_err(|_| rustls::Error::General("signing failed".into()))
