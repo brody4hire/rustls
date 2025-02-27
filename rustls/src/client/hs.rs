@@ -47,50 +47,52 @@ fn find_session(
     config: &ClientConfig,
     cx: &mut ClientContext<'_>,
 ) -> Option<persist::Retrieved<ClientSessionValue>> {
-    let found = config
-        .resumption
-        .store
-        .take_tls13_ticket(server_name)
-        .map(ClientSessionValue::Tls13)
-        .or_else(|| {
-            #[cfg(feature = "tls12")]
-            {
-                config
-                    .resumption
-                    .store
-                    .tls12_session(server_name)
-                    .map(ClientSessionValue::Tls12)
-            }
+    // XXX XXX
+    panic!("XXX")
+    // let found = config
+    //     .resumption
+    //     .store
+    //     .take_tls13_ticket(server_name)
+    //     .map(ClientSessionValue::Tls13)
+    //     .or_else(|| {
+    //         #[cfg(feature = "tls12")]
+    //         {
+    //             config
+    //                 .resumption
+    //                 .store
+    //                 .tls12_session(server_name)
+    //                 .map(ClientSessionValue::Tls12)
+    //         }
 
-            #[cfg(not(feature = "tls12"))]
-            None
-        })
-        .and_then(|resuming| {
-            let now = config
-                .current_time()
-                .map_err(|_err| debug!("Could not get current time: {_err}"))
-                .ok()?;
+    //         #[cfg(not(feature = "tls12"))]
+    //         None
+    //     })
+    //     .and_then(|resuming| {
+    //         let now = config
+    //             .current_time()
+    //             .map_err(|_err| debug!("Could not get current time: {_err}"))
+    //             .ok()?;
 
-            let retrieved = persist::Retrieved::new(resuming, now);
-            match retrieved.has_expired() {
-                false => Some(retrieved),
-                true => None,
-            }
-        })
-        .or_else(|| {
-            debug!("No cached session for {:?}", server_name);
-            None
-        });
+    //         let retrieved = persist::Retrieved::new(resuming, now);
+    //         match retrieved.has_expired() {
+    //             false => Some(retrieved),
+    //             true => None,
+    //         }
+    //     })
+    //     .or_else(|| {
+    //         debug!("No cached session for {:?}", server_name);
+    //         None
+    //     });
 
-    if let Some(resuming) = &found {
-        if cx.common.is_quic() {
-            cx.common.quic.params = resuming
-                .tls13()
-                .map(|v| v.quic_params());
-        }
-    }
+    // if let Some(resuming) = &found {
+    //     if cx.common.is_quic() {
+    //         cx.common.quic.params = resuming
+    //             .tls13()
+    //             .map(|v| v.quic_params());
+    //     }
+    // }
 
-    found
+    // found
 }
 
 pub(super) fn start_handshake(

@@ -592,15 +592,17 @@ impl ExpectClientHello {
         let suite = if self.config.ignore_client_order {
             suitable_suites_iter.find(|suite| client_suites.contains(&suite.suite()))
         } else {
-            let suitable_suites = suitable_suites_iter.collect::<Vec<_>>();
-            client_suites
-                .iter()
-                .find_map(|client_suite| {
-                    suitable_suites
-                        .iter()
-                        .find(|x| *client_suite == x.suite())
-                })
-                .copied()
+            // XXX XXX
+            panic!("XXX")
+            // let suitable_suites = suitable_suites_iter.collect::<Vec<_>>();
+            // client_suites
+            //     .iter()
+            //     .find_map(|client_suite| {
+            //         suitable_suites
+            //             .iter()
+            //             .find(|x| *client_suite == x.suite())
+            //     })
+            //     .copied()
         }
         .ok_or(PeerIncompatible::NoCipherSuitesInCommon)?;
 

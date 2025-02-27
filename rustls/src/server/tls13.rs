@@ -118,17 +118,19 @@ mod client_hello {
             &mut self,
             ticket: &[u8],
         ) -> Option<persist::ServerSessionValue> {
-            if self.config.ticketer.enabled() {
-                self.config
-                    .ticketer
-                    .decrypt(ticket)
-                    .and_then(|plain| persist::ServerSessionValue::read_bytes(&plain).ok())
-            } else {
-                self.config
-                    .session_storage
-                    .take(ticket)
-                    .and_then(|plain| persist::ServerSessionValue::read_bytes(&plain).ok())
-            }
+            // XXX XXX
+            panic!("XXX")
+            // if self.config.ticketer.enabled() {
+            //     self.config
+            //         .ticketer
+            //         .decrypt(ticket)
+            //         .and_then(|plain| persist::ServerSessionValue::read_bytes(&plain).ok())
+            // } else {
+            //     self.config
+            //         .session_storage
+            //         .take(ticket)
+            //         .and_then(|plain| persist::ServerSessionValue::read_bytes(&plain).ok())
+            // }
         }
 
         pub(in crate::server) fn handle_client_hello(
