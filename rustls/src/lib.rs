@@ -412,7 +412,8 @@ mod test_macros;
 /// with another implementation such as `portable_atomic_util::Arc` in one central location.
 mod sync {
     #[allow(clippy::disallowed_types)]
-    pub(crate) type Arc<T> = alloc::sync::Arc<T>;
+    // pub(crate) type Arc<T> = alloc::sync::Arc<T>;
+    pub(crate) type Arc<T> = alloc::boxed::Box<T>;
 }
 
 #[macro_use]
