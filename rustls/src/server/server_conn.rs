@@ -29,7 +29,7 @@ use crate::msgs::handshake::{ClientHelloPayload, ProtocolName, ServerExtension};
 use crate::msgs::message::Message;
 use crate::suites::ExtractedSecrets;
 // XXX TBD XXX XXX
-use crate::alias::Rc;
+use crate::alias::{Boxx, Rc};
 type RcBox<T> = Rc<Box<T>>;
 #[cfg(feature = "std")]
 use crate::time_provider::DefaultTimeProvider;
@@ -1129,7 +1129,7 @@ impl Debug for EarlyDataState {
 
 impl ConnectionCore<ServerConnectionData> {
     pub(crate) fn for_server(
-        config: RcBox<ServerConfig>,
+        config: Boxx<ServerConfig>,
         extra_exts: Vec<ServerExtension>,
     ) -> Result<Self, Error> {
         let mut common = CommonState::new(Side::Server);
