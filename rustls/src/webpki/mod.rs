@@ -6,7 +6,7 @@ use webpki::{CertRevocationList, InvalidNameContext, OwnedCertRevocationList};
 
 use crate::error::{CertRevocationListError, CertificateError, Error, OtherError};
 #[cfg(feature = "std")]
-use crate::alias::{Boxx, Rc};
+use crate::alias::{Boxx, Rc, RcBox};
 
 mod anchors;
 mod client_verifier;
