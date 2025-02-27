@@ -3,7 +3,7 @@ use alloc::string::String;
 use alloc::vec::Vec;
 use core::fmt;
 use pki_types::{ServerName, UnixTime};
-#[cfg(feature = "std")]
+#[cfg(feature = "std-xxx")]
 use std::time::SystemTimeError;
 
 use crate::enums::{AlertDescription, ContentType, HandshakeType};
@@ -544,7 +544,7 @@ impl From<CertificateError> for AlertDescription {
 impl fmt::Display for CertificateError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            #[cfg(feature = "std")]
+            #[cfg(feature = "std-xxx")]
             Self::NotValidForNameContext {
                 expected,
                 presented,
@@ -781,7 +781,7 @@ impl fmt::Display for Error {
     }
 }
 
-#[cfg(feature = "std")]
+#[cfg(feature = "std-xxx")]
 impl From<SystemTimeError> for Error {
     #[inline]
     fn from(_: SystemTimeError) -> Self {
@@ -789,7 +789,7 @@ impl From<SystemTimeError> for Error {
     }
 }
 
-#[cfg(feature = "std")]
+#[cfg(feature = "std-xxx")]
 impl std::error::Error for Error {}
 
 impl From<rand::GetRandomFailed> for Error {
@@ -800,11 +800,11 @@ impl From<rand::GetRandomFailed> for Error {
 
 mod other_error {
     use core::fmt;
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-xxx")]
     use std::error::Error as StdError;
 
     use super::Error;
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-xxx")]
     use crate::alias::{Boxx, Rc, RcBox};
 
     /// Any other error that cannot be expressed by a more specific [`Error`] variant.
@@ -860,7 +860,7 @@ mod tests {
     use super::{
         CertRevocationListError, Error, InconsistentKeys, InvalidMessage, OtherError, UnixTime,
     };
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-xxx")]
     use crate::alias::{Boxx, Rc, RcBox};
     use pki_types::ServerName;
 
@@ -965,7 +965,7 @@ mod tests {
             ApplicationVerificationFailure
         );
         let other = Other(OtherError(
-            #[cfg(feature = "std")]
+            #[cfg(feature = "std-xxx")]
             Boxx::from(Box::from("")),
         ));
         assert_ne!(other, other);
@@ -989,7 +989,7 @@ mod tests {
         assert_eq!(UnsupportedIndirectCrl, UnsupportedIndirectCrl);
         assert_eq!(UnsupportedRevocationReason, UnsupportedRevocationReason);
         let other = Other(OtherError(
-            #[cfg(feature = "std")]
+            #[cfg(feature = "std-xxx")]
             Boxx::from(Box::from("")),
         ));
         assert_ne!(other, other);
@@ -997,7 +997,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-xxx")]
     fn other_error_equality() {
         let other_error = OtherError(Boxx::from(Box::from("")));
         assert_ne!(other_error, other_error);
@@ -1075,7 +1075,7 @@ mod tests {
             Error::InconsistentKeys(InconsistentKeys::Unknown),
             Error::InvalidCertRevocationList(CertRevocationListError::BadSignature),
             Error::Other(OtherError(
-                #[cfg(feature = "std")]
+                #[cfg(feature = "std-xxx")]
                 Boxx::from(Box::from("")),
             )),
         ];
@@ -1093,7 +1093,7 @@ mod tests {
         assert_eq!(err, Error::FailedToGetRandomBytes);
     }
 
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-xxx")]
     #[test]
     fn time_error_mapping() {
         use std::time::SystemTime;
