@@ -199,7 +199,7 @@ pub(super) fn handle_server_hello(
         cx.data.early_data.is_enabled(),
         hash_at_client_recvd_server_hello,
         suite,
-        &*config.key_log,
+        &**onfig.key_log,
         &randoms.client,
         cx.common,
     );
@@ -893,8 +893,11 @@ impl State<ClientConnectionData> for ExpectCertificateRequest {
             .cloned();
 
         let client_auth = ClientAuthDetails::resolve(
-            self.config
-                .client_auth_cert_resolver
+            // self.config
+            //     .client_auth_cert_resolver
+            //     .as_ref(),
+            (*self.config
+                .client_auth_cert_resolver)
                 .as_ref(),
             certreq.authorities_extension(),
             &compat_sigschemes,
