@@ -94,7 +94,7 @@ pub trait Signer: Debug + Send + Sync {
 ///
 /// [`ConfigBuilder::with_cert_resolver()`]: crate::ConfigBuilder::with_cert_resolver
 #[derive(Debug)]
-pub struct SingleCertAndKey(Boxx<CertifiedKey>);
+pub struct SingleCertAndKey(RcBox<CertifiedKey>);
 
 impl From<CertifiedKey> for SingleCertAndKey {
     fn from(certified_key: CertifiedKey) -> Self {
@@ -117,8 +117,8 @@ impl ResolvesClientCert for SingleCertAndKey {
 }
 
 impl ResolvesServerCert for SingleCertAndKey {
-    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<Boxx<CertifiedKey>> {
-        Some(Boxx::clone(&self.0))
+    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<RcBox<CertifiedKey>> {
+        Some(RcBox::clone(&self.0))
     }
 }
 
@@ -136,7 +136,7 @@ pub struct CertifiedKey {
     pub cert: Vec<CertificateDer<'static>>,
 
     /// The certified key.
-    pub key: Boxx<dyn SigningKey>,
+    pub key: RcBox<dyn SigningKey>,
 
     /// An optional OCSP response from the certificate issuer,
     /// attesting to its continued validity.

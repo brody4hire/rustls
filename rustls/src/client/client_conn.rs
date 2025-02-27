@@ -182,7 +182,7 @@ pub struct ClientConfig {
     pub max_fragment_size: Option<usize>,
 
     /// How to decide what client auth certificate/keys to use.
-    pub client_auth_cert_resolver: Boxx<dyn ResolvesClientCert>,
+    pub client_auth_cert_resolver: RcBox<dyn ResolvesClientCert>,
 
     /// Whether to send the Server Name Indication (SNI) extension
     /// during the client handshake.
@@ -192,7 +192,7 @@ pub struct ClientConfig {
 
     /// How to output key material for debugging.  The default
     /// does nothing.
-    pub key_log: Boxx<dyn KeyLog>,
+    pub key_log: RcBox<dyn KeyLog>,
 
     /// Allows traffic secrets to be extracted after the handshake,
     /// e.g. for kTLS setup.
@@ -220,17 +220,17 @@ pub struct ClientConfig {
     pub require_ems: bool,
 
     /// Provides the current system time
-    pub time_provider: Boxx<dyn TimeProvider>,
+    pub time_provider: RcBox<dyn TimeProvider>,
 
     /// Source of randomness and other crypto.
-    pub(super) provider: Boxx<CryptoProvider>,
+    pub(super) provider: RcBox<CryptoProvider>,
 
     /// Supported versions, in no particular order.  The default
     /// is all supported versions.
     pub(super) versions: versions::EnabledVersions,
 
     /// How to verify the server certificate chain.
-    pub(super) verifier: Boxx<dyn verify::ServerCertVerifier>,
+    pub(super) verifier: RcBox<dyn verify::ServerCertVerifier>,
 
     /// How to decompress the server's certificate chain.
     ///
@@ -260,7 +260,7 @@ pub struct ClientConfig {
     ///
     /// This is optional: [`compress::CompressionCache::Disabled`] gives
     /// a cache that does no caching.
-    pub cert_compression_cache: Boxx<compress::CompressionCache>,
+    pub cert_compression_cache: RcBox<compress::CompressionCache>,
 
     /// How to offer Encrypted Client Hello (ECH). The default is to not offer ECH.
     pub(super) ech_mode: Option<EchMode>,
@@ -432,7 +432,7 @@ impl ClientConfig {
 pub struct Resumption {
     /// How we store session data or tickets. The default is to use an in-memory
     /// [super::handy::ClientSessionMemoryCache].
-    pub(super) store: Boxx<dyn ClientSessionStore>,
+    pub(super) store: RcBox<dyn ClientSessionStore>,
 
     /// What mechanism is used for resuming a TLS 1.2 session.
     pub(super) tls12_resumption: Tls12Resumption,
