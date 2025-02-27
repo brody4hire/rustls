@@ -844,7 +844,9 @@ mod client_hello {
         // the Finish message is received & validated.
         key_schedule.into_traffic_with_client_finished_pending(
             hash_at_server_fin,
-            &*config.key_log,
+            // XXX TBD ???
+            // &*config.key_log,
+            &**config.key_log,
             &randoms.client,
             cx.common,
         )
