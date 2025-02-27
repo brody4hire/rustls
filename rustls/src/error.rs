@@ -805,7 +805,7 @@ mod other_error {
 
     use super::Error;
     #[cfg(feature = "std")]
-    use crate::alias::Boxx;
+    use crate::alias::{Boxx, Rc};
 
     /// Any other error that cannot be expressed by a more specific [`Error`] variant.
     ///
@@ -861,7 +861,7 @@ mod tests {
         CertRevocationListError, Error, InconsistentKeys, InvalidMessage, OtherError, UnixTime,
     };
     #[cfg(feature = "std")]
-    use crate::alias::Boxx;
+    use crate::alias::{Boxx, Rc};
     use pki_types::ServerName;
 
     #[test]

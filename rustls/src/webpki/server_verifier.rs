@@ -5,7 +5,7 @@ use webpki::{CertRevocationList, ExpirationPolicy, RevocationCheckDepth, Unknown
 
 use crate::crypto::{CryptoProvider, WebPkiSupportedAlgorithms};
 use crate::log::trace;
-use crate::alias::Boxx;
+use crate::alias::{Boxx, Rc};
 use crate::verify::{
     DigitallySignedStruct, HandshakeSignatureValid, ServerCertVerified, ServerCertVerifier,
 };
@@ -311,7 +311,7 @@ mod tests {
 
     use super::{VerifierBuilderError, WebPkiServerVerifier, provider};
     use crate::RootCertStore;
-    use crate::alias::Boxx;
+    use crate::alias::{Boxx, Rc};
 
     fn load_crls(crls_der: &[&[u8]]) -> Vec<CertificateRevocationListDer<'static>> {
         crls_der

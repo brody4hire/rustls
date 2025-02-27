@@ -5,7 +5,7 @@ use super::ResolvesClientCert;
 use crate::log::{debug, trace};
 use crate::msgs::enums::ExtensionType;
 use crate::msgs::handshake::{CertificateChain, DistinguishedName, ServerExtension};
-use crate::alias::Boxx;
+use crate::alias::{Boxx, Rc};
 use crate::{SignatureScheme, compress, sign};
 
 #[derive(Debug)]

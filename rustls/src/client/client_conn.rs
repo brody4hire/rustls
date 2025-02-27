@@ -21,7 +21,7 @@ use crate::msgs::enums::NamedGroup;
 use crate::msgs::handshake::ClientExtension;
 use crate::msgs::persist;
 use crate::suites::{ExtractedSecrets, SupportedCipherSuite};
-use crate::alias::Boxx;
+use crate::alias::{Boxx, Rc};
 #[cfg(feature = "std")]
 use crate::time_provider::DefaultTimeProvider;
 use crate::time_provider::TimeProvider;
@@ -513,7 +513,7 @@ pub enum Tls12Resumption {
 pub(super) mod danger {
     use super::ClientConfig;
     use super::verify::ServerCertVerifier;
-    use crate::alias::Boxx;
+    use crate::alias::{Boxx, Rc};
 
     /// Accessor for dangerous configuration options.
     #[derive(Debug)]
@@ -624,7 +624,7 @@ mod connection {
     use crate::conn::{ConnectionCommon, ConnectionCore};
     use crate::error::Error;
     use crate::suites::ExtractedSecrets;
-    use crate::alias::Boxx;
+    use crate::alias::{Boxx, Rc};
 
     /// Stub that implements io::Write and dispatches to `write_early_data`.
     pub struct WriteEarlyData<'a> {
