@@ -171,12 +171,12 @@ impl server::ProducesTickets for NeverProducesTickets {
 ///
 /// [RFC 7250]: https://tools.ietf.org/html/rfc7250
 #[derive(Clone, Debug)]
-pub struct AlwaysResolvesServerRawPublicKeys(Boxx<sign::CertifiedKey>);
+pub struct AlwaysResolvesServerRawPublicKeys(RcBox<sign::CertifiedKey>);
 
 impl AlwaysResolvesServerRawPublicKeys {
     /// Create a new `AlwaysResolvesServerRawPublicKeys` instance.
     pub fn new(certified_key: Boxx<sign::CertifiedKey>) -> Self {
-        Self(certified_key)
+        Self(certified_key.into())
     }
 }
 
