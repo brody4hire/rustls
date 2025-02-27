@@ -71,7 +71,7 @@ impl ConfigBuilder<ClientConfig, WantsVerifier> {
         ConfigBuilder {
             state: WantsClientCert {
                 versions: self.state.versions,
-                verifier,
+                verifier: verifier.into(),
                 client_ech_mode: self.state.client_ech_mode,
             },
             provider: self.provider,
@@ -111,7 +111,7 @@ pub(super) mod danger {
             ConfigBuilder {
                 state: WantsClientCert {
                     versions: self.cfg.state.versions,
-                    verifier,
+                    verifier: verifier.into(),
                     client_ech_mode: self.cfg.state.client_ech_mode,
                 },
                 provider: self.cfg.provider,
@@ -167,18 +167,18 @@ impl ConfigBuilder<ClientConfig, WantsClientCert> {
             alpn_protocols: Vec::new(),
             resumption: Resumption::default(),
             max_fragment_size: None,
-            client_auth_cert_resolver,
+            client_auth_cert_resolver: client_auth_cert_resolver.into(),
             versions: self.state.versions,
             enable_sni: true,
             verifier: self.state.verifier,
-            key_log: Boxx::new(NoKeyLog {}),
+            key_log: Boxx::new(NoKeyLog {}).into(),
             enable_secret_extraction: false,
             enable_early_data: false,
             #[cfg(feature = "tls12")]
             require_ems: cfg!(feature = "fips"),
             time_provider: self.time_provider,
             cert_compressors: compress::default_cert_compressors().to_vec(),
-            cert_compression_cache: Boxx::new(compress::CompressionCache::default()),
+            cert_compression_cache: Boxx::new(compress::CompressionCache::default()).into(),
             cert_decompressors: compress::default_cert_decompressors().to_vec(),
             ech_mode: self.state.client_ech_mode,
         }
