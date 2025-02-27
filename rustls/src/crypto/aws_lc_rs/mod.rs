@@ -13,7 +13,7 @@ use crate::enums::SignatureScheme;
 use crate::rand::GetRandomFailed;
 use crate::sign::SigningKey;
 use crate::suites::SupportedCipherSuite;
-use crate::sync::Arc;
+use crate::alias::Arc;
 use crate::webpki::WebPkiSupportedAlgorithms;
 use crate::{Error, OtherError};
 

@@ -7,7 +7,7 @@ use super::{ResolvesServerCert, ServerConfig, handy};
 use crate::builder::{ConfigBuilder, WantsVerifier};
 use crate::error::Error;
 use crate::sign::{CertifiedKey, SingleCertAndKey};
-use crate::sync::Arc;
+use crate::alias::Arc;
 use crate::verify::{ClientCertVerifier, NoClientAuth};
 use crate::{NoKeyLog, compress, versions};
 

@@ -25,7 +25,7 @@ use crate::enums::{
     CertificateCompressionAlgorithm, CipherSuite, HandshakeType, ProtocolVersion, SignatureScheme,
 };
 use crate::error::InvalidMessage;
-use crate::sync::Arc;
+use crate::alias::Arc;
 use crate::verify::DigitallySignedStruct;
 
 #[test]
