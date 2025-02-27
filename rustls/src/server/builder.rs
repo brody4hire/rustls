@@ -101,17 +101,22 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
         ServerConfig {
             provider: self.provider,
             verifier: self.state.verifier,
-            cert_resolver,
+            // XXX TBD ???
+            // cert_resolver,
+            cert_resolver: cert_resolver.into(),
             ignore_client_order: false,
             max_fragment_size: None,
             #[cfg(feature = "std")]
             session_storage: handy::ServerSessionMemoryCache::new(256),
             #[cfg(not(feature = "std"))]
-            session_storage: Boxx::new(handy::NoServerSessionStorage {}),
-            ticketer: Boxx::new(handy::NeverProducesTickets {}),
+            // XXX TBD ???
+            // session_storage: Boxx::new(handy::NoServerSessionStorage {}),
+            session_storage: RcBox::from(handy::NoServerSessionStorage {}),
+            ticketer: RcBox::from(handy::NeverProducesTickets {}),
             alpn_protocols: Vec::new(),
             versions: self.state.versions,
-            key_log: Boxx::new(NoKeyLog {}),
+            // XXX TBD ???
+            key_log: RcBox::from(NoKeyLog {}),
             enable_secret_extraction: false,
             max_early_data_size: 0,
             send_half_rtt_data: false,
@@ -120,7 +125,8 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
             require_ems: cfg!(feature = "fips"),
             time_provider: self.time_provider,
             cert_compressors: compress::default_cert_compressors().to_vec(),
-            cert_compression_cache: Boxx::new(compress::CompressionCache::default()),
+            // XXX TBD ???
+            cert_compression_cache: RcBox::from(compress::CompressionCache::default()),
             cert_decompressors: compress::default_cert_decompressors().to_vec(),
         }
     }
