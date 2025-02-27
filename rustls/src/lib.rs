@@ -413,7 +413,7 @@ mod test_macros;
 mod alias {
     #[allow(clippy::disallowed_types)]
     // pub(crate) type Arc<T> = alloc::sync::Arc<T>;
-    pub(crate) type Arc<T> = alloc::boxed::Box<T>;
+    pub(crate) type Boxx<T> = alloc::boxed::Box<T>;
 }
 
 #[macro_use]

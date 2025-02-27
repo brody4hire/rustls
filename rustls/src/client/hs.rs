@@ -35,7 +35,7 @@ use crate::msgs::handshake::{
 };
 use crate::msgs::message::{Message, MessagePayload};
 use crate::msgs::persist;
-use crate::alias::Arc;
+use crate::alias::Boxx;
 use crate::tls13::key_schedule::KeyScheduleEarly;
 
 pub(super) type NextState<'a> = Box<dyn State<ClientConnectionData> + 'a>;
@@ -96,7 +96,7 @@ fn find_session(
 pub(super) fn start_handshake(
     server_name: ServerName<'static>,
     extra_exts: Vec<ClientExtension>,
-    config: Arc<ClientConfig>,
+    config: Boxx<ClientConfig>,
     cx: &mut ClientContext<'_>,
 ) -> NextStateOrError<'static> {
     let mut transcript_buffer = HandshakeHashBuffer::new();
@@ -205,7 +205,7 @@ struct ExpectServerHelloOrHelloRetryRequest {
 }
 
 struct ClientHelloInput {
-    config: Arc<ClientConfig>,
+    config: Boxx<ClientConfig>,
     resuming: Option<persist::Retrieved<ClientSessionValue>>,
     random: Random,
     #[cfg(feature = "tls12")]

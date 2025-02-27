@@ -11,7 +11,7 @@ use crate::msgs::codec::{Codec, Reader};
 use crate::msgs::handshake::CertificateChain;
 #[cfg(feature = "tls12")]
 use crate::msgs::handshake::SessionId;
-use crate::alias::Arc;
+use crate::alias::Boxx;
 #[cfg(feature = "tls12")]
 use crate::tls12::Tls12CipherSuite;
 use crate::tls13::Tls13CipherSuite;
@@ -79,7 +79,7 @@ pub struct Tls13ClientSessionValue {
 impl Tls13ClientSessionValue {
     pub(crate) fn new(
         suite: &'static Tls13CipherSuite,
-        ticket: Arc<PayloadU16>,
+        ticket: Boxx<PayloadU16>,
         secret: &[u8],
         server_cert_chain: CertificateChain<'static>,
         time_now: UnixTime,
@@ -157,7 +157,7 @@ impl Tls12ClientSessionValue {
     pub(crate) fn new(
         suite: &'static Tls12CipherSuite,
         session_id: SessionId,
-        ticket: Arc<PayloadU16>,
+        ticket: Boxx<PayloadU16>,
         master_secret: &[u8],
         server_cert_chain: CertificateChain<'static>,
         time_now: UnixTime,
@@ -178,8 +178,8 @@ impl Tls12ClientSessionValue {
         }
     }
 
-    pub(crate) fn ticket(&mut self) -> Arc<PayloadU16> {
-        Arc::clone(&self.common.ticket)
+    pub(crate) fn ticket(&mut self) -> Boxx<PayloadU16> {
+        Boxx::clone(&self.common.ticket)
     }
 
     pub(crate) fn extended_ms(&self) -> bool {
@@ -208,16 +208,16 @@ impl core::ops::Deref for Tls12ClientSessionValue {
 
 #[derive(Debug, Clone)]
 pub struct ClientSessionCommon {
-    ticket: Arc<PayloadU16>,
+    ticket: Boxx<PayloadU16>,
     secret: Zeroizing<PayloadU8>,
     epoch: u64,
     lifetime_secs: u32,
-    server_cert_chain: Arc<CertificateChain<'static>>,
+    server_cert_chain: Boxx<CertificateChain<'static>>,
 }
 
 impl ClientSessionCommon {
     fn new(
-        ticket: Arc<PayloadU16>,
+        ticket: Boxx<PayloadU16>,
         secret: &[u8],
         time_now: UnixTime,
         lifetime_secs: u32,
@@ -228,7 +228,7 @@ impl ClientSessionCommon {
             secret: Zeroizing::new(PayloadU8(secret.to_vec())),
             epoch: time_now.as_secs(),
             lifetime_secs: cmp::min(lifetime_secs, MAX_TICKET_LIFETIME),
-            server_cert_chain: Arc::new(server_cert_chain),
+            server_cert_chain: Boxx::new(server_cert_chain),
         }
     }
 

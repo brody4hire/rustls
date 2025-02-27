@@ -5,7 +5,7 @@ use webpki::{CertRevocationList, ExpirationPolicy, RevocationCheckDepth, Unknown
 
 use crate::crypto::{CryptoProvider, WebPkiSupportedAlgorithms};
 use crate::log::trace;
-use crate::alias::Arc;
+use crate::alias::Boxx;
 use crate::verify::{
     DigitallySignedStruct, HandshakeSignatureValid, ServerCertVerified, ServerCertVerifier,
 };
@@ -23,7 +23,7 @@ use crate::{Error, RootCertStore, SignatureScheme};
 /// For more information, see the [`WebPkiServerVerifier`] documentation.
 #[derive(Debug, Clone)]
 pub struct ServerCertVerifierBuilder {
-    roots: Arc<RootCertStore>,
+    roots: Boxx<RootCertStore>,
     crls: Vec<CertificateRevocationListDer<'static>>,
     revocation_check_depth: RevocationCheckDepth,
     unknown_revocation_policy: UnknownStatusPolicy,
@@ -33,7 +33,7 @@ pub struct ServerCertVerifierBuilder {
 
 impl ServerCertVerifierBuilder {
     pub(crate) fn new(
-        roots: Arc<RootCertStore>,
+        roots: Boxx<RootCertStore>,
         supported_algs: WebPkiSupportedAlgorithms,
     ) -> Self {
         Self {
@@ -111,7 +111,7 @@ impl ServerCertVerifierBuilder {
     /// This function will return a [`VerifierBuilderError`] if:
     /// 1. No trust anchors have been provided.
     /// 2. DER encoded CRLs have been provided that can not be parsed successfully.
-    pub fn build(self) -> Result<Arc<WebPkiServerVerifier>, VerifierBuilderError> {
+    pub fn build(self) -> Result<Boxx<WebPkiServerVerifier>, VerifierBuilderError> {
         if self.roots.is_empty() {
             return Err(VerifierBuilderError::NoRootAnchors);
         }
@@ -132,7 +132,7 @@ impl ServerCertVerifierBuilder {
 #[allow(unreachable_pub)]
 #[derive(Debug)]
 pub struct WebPkiServerVerifier {
-    roots: Arc<RootCertStore>,
+    roots: Boxx<RootCertStore>,
     crls: Vec<CertRevocationList<'static>>,
     revocation_check_depth: RevocationCheckDepth,
     unknown_revocation_policy: UnknownStatusPolicy,
@@ -150,10 +150,10 @@ impl WebPkiServerVerifier {
     /// Use [`Self::builder_with_provider`] if you wish to specify an explicit provider.
     ///
     /// For more information, see the [`ServerCertVerifierBuilder`] documentation.
-    pub fn builder(roots: Arc<RootCertStore>) -> ServerCertVerifierBuilder {
+    pub fn builder(roots: Boxx<RootCertStore>) -> ServerCertVerifierBuilder {
         Self::builder_with_provider(
             roots,
-            Arc::clone(CryptoProvider::get_default_or_install_from_crate_features()),
+            Boxx::clone(CryptoProvider::get_default_or_install_from_crate_features()),
         )
     }
 
@@ -166,8 +166,8 @@ impl WebPkiServerVerifier {
     ///
     /// For more information, see the [`ServerCertVerifierBuilder`] documentation.
     pub fn builder_with_provider(
-        roots: Arc<RootCertStore>,
-        provider: Arc<CryptoProvider>,
+        roots: Boxx<RootCertStore>,
+        provider: Boxx<CryptoProvider>,
     ) -> ServerCertVerifierBuilder {
         ServerCertVerifierBuilder::new(roots, provider.signature_verification_algorithms)
     }
@@ -175,7 +175,7 @@ impl WebPkiServerVerifier {
     /// Short-cut for creating a `WebPkiServerVerifier` that does not perform certificate revocation
     /// checking, avoiding the need to use a builder.
     pub(crate) fn new_without_revocation(
-        roots: impl Into<Arc<RootCertStore>>,
+        roots: impl Into<Boxx<RootCertStore>>,
         supported_algs: WebPkiSupportedAlgorithms,
     ) -> Self {
         Self::new(
@@ -200,7 +200,7 @@ impl WebPkiServerVerifier {
     /// * `supported` is the set of supported algorithms that will be used for
     ///   certificate verification and TLS handshake signature verification.
     pub(crate) fn new(
-        roots: impl Into<Arc<RootCertStore>>,
+        roots: impl Into<Boxx<RootCertStore>>,
         crls: Vec<CertRevocationList<'static>>,
         revocation_check_depth: RevocationCheckDepth,
         unknown_revocation_policy: UnknownStatusPolicy,
@@ -311,7 +311,7 @@ mod tests {
 
     use super::{VerifierBuilderError, WebPkiServerVerifier, provider};
     use crate::RootCertStore;
-    use crate::alias::Arc;
+    use crate::alias::Boxx;
 
     fn load_crls(crls_der: &[&[u8]]) -> Vec<CertificateRevocationListDer<'static>> {
         crls_der
@@ -327,7 +327,7 @@ mod tests {
         ])
     }
 
-    fn load_roots(roots_der: &[&[u8]]) -> Arc<RootCertStore> {
+    fn load_roots(roots_der: &[&[u8]]) -> Boxx<RootCertStore> {
         let mut roots = RootCertStore::empty();
         roots_der.iter().for_each(|der| {
             roots
@@ -337,7 +337,7 @@ mod tests {
         roots.into()
     }
 
-    fn test_roots() -> Arc<RootCertStore> {
+    fn test_roots() -> Boxx<RootCertStore> {
         load_roots(&[
             include_bytes!("../../../test-ca/ecdsa-p256/ca.der").as_slice(),
             include_bytes!("../../../test-ca/rsa-2048/ca.der").as_slice(),
