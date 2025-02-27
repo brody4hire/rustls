@@ -456,7 +456,7 @@ impl Resumption {
     /// By default, enables resuming a TLS 1.2 session with a session id or RFC 5077 ticket.
     pub fn store(store: Boxx<dyn ClientSessionStore>) -> Self {
         Self {
-            store,
+            store: store.into(),
             tls12_resumption: Tls12Resumption::SessionIdOrTickets,
         }
     }
