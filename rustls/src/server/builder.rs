@@ -41,7 +41,7 @@ impl ConfigBuilder<ServerConfig, WantsVerifier> {
 #[derive(Clone, Debug)]
 pub struct WantsServerCert {
     versions: versions::EnabledVersions,
-    verifier: Boxx<dyn ClientCertVerifier>,
+    verifier: RcBox<dyn ClientCertVerifier>,
 }
 
 impl ConfigBuilder<ServerConfig, WantsServerCert> {
