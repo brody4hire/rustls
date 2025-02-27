@@ -814,7 +814,7 @@ mod other_error {
     ///
     /// Enums holding this type will never compare equal to each other.
     #[derive(Debug, Clone)]
-    pub struct OtherError(#[cfg(feature = "std")] pub Boxx<dyn StdError + Send + Sync>);
+    pub struct OtherError(#[cfg(feature = "std-xxx")] pub Boxx<dyn StdError + Send + Sync>);
 
     impl PartialEq<Self> for OtherError {
         fn eq(&self, _other: &Self) -> bool {
@@ -830,18 +830,18 @@ mod other_error {
 
     impl fmt::Display for OtherError {
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            #[cfg(feature = "std")]
+            #[cfg(feature = "std-xxx")]
             {
                 write!(f, "{}", self.0)
             }
-            #[cfg(not(feature = "std"))]
+            #[cfg(not(feature = "std-xxx"))]
             {
                 f.write_str("no further information available")
             }
         }
     }
 
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-xxx")]
     impl StdError for OtherError {
         fn source(&self) -> Option<&(dyn StdError + 'static)> {
             Some(self.0.as_ref())

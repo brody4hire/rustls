@@ -278,7 +278,7 @@ pub enum CompressionCache {
     Disabled,
 
     /// Compressions are stored in an LRU cache.
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-xx")]
     Enabled(CompressionCacheInner),
 }
 
@@ -300,7 +300,7 @@ pub struct CompressionCacheInner {
 impl CompressionCache {
     /// Make a `CompressionCache` that stores up to `size` compressed
     /// certificate messages.
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-xx")]
     pub fn new(size: usize) -> Self {
         if size == 0 {
             return Self::Disabled;
@@ -325,12 +325,12 @@ impl CompressionCache {
         match self {
             Self::Disabled => Self::uncached_compression(compressor, original),
 
-            #[cfg(feature = "std")]
+            #[cfg(feature = "std-xx")]
             Self::Enabled(_) => self.compression_for_impl(compressor, original),
         }
     }
 
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-xx")]
     fn compression_for_impl(
         &self,
         compressor: &dyn CertCompressor,
@@ -414,13 +414,13 @@ impl CompressionCache {
 
 impl Default for CompressionCache {
     fn default() -> Self {
-        #[cfg(feature = "std")]
+        #[cfg(feature = "std-xx")]
         {
             // 4 entries allows 2 certificate chains times 2 compression algorithms
             Self::new(4)
         }
 
-        #[cfg(not(feature = "std"))]
+        #[cfg(not(feature = "std-xx"))]
         {
             Self::Disabled
         }

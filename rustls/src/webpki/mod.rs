@@ -92,7 +92,7 @@ fn pki_error(error: webpki::Error) -> Error {
         }
 
         _ => CertificateError::Other(OtherError(
-            #[cfg(feature = "std")]
+            #[cfg(feature = "std-xxx")]
             Boxx::new(error),
         ))
         .into(),
@@ -116,7 +116,7 @@ fn crl_error(e: webpki::Error) -> CertRevocationListError {
         UnsupportedRevocationReason => CertRevocationListError::UnsupportedRevocationReason,
 
         _ => CertRevocationListError::Other(OtherError(
-            #[cfg(feature = "std")]
+            #[cfg(feature = "std-xxx")]
             Boxx::new(e),
         )),
     }
