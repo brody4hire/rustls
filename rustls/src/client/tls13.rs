@@ -1421,8 +1421,10 @@ impl State<ClientConnectionData> for ExpectFinished {
         }
 
         let st = ExpectTraffic {
-            config: Boxx::clone(&st.config),
-            session_storage: Boxx::clone(&st.config.resumption.store),
+            // XXX TBD ??? ???
+            config: Boxx::clone(&st.config).into(),
+            // XXX TBD ??? ???
+            session_storage: Boxx::clone(&st.config.resumption.store).into(),
             server_name: st.server_name,
             suite: st.suite,
             transcript: st.transcript,
