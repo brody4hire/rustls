@@ -129,7 +129,7 @@ pub(super) mod danger {
 #[derive(Clone)]
 pub struct WantsClientCert {
     versions: versions::EnabledVersions,
-    verifier: Boxx<dyn verify::ServerCertVerifier>,
+    verifier: RcBox<dyn verify::ServerCertVerifier>,
     client_ech_mode: Option<EchMode>,
 }
 
