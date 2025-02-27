@@ -98,7 +98,7 @@ pub struct SingleCertAndKey(RcBox<CertifiedKey>);
 
 impl From<CertifiedKey> for SingleCertAndKey {
     fn from(certified_key: CertifiedKey) -> Self {
-        Self(Boxx::new(certified_key))
+        Self(Rc::new(Boxx::new(certified_key)))
     }
 }
 
@@ -175,7 +175,7 @@ impl CertifiedKey {
     pub fn new(cert: Vec<CertificateDer<'static>>, key: Boxx<dyn SigningKey>) -> Self {
         Self {
             cert,
-            key,
+            key: key.into(),
             ocsp: None,
         }
     }
