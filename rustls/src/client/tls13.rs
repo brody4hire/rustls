@@ -1447,8 +1447,9 @@ impl State<ClientConnectionData> for ExpectFinished {
 // In this state we can be sent tickets, key updates,
 // and application data.
 struct ExpectTraffic {
-    config: Boxx<ClientConfig>,
-    session_storage: Boxx<dyn ClientSessionStore>,
+    // XXX TBD ??? ???
+    config: RcBox<ClientConfig>,
+    session_storage: RcBox<dyn ClientSessionStore>,
     server_name: ServerName<'static>,
     suite: &'static Tls13CipherSuite,
     transcript: HandshakeHash,
