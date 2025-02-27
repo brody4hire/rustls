@@ -20,7 +20,7 @@ impl ConfigBuilder<ServerConfig, WantsVerifier> {
         ConfigBuilder {
             state: WantsServerCert {
                 versions: self.state.versions,
-                verifier: client_cert_verifier,
+                verifier: client_cert_verifier.into(),
             },
             provider: self.provider,
             time_provider: self.time_provider,
