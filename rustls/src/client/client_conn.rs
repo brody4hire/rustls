@@ -342,8 +342,8 @@ impl ClientConfig {
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
-            provider,
-            time_provider,
+            provider: provider.into(),
+            time_provider: time_provider.into(),
             side: PhantomData,
         }
     }
