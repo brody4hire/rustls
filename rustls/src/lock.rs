@@ -39,6 +39,8 @@ mod no_std_lock {
     use core::ops::DerefMut;
 
     use crate::alias::{Boxx, Rc, RcBox};
+    // XXX XXX XXX
+    type Arc<T> = Boxx<T>;
 
     /// A no-std compatible wrapper around [`Lock`].
     #[derive(Debug)]
