@@ -199,7 +199,7 @@ pub(super) fn handle_server_hello(
         cx.data.early_data.is_enabled(),
         hash_at_client_recvd_server_hello,
         suite,
-        &**onfig.key_log,
+        &**config.key_log,
         &randoms.client,
         cx.common,
     );
