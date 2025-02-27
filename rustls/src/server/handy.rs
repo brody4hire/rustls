@@ -181,8 +181,8 @@ impl AlwaysResolvesServerRawPublicKeys {
 }
 
 impl server::ResolvesServerCert for AlwaysResolvesServerRawPublicKeys {
-    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<Boxx<sign::CertifiedKey>> {
-        Some(Boxx::clone(&self.0))
+    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<RcBox<sign::CertifiedKey>> {
+        Some(RcBox::clone(&self.0))
     }
 
     fn only_raw_public_keys(&self) -> bool {
