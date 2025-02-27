@@ -171,7 +171,7 @@ impl ConfigBuilder<ClientConfig, WantsClientCert> {
             versions: self.state.versions,
             enable_sni: true,
             verifier: self.state.verifier,
-            key_log: Boxx::new(NoKeyLog {}).into(),
+            key_log: Rc::new(Boxx::new(NoKeyLog {})),
             enable_secret_extraction: false,
             enable_early_data: false,
             #[cfg(feature = "tls12")]
