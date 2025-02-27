@@ -106,9 +106,9 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
             cert_resolver: cert_resolver.into(),
             ignore_client_order: false,
             max_fragment_size: None,
-            #[cfg(feature = "std")]
+            #[cfg(feature = "std-x")]
             session_storage: handy::ServerSessionMemoryCache::new(256),
-            #[cfg(not(feature = "std"))]
+            #[cfg(not(feature = "std-x"))]
             // XXX TBD ???
             // session_storage: Boxx::new(handy::NoServerSessionStorage {}),
             session_storage: Rc::new(Boxx::new(handy::NoServerSessionStorage {})),
