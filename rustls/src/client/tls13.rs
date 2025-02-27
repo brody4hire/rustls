@@ -1396,7 +1396,7 @@ impl State<ClientConnectionData> for ExpectFinished {
             .into_pre_finished_client_traffic(
                 hash_after_handshake,
                 flight.transcript.current_hash(),
-                &*st.config.key_log,
+                &**st.config.key_log,
                 &st.randoms.client,
             );
 
@@ -1427,7 +1427,7 @@ impl State<ClientConnectionData> for ExpectFinished {
             // XXX TBD ??? ???
             config: Boxx::clone(&st.config).into(),
             // XXX TBD ??? ???
-            session_storage: Boxx::clone(&st.config.resumption.store).into(),
+            session_storage: RcBox::clone(&st.config.resumption.store),
             server_name: st.server_name,
             suite: st.suite,
             transcript: st.transcript,
