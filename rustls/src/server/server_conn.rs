@@ -886,7 +886,7 @@ pub struct UnbufferedServerConnection {
 
 impl UnbufferedServerConnection {
     /// Make a new ServerConnection. `config` controls how we behave in the TLS protocol.
-    pub fn new(config: RcBox<ServerConfig>) -> Result<Self, Error> {
+    pub fn new(config: Boxx<ServerConfig>) -> Result<Self, Error> {
         Ok(Self {
             inner: UnbufferedConnectionCommon::from(ConnectionCore::for_server(
                 config,
