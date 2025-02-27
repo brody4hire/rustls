@@ -311,7 +311,7 @@ impl ClientConfig {
     /// version is not supported by the provider's ciphersuites.
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-x")]
     pub fn builder_with_provider(
         provider: Boxx<CryptoProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
@@ -443,7 +443,7 @@ impl Resumption {
     ///
     /// This is the default `Resumption` choice, and enables resuming a TLS 1.2 session with
     /// a session id or RFC 5077 ticket.
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-x")]
     pub fn in_memory_sessions(num: usize) -> Self {
         Self {
             store: Boxx::new(super::handy::ClientSessionMemoryCache::new(num)),
