@@ -961,7 +961,7 @@ impl Accepted {
     #[cfg(feature = "std")]
     pub fn into_connection(
         mut self,
-        config: RcBox<ServerConfig>,
+        config: Boxx<ServerConfig>,
     ) -> Result<ServerConnection, (Error, AcceptedAlert)> {
         if let Err(err) = self
             .connection
