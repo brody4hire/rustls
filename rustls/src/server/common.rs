@@ -25,7 +25,7 @@ impl ActiveCertifiedKey<'_> {
     /// Get the signing key
     #[inline]
     pub(super) fn get_key(&self) -> &dyn sign::SigningKey {
-        &*self.key.key
+        &**self.key.key
     }
 
     #[inline]
