@@ -464,7 +464,7 @@ impl Resumption {
     /// Disable all use of session resumption.
     pub fn disabled() -> Self {
         Self {
-            store: Boxx::new(NoClientSessionStorage),
+            store: Rc::new(Boxx::new(NoClientSessionStorage)),
             tls12_resumption: Tls12Resumption::Disabled,
         }
     }
@@ -525,7 +525,7 @@ pub(super) mod danger {
     impl DangerousClientConfig<'_> {
         /// Overrides the default `ServerCertVerifier` with something else.
         pub fn set_certificate_verifier(&mut self, verifier: Boxx<dyn ServerCertVerifier>) {
-            self.cfg.verifier = verifier;
+            self.cfg.verifier = Rc::new(verifier);
         }
     }
 }
