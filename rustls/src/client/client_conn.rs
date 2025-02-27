@@ -272,7 +272,7 @@ impl ClientConfig {
     /// and safe protocol version defaults.
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-x")]
     pub fn builder() -> ConfigBuilder<Self, WantsVerifier> {
         Self::builder_with_protocol_versions(versions::DEFAULT_VERSIONS)
     }
@@ -289,7 +289,7 @@ impl ClientConfig {
     ///   the crate features and process default.
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
-    #[cfg(feature = "std")]
+    #[cfg(feature = "std-x")]
     pub fn builder_with_protocol_versions(
         versions: &[&'static versions::SupportedProtocolVersion],
     ) -> ConfigBuilder<Self, WantsVerifier> {
@@ -483,10 +483,10 @@ impl Default for Resumption {
     /// Create an in-memory session store resumption with up to 256 server names, allowing
     /// a TLS 1.2 session to resume with a session id or RFC 5077 ticket.
     fn default() -> Self {
-        #[cfg(feature = "std")]
+        #[cfg(feature = "std-x")]
         let ret = Self::in_memory_sessions(256);
 
-        #[cfg(not(feature = "std"))]
+        #[cfg(not(feature = "std-x"))]
         let ret = Self::disabled();
 
         ret

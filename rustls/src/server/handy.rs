@@ -254,9 +254,11 @@ mod sni_resolver {
     }
 
     impl server::ResolvesServerCert for ResolvesServerCertUsingSni {
-        fn resolve(&self, client_hello: ClientHello<'_>) -> Option<Boxx<sign::CertifiedKey>> {
+        fn resolve(&self, client_hello: ClientHello<'_>) -> Option<RcBox<sign::CertifiedKey>> {
             if let Some(name) = client_hello.server_name() {
-                self.by_name.get(name).cloned()
+                // XXX XXX XXX
+                // self.by_name.get(name).cloned()
+                panic!("XXX")
             } else {
                 // This kind of resolver requires SNI
                 None
