@@ -40,14 +40,14 @@ brotli-decompressor = { workspace = true, optional = true }
 hashbrown = { workspace = true, optional = true }
 log = { workspace = true, optional = true }
 # only required for no-std
-once_cell = { version = "1.20", default-features = false, features = ["alloc", "race"] }
+once_cell = { version = "1.20", default-features = false, features = ["portable-atomic", "alloc", "race"] }
 ring = { workspace = true, optional = true }
 subtle = { workspace = true }
 webpki = { workspace = true }
 pki-types = { workspace = true }
 zeroize = { workspace = true }
 zlib-rs = { workspace = true, optional = true }
-# portable-atomic = { version = "1.11.0", default-features = false, features = ["unsafe-assume-single-core"] }
+portable-atomic = { version = "1.11.0", default-features = false, features = ["unsafe-assume-single-core"] }
 
 [dev-dependencies]
 base64 = { workspace = true }
