@@ -540,7 +540,9 @@ mod client_hello {
             let early_key_schedule = KeyScheduleEarly::new(suite, psk);
             early_key_schedule.client_early_traffic_secret(
                 &client_hello_hash,
-                &*config.key_log,
+                // XXX TBD ???
+                // &*config.key_log,
+                &**config.key_log,
                 &randoms.client,
                 cx.common,
             );
@@ -556,7 +558,9 @@ mod client_hello {
         let handshake_hash = transcript.current_hash();
         let key_schedule = key_schedule.derive_server_handshake_secrets(
             handshake_hash,
-            &*config.key_log,
+            // XXX TBD ???
+            // &*config.key_log,
+            &**config.key_log,
             &randoms.client,
             cx.common,
         );
