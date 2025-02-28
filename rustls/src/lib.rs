@@ -423,8 +423,10 @@ mod super_alias {
     // pub(crate) type Rc<T> = alloc::rc::Rc<T>;
     // pub(crate) type RcBox<T> = Arc<alloc::boxed::Box<T>>;
     // pub(crate) type RcBox<T> = Rc<alloc::boxed::Box<T>>;
-    pub(crate) use alloc::rc::Rc;
-    pub(crate) type RcX<T> = Rc<T>;
+    // pub(crate) use alloc::rc::Rc;
+    pub(crate) type Rc<T> = alloc::sync::Arc<T>;
+    // pub(crate) type RcX<T> = Rc<T>;
+    pub(crate) type RcX<T> = alloc::sync::Arc<T>;
     // pub(crate) use alloc::rc::Rc as RcBox;
     // XXX XXX
     pub(crate) type CfgRc = i32;
