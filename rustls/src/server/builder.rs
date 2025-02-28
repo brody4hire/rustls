@@ -20,7 +20,7 @@ impl ConfigBuilder<ServerConfig, WantsVerifier> {
         ConfigBuilder {
             state: WantsServerCert {
                 versions: self.state.versions,
-                verifier: client_cert_verifier,
+                verifier: RcX::new(client_cert_verifier),
             },
             provider: self.provider,
             time_provider: self.time_provider,
@@ -41,7 +41,7 @@ impl ConfigBuilder<ServerConfig, WantsVerifier> {
 #[derive(Clone, Debug)]
 pub struct WantsServerCert {
     versions: versions::EnabledVersions,
-    verifier: CfgX<dyn ClientCertVerifier>,
+    verifier: RcX<dyn ClientCertVerifier>,
 }
 
 impl ConfigBuilder<ServerConfig, WantsServerCert> {
@@ -99,28 +99,28 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
     /// Sets a custom [`ResolvesServerCert`].
     pub fn with_cert_resolver(self, cert_resolver: CfgX<dyn ResolvesServerCert>) -> ServerConfig {
         ServerConfig {
-            provider: self.provider,
+            provider: rcx_copy!(self.provider),
             verifier: self.state.verifier,
-            cert_resolver,
+            cert_resolver: cfgrc_new!(cert_resolver),
             ignore_client_order: false,
             max_fragment_size: None,
             #[cfg(feature = "std")]
-            session_storage: handy::ServerSessionMemoryCache::new(256),
+            session_storage: cfgrc_new!(handy::ServerSessionMemoryCache::new(256)),
             #[cfg(not(feature = "std"))]
-            session_storage: CfgX::new(handy::NoServerSessionStorage {}),
-            ticketer: CfgX::new(handy::NeverProducesTickets {}),
+            session_storage: cfgrc_with_cfg!(handy::NoServerSessionStorage {}),
+            ticketer: cfgrc_with_cfg!(handy::NeverProducesTickets {}),
             alpn_protocols: Vec::new(),
             versions: self.state.versions,
-            key_log: CfgX::new(NoKeyLog {}),
+            key_log: cfgrc_with_cfg!(NoKeyLog {}),
             enable_secret_extraction: false,
             max_early_data_size: 0,
             send_half_rtt_data: false,
             send_tls13_tickets: 2,
             #[cfg(feature = "tls12")]
             require_ems: cfg!(feature = "fips"),
-            time_provider: self.time_provider,
+            time_provider: rcx_into_cfgrc!(self.time_provider),
             cert_compressors: compress::default_cert_compressors().to_vec(),
-            cert_compression_cache: CfgX::new(compress::CompressionCache::default()),
+            cert_compression_cache: cfgrc_with_cfg!(compress::CompressionCache::default()),
             cert_decompressors: compress::default_cert_decompressors().to_vec(),
         }
     }

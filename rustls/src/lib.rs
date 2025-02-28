@@ -411,12 +411,15 @@ mod test_macros;
 /// of rustls targetting architectures without atomic pointers to replace the implementation
 /// with another implementation such as `portable_atomic_util::Arc` in one central location.
 mod super_alias {
+    use core::ops::Deref;
+
     // IMPORTANT NOTICE: ALIAS(ES) SUBJECT TO CHANGE
     #[allow(clippy::disallowed_types)]
-    // INTENDED for INPUT CONFIG - MAY BECOME A BOX INSTEAD
-    pub(crate) type CfgX<T> = alloc::sync::Arc<T>;
+    // INTENDED for INPUT CONFIG
+    // XXX TODO REPLACE ALL USE OF CfgX::clone() IF POSSIBLE
+    pub(crate) type CfgX<T> = alloc::boxed::Box<T>;
     // INTENDED for SHARED CONFIG
-    pub(crate) type CfgRc<T> = alloc::sync::Arc<T>;
+    pub(crate) type CfgRc<T> = alloc::sync::Arc<alloc::boxed::Box<T>>;
     // INTENDED for OUTPUT CONFIG - TBD MAY ALIAS to alloc::sync::Arc, alloc::rc::Rc, or portable_atomic_util::Arc
     pub(crate) type Rc1<T> = alloc::sync::Arc<T>;
     // INTENDED for ERROR CONTENTS
@@ -424,7 +427,81 @@ mod super_alias {
     // INTENDED for OUTPUT of STORED CONFIG AS A REFERENCE - TBD MAY COMBINE WITH "Rc" ALIAS ABOVE
     pub(crate) type RcXRef<'a, T> = &'a RcX<T>;
     // INTENDED for STORED CONFIG
-    pub(crate) type RcX<T> = alloc::sync::Arc<alloc::boxed::Box<T>>;
+    // pub(crate) type RcX<T> = alloc::sync::Arc<alloc::boxed::Box<T>>;
+    pub(crate) type RcX<T> = InnerRcX<alloc::boxed::Box<T>>;
+    #[derive(Debug)]
+    pub(crate) struct InnerRcX<T>(alloc::sync::Arc<T>);
+    impl<T> InnerRcX<T> {
+        pub(crate) fn new(x: T) -> InnerRcX<T> {
+            Self(alloc::sync::Arc::new(x))
+        }
+    }
+    impl<T> Clone for InnerRcX<T> {
+        fn clone(&self) -> Self {
+            Self(self.0.clone())
+        }
+    }
+    impl<T> Deref for InnerRcX<T> {
+        type Target = T;
+        fn deref(&self) -> &Self::Target {
+            self.0.deref()
+        }
+    }
+    impl<T> Into<alloc::sync::Arc<T>> for InnerRcX<T> {
+        fn into(self) -> alloc::sync::Arc<T> {
+            self.0.clone()
+        }
+    }
+    impl<T> Into<InnerRcX<T>> for alloc::sync::Arc<T> {
+        fn into(self) -> InnerRcX<T> {
+            InnerRcX(self.clone())
+        }
+    }
+}
+
+macro_rules! cfgrc_new {
+    ($x:expr) => {
+        alloc::sync::Arc::new($x)
+    };
+}
+
+macro_rules! cfgrc_with_cfg {
+    ($x:expr) => {
+        alloc::sync::Arc::new(alloc::boxed::Box::new($x))
+    };
+}
+
+macro_rules! rcx_new {
+    ($x:expr) => {
+        crate::super_alias::InnerRcX::new($x)
+    };
+}
+
+// XXX TBD ???
+macro_rules! rcx_copy {
+    ($x:expr) => {
+        $x
+    };
+}
+
+macro_rules! rcx_with_cfg {
+    ($x:expr) => {
+        crate::super_alias::InnerRcX::new(alloc::boxed::Box::new($x))
+    };
+}
+
+macro_rules! rcx_into_cfgrc {
+    ($x:expr) => {
+        $x.into()
+    };
+}
+
+// XXX THIS IS FOR EXPRESSIONS THAT NEED TO BE UPDATED - PANIC FOR NOW - XXX TODO COMPLETELY REMOVE THIS
+macro_rules! xxx_ignore_expression_and_panic_with_todo {
+    ($x:expr) => {
+        // XXX XXX
+        panic!("XXX TODO")
+    };
 }
 
 #[macro_use]

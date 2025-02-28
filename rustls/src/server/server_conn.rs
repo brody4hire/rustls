@@ -247,7 +247,7 @@ impl<'a> ClientHello<'a> {
 #[derive(Clone, Debug)]
 pub struct ServerConfig {
     /// Source of randomness and other crypto.
-    pub(super) provider: CfgX<CryptoProvider>,
+    pub(super) provider: RcX<CryptoProvider>,
 
     /// Ignore the client's ciphersuite order. Instead,
     /// choose the top ciphersuite in the server list
@@ -268,15 +268,15 @@ pub struct ServerConfig {
     pub max_fragment_size: Option<usize>,
 
     /// How to store client sessions.
-    pub session_storage: CfgX<dyn StoresServerSessions>,
+    pub session_storage: CfgRc<dyn StoresServerSessions>,
 
     /// How to produce tickets.
-    pub ticketer: CfgX<dyn ProducesTickets>,
+    pub ticketer: CfgRc<dyn ProducesTickets>,
 
     /// How to choose a server cert and key. This is usually set by
     /// [ConfigBuilder::with_single_cert] or [ConfigBuilder::with_cert_resolver].
     /// For async applications, see also [Acceptor].
-    pub cert_resolver: CfgX<dyn ResolvesServerCert>,
+    pub cert_resolver: CfgRc<dyn ResolvesServerCert>,
 
     /// Protocol names we support, most preferred first.
     /// If empty we don't do ALPN at all.
@@ -287,11 +287,11 @@ pub struct ServerConfig {
     pub(super) versions: versions::EnabledVersions,
 
     /// How to verify client certificates.
-    pub(super) verifier: CfgX<dyn verify::ClientCertVerifier>,
+    pub(super) verifier: RcX<dyn verify::ClientCertVerifier>,
 
     /// How to output key material for debugging.  The default
     /// does nothing.
-    pub key_log: CfgX<dyn KeyLog>,
+    pub key_log: CfgRc<dyn KeyLog>,
 
     /// Allows traffic secrets to be extracted after the handshake,
     /// e.g. for kTLS setup.
@@ -359,7 +359,7 @@ pub struct ServerConfig {
     pub require_ems: bool,
 
     /// Provides the current system time
-    pub time_provider: CfgX<dyn TimeProvider>,
+    pub time_provider: CfgRc<dyn TimeProvider>,
 
     /// How to compress the server's certificate chain.
     ///
@@ -377,7 +377,7 @@ pub struct ServerConfig {
     ///
     /// This is optional: [`compress::CompressionCache::Disabled`] gives
     /// a cache that does no caching.
-    pub cert_compression_cache: CfgX<compress::CompressionCache>,
+    pub cert_compression_cache: CfgRc<compress::CompressionCache>,
 
     /// How to decompress the clients's certificate chain.
     ///
@@ -444,8 +444,8 @@ impl ServerConfig {
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
-            provider,
-            time_provider: CfgX::new(DefaultTimeProvider),
+            provider: rcx_new!(provider),
+            time_provider: rcx_with_cfg!(DefaultTimeProvider),
             side: PhantomData,
         }
     }
@@ -470,8 +470,8 @@ impl ServerConfig {
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
-            provider,
-            time_provider,
+            provider: rcx_new!(provider),
+            time_provider: rcx_new!(time_provider),
             side: PhantomData,
         }
     }

@@ -928,7 +928,7 @@ impl<const KDF_LEN: usize> Drop for KemSharedSecret<KDF_LEN> {
 fn key_rejected_err(_e: aws_lc_rs::error::KeyRejected) -> Error {
     #[cfg(feature = "std")]
     {
-        Error::Other(OtherError(CfgX::new(_e)))
+        Error::Other(OtherError(ErrorRc::new(_e)))
     }
     #[cfg(not(feature = "std"))]
     {

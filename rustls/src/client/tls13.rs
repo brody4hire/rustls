@@ -199,7 +199,7 @@ pub(super) fn handle_server_hello(
         cx.data.early_data.is_enabled(),
         hash_at_client_recvd_server_hello,
         suite,
-        &*config.key_log,
+        xxx_ignore_expression_and_panic_with_todo!(&*config.key_log),
         &randoms.client,
         cx.common,
     );
@@ -893,9 +893,9 @@ impl State<ClientConnectionData> for ExpectCertificateRequest {
             .cloned();
 
         let client_auth = ClientAuthDetails::resolve(
-            self.config
+            xxx_ignore_expression_and_panic_with_todo!(self.config
                 .client_auth_cert_resolver
-                .as_ref(),
+                .as_ref()),
             certreq.authorities_extension(),
             &compat_sigschemes,
             Some(certreq.context.0.clone()),
@@ -1393,7 +1393,7 @@ impl State<ClientConnectionData> for ExpectFinished {
             .into_pre_finished_client_traffic(
                 hash_after_handshake,
                 flight.transcript.current_hash(),
-                &*st.config.key_log,
+                xxx_ignore_expression_and_panic_with_todo!(&*st.config.key_log),
                 &st.randoms.client,
             );
 
@@ -1422,7 +1422,7 @@ impl State<ClientConnectionData> for ExpectFinished {
 
         let st = ExpectTraffic {
             config: CfgX::clone(&st.config),
-            session_storage: CfgX::clone(&st.config.resumption.store),
+            session_storage: xxx_ignore_expression_and_panic_with_todo!(CfgX::clone(&st.config.resumption.store)),
             server_name: st.server_name,
             suite: st.suite,
             transcript: st.transcript,
@@ -1448,7 +1448,7 @@ impl State<ClientConnectionData> for ExpectFinished {
 // and application data.
 struct ExpectTraffic {
     config: CfgX<ClientConfig>,
-    session_storage: CfgX<dyn ClientSessionStore>,
+    session_storage: RcX<dyn ClientSessionStore>,
     server_name: ServerName<'static>,
     suite: &'static Tls13CipherSuite,
     transcript: HandshakeHash,

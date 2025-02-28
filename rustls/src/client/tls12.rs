@@ -742,9 +742,10 @@ impl State<ClientConnectionData> for ExpectCertificateRequest<'_> {
         const NO_CONTEXT: Option<Vec<u8>> = None; // TLS 1.2 doesn't use a context.
         let no_compression = None; // or compression
         let client_auth = ClientAuthDetails::resolve(
-            self.config
+            xxx_ignore_expression_and_panic_with_todo!(
+                self.config
                 .client_auth_cert_resolver
-                .as_ref(),
+                .as_ref()),
             Some(&certreq.canames),
             &certreq.sigschemes,
             NO_CONTEXT,

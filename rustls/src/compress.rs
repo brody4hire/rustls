@@ -358,6 +358,9 @@ impl CompressionCache {
             if item.algorithm == algorithm && item.original == encoding {
                 // this item is now MRU
                 let item = cache.remove(i).unwrap();
+                // XXX XXX
+                xxx_ignore_expression_and_panic_with_todo!(1);
+                #[cfg(xxx_not_working)]
                 cache.push_back(CfgX::clone(&item));
                 return Ok(item);
             }
@@ -384,6 +387,9 @@ impl CompressionCache {
         if cache.len() == max_size {
             cache.pop_front();
         }
+        // XXX XXX
+        xxx_ignore_expression_and_panic_with_todo!(1);
+        #[cfg(xxx_not_working)]
         cache.push_back(CfgX::clone(&new_entry));
         Ok(new_entry)
     }
