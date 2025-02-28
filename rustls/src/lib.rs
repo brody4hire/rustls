@@ -419,9 +419,11 @@ mod alias {
     pub(crate) use alloc::rc::Rc;
     // pub(crate) type Arc<T> = alloc::rc::Rc<T>;
     // pub(crate) use Rc as Arc;
+    // pub(crate) type Arc<T> = alloc::rc::Rc<T>;
     pub(crate) type Arc<T> = alloc::rc::Rc<T>;
     // pub(crate) type RcBox<T> = Arc<alloc::boxed::Box<T>>;
-    pub(crate) type RcBox<T> = Rc<alloc::boxed::Box<T>>;
+    // pub(crate) type RcBox<T> = Rc<alloc::boxed::Box<T>>;
+    pub(crate) type RcBox<T> = alloc::rc::Rc<alloc::boxed::Box<T>>;
 }
 
 #[macro_use]
