@@ -164,6 +164,7 @@ use crate::{ClientConfig, ServerConfig};
 pub struct ConfigBuilder<Side: ConfigSide, State> {
     pub(crate) state: State,
     pub(crate) provider: CfgRcX<CryptoProvider>,
+    // XXX XXX BOX NEEDED AT THIS POINT
     pub(crate) time_provider: RcX<dyn TimeProvider>,
     pub(crate) side: PhantomData<Side>,
 }

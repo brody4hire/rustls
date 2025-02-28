@@ -99,34 +99,28 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
     /// Sets a custom [`ResolvesServerCert`].
     pub fn with_cert_resolver(self, cert_resolver: CfgX<dyn ResolvesServerCert>) -> ServerConfig {
         ServerConfig {
-            provider: self.provider,
+            provider: rcx_copy!(self.provider),
             verifier: self.state.verifier,
-            // XXX TBD ???
-            // cert_resolver,
-            cert_resolver: cert_resolver.into(),
+            cert_resolver: cfgx_into_cfgrcx!(cert_resolver),
             ignore_client_order: false,
             max_fragment_size: None,
-            #[cfg(feature = "std-x")]
-            session_storage: handy::ServerSessionMemoryCache::new(256),
-            #[cfg(not(feature = "std-x"))]
-            // XXX TBD ???
-            // session_storage: Boxx::new(handy::NoServerSessionStorage {}),
-            session_storage: Rc1::new(handy::NoServerSessionStorage {}),
-            ticketer: Rc1::new(handy::NeverProducesTickets {}),
+            #[cfg(feature = "std")]
+            session_storage: cfgrcx_new_from_cfgx!(handy::ServerSessionMemoryCache::new(256)),
+            #[cfg(not(feature = "std"))]
+            session_storage: cfgrc_with_cfg!(handy::NoServerSessionStorage {}),
+            ticketer: cfgrc_with_cfg!(handy::NeverProducesTickets {}),
             alpn_protocols: Vec::new(),
             versions: self.state.versions,
-            // XXX TBD ???
-            key_log: Rc1::new(NoKeyLog {}),
+            key_log: cfgrc_with_cfg!(NoKeyLog {}),
             enable_secret_extraction: false,
             max_early_data_size: 0,
             send_half_rtt_data: false,
             send_tls13_tickets: 2,
             #[cfg(feature = "tls12")]
             require_ems: cfg!(feature = "fips"),
-            time_provider: self.time_provider,
+            time_provider: rcx_into_cfgrc!(self.time_provider),
             cert_compressors: compress::default_cert_compressors().to_vec(),
-            // XXX TBD ???
-            cert_compression_cache: Rc1::new(compress::CompressionCache::default()),
+            cert_compression_cache: cfgrc_with_cfg!(compress::CompressionCache::default()),
             cert_decompressors: compress::default_cert_decompressors().to_vec(),
         }
     }

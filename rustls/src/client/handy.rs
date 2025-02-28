@@ -200,7 +200,7 @@ impl client::ResolvesClientCert for FailResolveClientCert {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<Rc1<sign::CertifiedKey>> {
+    ) -> Option<CfgRc<sign::CertifiedKey>> {
         None
     }
 
@@ -214,11 +214,11 @@ impl client::ResolvesClientCert for FailResolveClientCert {
 ///
 /// [RFC 7250]: https://tools.ietf.org/html/rfc7250
 #[derive(Clone, Debug)]
-pub struct AlwaysResolvesClientRawPublicKeys(Rc1<sign::CertifiedKey>);
+pub struct AlwaysResolvesClientRawPublicKeys(RcX<sign::CertifiedKey>);
 impl AlwaysResolvesClientRawPublicKeys {
     /// Create a new `AlwaysResolvesClientRawPublicKeys` instance.
     pub fn new(certified_key: CfgX<sign::CertifiedKey>) -> Self {
-        Self(rc_xxx_from_box!(certified_key))
+        Self(cfgx_into_rcx!(certified_key))
     }
 }
 
@@ -227,8 +227,8 @@ impl client::ResolvesClientCert for AlwaysResolvesClientRawPublicKeys {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<Rc1<sign::CertifiedKey>> {
-        Some(Rc1::clone(&self.0))
+    ) -> Option<CfgRc<sign::CertifiedKey>> {
+        Some(rcx_clone_into_cfgrc!(&self.0))
     }
 
     fn only_raw_public_keys(&self) -> bool {

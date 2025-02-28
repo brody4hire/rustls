@@ -107,8 +107,8 @@ impl ResolvesClientCert for SingleCertAndKey {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<Rc1<CertifiedKey>> {
-        Some(Rc1::clone(&self.0))
+    ) -> Option<CfgRc<CertifiedKey>> {
+        Some(rcx_clone_into_cfgrc!(&self.0))
     }
 
     fn has_certs(&self) -> bool {
@@ -117,8 +117,8 @@ impl ResolvesClientCert for SingleCertAndKey {
 }
 
 impl ResolvesServerCert for SingleCertAndKey {
-    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<Rc1<CertifiedKey>> {
-        Some(Rc1::clone(&self.0))
+    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<CfgRc<CertifiedKey>> {
+        Some(rcx_clone_into_cfgrc!(&self.0))
     }
 }
 
@@ -136,7 +136,7 @@ pub struct CertifiedKey {
     pub cert: Vec<CertificateDer<'static>>,
 
     /// The certified key.
-    pub key: RcX<dyn SigningKey>,
+    pub key: CfgRc<dyn SigningKey>,
 
     /// An optional OCSP response from the certificate issuer,
     /// attesting to its continued validity.

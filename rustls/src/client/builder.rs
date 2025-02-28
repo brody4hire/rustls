@@ -71,7 +71,7 @@ impl ConfigBuilder<ClientConfig, WantsVerifier> {
         ConfigBuilder {
             state: WantsClientCert {
                 versions: self.state.versions,
-                verifier: rc_xxx_new_from_ref!(verifier),
+                verifier: rcx_new_from_cfgx!(verifier),
                 client_ech_mode: self.state.client_ech_mode,
             },
             provider: self.provider,
@@ -111,7 +111,7 @@ pub(super) mod danger {
             ConfigBuilder {
                 state: WantsClientCert {
                     versions: self.cfg.state.versions,
-                    verifier: verifier.into(),
+                    verifier: cfgx_into_cfgrcx!(verifier),
                     client_ech_mode: self.cfg.state.client_ech_mode,
                 },
                 provider: self.cfg.provider,
@@ -129,7 +129,7 @@ pub(super) mod danger {
 #[derive(Clone)]
 pub struct WantsClientCert {
     versions: versions::EnabledVersions,
-    verifier: Rc1<dyn verify::ServerCertVerifier>,
+    verifier: CfgRcX<dyn verify::ServerCertVerifier>,
     client_ech_mode: Option<EchMode>,
 }
 
@@ -163,22 +163,22 @@ impl ConfigBuilder<ClientConfig, WantsClientCert> {
         client_auth_cert_resolver: CfgX<dyn ResolvesClientCert>,
     ) -> ClientConfig {
         ClientConfig {
-            provider: self.provider,
+            provider: rcx_copy!(self.provider),
             alpn_protocols: Vec::new(),
             resumption: Resumption::default(),
             max_fragment_size: None,
-            client_auth_cert_resolver: client_auth_cert_resolver.into(),
+            client_auth_cert_resolver: cfgx_into_cfgrcx!(client_auth_cert_resolver),
             versions: self.state.versions,
             enable_sni: true,
-            verifier: self.state.verifier,
-            key_log: Rc1::new(NoKeyLog {}),
+            verifier: rcx_copy!(self.state.verifier),
+            key_log: cfgrc_with_cfg!(NoKeyLog {}),
             enable_secret_extraction: false,
             enable_early_data: false,
             #[cfg(feature = "tls12")]
             require_ems: cfg!(feature = "fips"),
-            time_provider: self.time_provider,
+            time_provider: rcx_into_cfgrc!(self.time_provider),
             cert_compressors: compress::default_cert_compressors().to_vec(),
-            cert_compression_cache: CfgX::new(compress::CompressionCache::default()).into(),
+            cert_compression_cache: cfgrc_with_cfg!(compress::CompressionCache::default()),
             cert_decompressors: compress::default_cert_decompressors().to_vec(),
             ech_mode: self.state.client_ech_mode,
         }

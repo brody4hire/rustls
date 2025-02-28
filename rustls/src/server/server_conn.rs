@@ -247,7 +247,7 @@ impl<'a> ClientHello<'a> {
 #[derive(Clone, Debug)]
 pub struct ServerConfig {
     /// Source of randomness and other crypto.
-    pub(super) provider: Rc1<CryptoProvider>,
+    pub(super) provider: RcX<CryptoProvider>,
 
     /// Ignore the client's ciphersuite order. Instead,
     /// choose the top ciphersuite in the server list
@@ -444,8 +444,8 @@ impl ServerConfig {
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
-            provider,
-            time_provider: CfgRcX::new(DefaultTimeProvider),
+            provider: rcx_new!(provider),
+            time_provider: rcx_with_cfg!(DefaultTimeProvider),
             side: PhantomData,
         }
     }
@@ -465,12 +465,15 @@ impl ServerConfig {
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
     pub fn builder_with_details(
-        provider: CfgRcX<CryptoProvider>,
-        time_provider: CfgRcX<dyn TimeProvider>,
+        provider: CfgRc<CryptoProvider>,
+        time_provider: CfgRc<dyn TimeProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
+            // XXX TBD ???
             provider,
+            // XXX XXX XXX
+            // time_provider: rcx_new!(time_provider),
             time_provider,
             side: PhantomData,
         }

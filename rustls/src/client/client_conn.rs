@@ -114,11 +114,12 @@ pub trait ResolvesClientCert: fmt::Debug + Send + Sync {
     /// if it requires authentication.
     ///
     /// [RFC 5280 A.1]: https://www.rfc-editor.org/rfc/rfc5280#appendix-A.1
+    // XXX XXX TODO RETURN Option<Rc1<...>>
     fn resolve(
         &self,
         root_hint_subjects: &[&[u8]],
         sigschemes: &[SignatureScheme],
-    ) -> Option<Rc1<sign::CertifiedKey>>;
+    ) -> Option<CfgRc<sign::CertifiedKey>>;
 
     /// Return true if the client only supports raw public keys.
     ///
@@ -182,7 +183,7 @@ pub struct ClientConfig {
     pub max_fragment_size: Option<usize>,
 
     /// How to decide what client auth certificate/keys to use.
-    pub client_auth_cert_resolver: RcX<dyn ResolvesClientCert>,
+    pub client_auth_cert_resolver: CfgRc<dyn ResolvesClientCert>,
 
     /// Whether to send the Server Name Indication (SNI) extension
     /// during the client handshake.
@@ -311,14 +312,14 @@ impl ClientConfig {
     /// version is not supported by the provider's ciphersuites.
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
-    #[cfg(feature = "std-x")]
+    #[cfg(feature = "std")]
     pub fn builder_with_provider(
         provider: CfgX<CryptoProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
-            provider,
-            time_provider: CfgX::new(DefaultTimeProvider),
+            provider: cfgx_into_rcx!(provider),
+            time_provider: rcx_with_cfg!(DefaultTimeProvider),
             side: PhantomData,
         }
     }
@@ -342,8 +343,8 @@ impl ClientConfig {
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
-            provider: provider.into(),
-            time_provider: time_provider.into(),
+            provider: cfgx_into_rcx!(provider),
+            time_provider: cfgx_into_cfgrcx!(time_provider),
             side: PhantomData,
         }
     }
@@ -432,7 +433,7 @@ impl ClientConfig {
 pub struct Resumption {
     /// How we store session data or tickets. The default is to use an in-memory
     /// [super::handy::ClientSessionMemoryCache].
-    pub(super) store: RcX<dyn ClientSessionStore>,
+    pub(super) store: CfgRcX<dyn ClientSessionStore>,
 
     /// What mechanism is used for resuming a TLS 1.2 session.
     pub(super) tls12_resumption: Tls12Resumption,
@@ -446,7 +447,7 @@ impl Resumption {
     #[cfg(feature = "std-x")]
     pub fn in_memory_sessions(num: usize) -> Self {
         Self {
-            store: CfgX::new(super::handy::ClientSessionMemoryCache::new(num)),
+            store: rcx_with_cfg!(super::handy::ClientSessionMemoryCache::new(num)),
             tls12_resumption: Tls12Resumption::SessionIdOrTickets,
         }
     }
@@ -456,7 +457,7 @@ impl Resumption {
     /// By default, enables resuming a TLS 1.2 session with a session id or RFC 5077 ticket.
     pub fn store(store: CfgX<dyn ClientSessionStore>) -> Self {
         Self {
-            store: store.into(),
+            store: cfgx_into_cfgrcx!(store),
             tls12_resumption: Tls12Resumption::SessionIdOrTickets,
         }
     }
@@ -464,7 +465,7 @@ impl Resumption {
     /// Disable all use of session resumption.
     pub fn disabled() -> Self {
         Self {
-            store: Rc1::new(NoClientSessionStorage),
+            store: cfgrcx_with_cfg!(NoClientSessionStorage),
             tls12_resumption: Tls12Resumption::Disabled,
         }
     }
@@ -525,7 +526,7 @@ pub(super) mod danger {
     impl DangerousClientConfig<'_> {
         /// Overrides the default `ServerCertVerifier` with something else.
         pub fn set_certificate_verifier(&mut self, verifier: CfgX<dyn ServerCertVerifier>) {
-            self.cfg.verifier = rc_xxx_from_box!(verifier);
+            self.cfg.verifier = cfgx_into_rcx!(verifier);
         }
     }
 }

@@ -39,13 +39,11 @@ mod no_std_lock {
     use core::ops::DerefMut;
 
     use crate::super_alias::{CfgRc, CfgRcRef, CfgRcX, CfgX, ErrorRc, Rc1, RcX};
-    // XXX XXX XXX
-    type Arc<T> = CfgX<T>;
 
     /// A no-std compatible wrapper around [`Lock`].
     #[derive(Debug)]
     pub struct Mutex<T> {
-        inner: Arc<dyn Lock<T>>,
+        inner: CfgX<dyn Lock<T>>,
     }
 
     impl<T: Send + 'static> Mutex<T> {
@@ -78,7 +76,7 @@ mod no_std_lock {
     /// A lock builder.
     pub trait MakeMutex {
         /// Create a new mutex.
-        fn make_mutex<T>(value: T) -> Arc<dyn Lock<T>>
+        fn make_mutex<T>(value: T) -> CfgX<dyn Lock<T>>
         where
             T: Send + 'static;
     }
