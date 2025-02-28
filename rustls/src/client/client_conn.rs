@@ -182,7 +182,7 @@ pub struct ClientConfig {
     pub max_fragment_size: Option<usize>,
 
     /// How to decide what client auth certificate/keys to use.
-    pub client_auth_cert_resolver: CfgX<dyn ResolvesClientCert>,
+    pub client_auth_cert_resolver: CfgRc<dyn ResolvesClientCert>,
 
     /// Whether to send the Server Name Indication (SNI) extension
     /// during the client handshake.
@@ -192,7 +192,7 @@ pub struct ClientConfig {
 
     /// How to output key material for debugging.  The default
     /// does nothing.
-    pub key_log: CfgX<dyn KeyLog>,
+    pub key_log: CfgRc<dyn KeyLog>,
 
     /// Allows traffic secrets to be extracted after the handshake,
     /// e.g. for kTLS setup.
@@ -220,7 +220,7 @@ pub struct ClientConfig {
     pub require_ems: bool,
 
     /// Provides the current system time
-    pub time_provider: CfgX<dyn TimeProvider>,
+    pub time_provider: CfgRc<dyn TimeProvider>,
 
     /// Source of randomness and other crypto.
     pub(super) provider: CfgX<CryptoProvider>,
@@ -230,7 +230,7 @@ pub struct ClientConfig {
     pub(super) versions: versions::EnabledVersions,
 
     /// How to verify the server certificate chain.
-    pub(super) verifier: CfgX<dyn verify::ServerCertVerifier>,
+    pub(super) verifier: RcX<dyn verify::ServerCertVerifier>,
 
     /// How to decompress the server's certificate chain.
     ///
@@ -260,7 +260,7 @@ pub struct ClientConfig {
     ///
     /// This is optional: [`compress::CompressionCache::Disabled`] gives
     /// a cache that does no caching.
-    pub cert_compression_cache: CfgX<compress::CompressionCache>,
+    pub cert_compression_cache: CfgRc<compress::CompressionCache>,
 
     /// How to offer Encrypted Client Hello (ECH). The default is to not offer ECH.
     pub(super) ech_mode: Option<EchMode>,
@@ -318,7 +318,7 @@ impl ClientConfig {
         ConfigBuilder {
             state: WantsVersions {},
             provider,
-            time_provider: CfgX::new(DefaultTimeProvider),
+            time_provider: rcx_with_cfg!(DefaultTimeProvider),
             side: PhantomData,
         }
     }
@@ -343,7 +343,7 @@ impl ClientConfig {
         ConfigBuilder {
             state: WantsVersions {},
             provider,
-            time_provider,
+            time_provider: rcx_new!(time_provider),
             side: PhantomData,
         }
     }
@@ -432,7 +432,7 @@ impl ClientConfig {
 pub struct Resumption {
     /// How we store session data or tickets. The default is to use an in-memory
     /// [super::handy::ClientSessionMemoryCache].
-    pub(super) store: CfgX<dyn ClientSessionStore>,
+    pub(super) store: RcX<dyn ClientSessionStore>,
 
     /// What mechanism is used for resuming a TLS 1.2 session.
     pub(super) tls12_resumption: Tls12Resumption,
@@ -446,7 +446,7 @@ impl Resumption {
     #[cfg(feature = "std")]
     pub fn in_memory_sessions(num: usize) -> Self {
         Self {
-            store: CfgX::new(super::handy::ClientSessionMemoryCache::new(num)),
+            store: rcx_with_cfg!(super::handy::ClientSessionMemoryCache::new(num)),
             tls12_resumption: Tls12Resumption::SessionIdOrTickets,
         }
     }
@@ -456,7 +456,7 @@ impl Resumption {
     /// By default, enables resuming a TLS 1.2 session with a session id or RFC 5077 ticket.
     pub fn store(store: CfgX<dyn ClientSessionStore>) -> Self {
         Self {
-            store,
+            store: RcX::new(store),
             tls12_resumption: Tls12Resumption::SessionIdOrTickets,
         }
     }
@@ -464,7 +464,7 @@ impl Resumption {
     /// Disable all use of session resumption.
     pub fn disabled() -> Self {
         Self {
-            store: CfgX::new(NoClientSessionStorage),
+            store: rcx_with_cfg!(NoClientSessionStorage),
             tls12_resumption: Tls12Resumption::Disabled,
         }
     }
@@ -525,7 +525,7 @@ pub(super) mod danger {
     impl DangerousClientConfig<'_> {
         /// Overrides the default `ServerCertVerifier` with something else.
         pub fn set_certificate_verifier(&mut self, verifier: CfgX<dyn ServerCertVerifier>) {
-            self.cfg.verifier = verifier;
+            self.cfg.verifier = rcx_new!(verifier);
         }
     }
 }

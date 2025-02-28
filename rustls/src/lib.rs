@@ -413,10 +413,10 @@ mod test_macros;
 mod super_alias {
     // IMPORTANT NOTICE: ALIAS(ES) SUBJECT TO CHANGE
     #[allow(clippy::disallowed_types)]
-    // INTENDED for INPUT CONFIG - MAY BECOME A BOX INSTEAD
-    pub(crate) type CfgX<T> = alloc::sync::Arc<T>;
+    // INTENDED for INPUT CONFIG
+    pub(crate) type CfgX<T> = alloc::boxed::Box<T>;
     // INTENDED for SHARED CONFIG
-    pub(crate) type CfgRc<T> = alloc::sync::Arc<T>;
+    pub(crate) type CfgRc<T> = alloc::sync::Arc<alloc::boxed::Box<T>>;
     // INTENDED for OUTPUT CONFIG - TBD MAY ALIAS to alloc::sync::Arc, alloc::rc::Rc, or portable_atomic_util::Arc
     pub(crate) type Rc<T> = alloc::sync::Arc<T>;
     // INTENDED for ERROR CONTENTS
@@ -425,6 +425,24 @@ mod super_alias {
     pub(crate) type RcXRef<'a, T> = &'a RcX<T>;
     // INTENDED for STORED CONFIG
     pub(crate) type RcX<T> = alloc::sync::Arc<alloc::boxed::Box<T>>;
+}
+
+macro_rules! rcx_new {
+    ($x:expr) => {
+        alloc::sync::Arc::new($x)
+    };
+}
+
+macro_rules! cfgrc_with_cfg {
+    ($x:expr) => {
+        alloc::sync::Arc::new(alloc::boxed::Box::new($x))
+    };
+}
+
+macro_rules! rcx_with_cfg {
+    ($x:expr) => {
+        alloc::sync::Arc::new(alloc::boxed::Box::new($x))
+    };
 }
 
 #[macro_use]

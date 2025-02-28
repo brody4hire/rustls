@@ -128,10 +128,12 @@ impl RsaSigningKey {
 
 impl SigningKey for RsaSigningKey {
     fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<Box<dyn Signer>> {
-        ALL_RSA_SCHEMES
-            .iter()
-            .find(|scheme| offered.contains(scheme))
-            .map(|scheme| RsaSigner::new(CfgX::clone(&self.key), *scheme))
+        // XXX
+        // ALL_RSA_SCHEMES
+        //     .iter()
+        //     .find(|scheme| offered.contains(scheme))
+        //     .map(|scheme| RsaSigner::new(CfgX::clone(&self.key), *scheme))
+        panic!("XXX")
     }
 
     fn public_key(&self) -> Option<SubjectPublicKeyInfoDer<'_>> {
@@ -251,7 +253,8 @@ impl SigningKey for EcdsaSigningKey {
     fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<Box<dyn Signer>> {
         if offered.contains(&self.scheme) {
             Some(Box::new(EcdsaSigner {
-                key: CfgX::clone(&self.key),
+                // XXX
+                key: panic!("XXX"), //CfgX::clone(&self.key),
                 scheme: self.scheme,
             }))
         } else {
@@ -346,7 +349,8 @@ impl SigningKey for Ed25519SigningKey {
     fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<Box<dyn Signer>> {
         if offered.contains(&self.scheme) {
             Some(Box::new(Ed25519Signer {
-                key: CfgX::clone(&self.key),
+                // XXX
+                key: panic!("XXX"), //CfgX::clone(&self.key),
                 scheme: self.scheme,
             }))
         } else {

@@ -540,7 +540,9 @@ mod client_hello {
             let early_key_schedule = KeyScheduleEarly::new(suite, psk);
             early_key_schedule.client_early_traffic_secret(
                 &client_hello_hash,
-                &*config.key_log,
+                // XXX
+                // &*config.key_log,
+                panic!("XXX"),
                 &randoms.client,
                 cx.common,
             );
@@ -556,7 +558,9 @@ mod client_hello {
         let handshake_hash = transcript.current_hash();
         let key_schedule = key_schedule.derive_server_handshake_secrets(
             handshake_hash,
-            &*config.key_log,
+            // XXX
+            // &*config.key_log,
+            panic!("XXX"),
             &randoms.client,
             cx.common,
         );
@@ -840,7 +844,9 @@ mod client_hello {
         // the Finish message is received & validated.
         key_schedule.into_traffic_with_client_finished_pending(
             hash_at_server_fin,
-            &*config.key_log,
+            // XXX
+            // &*config.key_log,
+            panic!("XXX"),
             &randoms.client,
             cx.common,
         )

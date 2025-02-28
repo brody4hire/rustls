@@ -93,7 +93,7 @@ fn pki_error(error: webpki::Error) -> Error {
 
         _ => CertificateError::Other(OtherError(
             #[cfg(feature = "std")]
-            CfgX::new(error),
+            ErrorRc::new(error),
         ))
         .into(),
     }
@@ -117,7 +117,7 @@ fn crl_error(e: webpki::Error) -> CertRevocationListError {
 
         _ => CertRevocationListError::Other(OtherError(
             #[cfg(feature = "std")]
-            CfgX::new(e),
+            ErrorRc::new(e),
         )),
     }
 }

@@ -284,7 +284,7 @@ pub(super) fn fips() -> bool {
 pub(super) fn unspecified_err(_e: aws_lc_rs::error::Unspecified) -> Error {
     #[cfg(feature = "std")]
     {
-        Error::Other(OtherError(CfgX::new(_e)))
+        Error::Other(OtherError(ErrorRc::new(_e)))
     }
     #[cfg(not(feature = "std"))]
     {
