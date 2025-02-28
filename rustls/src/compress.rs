@@ -43,7 +43,7 @@ use crate::enums::CertificateCompressionAlgorithm;
 use crate::msgs::base::{Payload, PayloadU24};
 use crate::msgs::codec::Codec;
 use crate::msgs::handshake::{CertificatePayloadTls13, CompressedCertificatePayload};
-use crate::super_alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcBox};
 
 /// Returns the supported `CertDecompressor` implementations enabled
 /// by crate features.
@@ -294,7 +294,7 @@ pub struct CompressionCacheInner {
     /// LRU-order entries.
     ///
     /// First is least-used, last is most-used.
-    entries: Mutex<VecDeque<Boxx<CompressionCacheEntry>>>,
+    entries: Mutex<VecDeque<CfgX<CompressionCacheEntry>>>,
 }
 
 impl CompressionCache {
@@ -321,7 +321,7 @@ impl CompressionCache {
         &self,
         compressor: &dyn CertCompressor,
         original: &CertificatePayloadTls13<'_>,
-    ) -> Result<Boxx<CompressionCacheEntry>, CompressionFailed> {
+    ) -> Result<CfgX<CompressionCacheEntry>, CompressionFailed> {
         match self {
             Self::Disabled => Self::uncached_compression(compressor, original),
 
@@ -335,7 +335,7 @@ impl CompressionCache {
         &self,
         compressor: &dyn CertCompressor,
         original: &CertificatePayloadTls13<'_>,
-    ) -> Result<Boxx<CompressionCacheEntry>, CompressionFailed> {
+    ) -> Result<CfgX<CompressionCacheEntry>, CompressionFailed> {
         let (max_size, entries) = match self {
             Self::Enabled(CompressionCacheInner { size, entries }) => (*size, entries),
             _ => unreachable!(),
@@ -358,7 +358,7 @@ impl CompressionCache {
             if item.algorithm == algorithm && item.original == encoding {
                 // this item is now MRU
                 let item = cache.remove(i).unwrap();
-                cache.push_back(Boxx::clone(&item));
+                cache.push_back(CfgX::clone(&item));
                 return Ok(item);
             }
         }
@@ -367,7 +367,7 @@ impl CompressionCache {
         // do compression:
         let uncompressed_len = encoding.len() as u32;
         let compressed = compressor.compress(encoding.clone(), CompressionLevel::Amortized)?;
-        let new_entry = Boxx::new(CompressionCacheEntry {
+        let new_entry = CfgX::new(CompressionCacheEntry {
             algorithm,
             original: encoding,
             compressed: CompressedCertificatePayload {
@@ -384,7 +384,7 @@ impl CompressionCache {
         if cache.len() == max_size {
             cache.pop_front();
         }
-        cache.push_back(Boxx::clone(&new_entry));
+        cache.push_back(CfgX::clone(&new_entry));
         Ok(new_entry)
     }
 
@@ -392,7 +392,7 @@ impl CompressionCache {
     fn uncached_compression(
         compressor: &dyn CertCompressor,
         original: &CertificatePayloadTls13<'_>,
-    ) -> Result<Boxx<CompressionCacheEntry>, CompressionFailed> {
+    ) -> Result<CfgX<CompressionCacheEntry>, CompressionFailed> {
         let algorithm = compressor.algorithm();
         let encoding = original.get_encoding();
         let uncompressed_len = encoding.len() as u32;
@@ -400,7 +400,7 @@ impl CompressionCache {
 
         // this `CompressionCacheEntry` in fact never makes it into the cache, so
         // `original` is left empty
-        Ok(Boxx::new(CompressionCacheEntry {
+        Ok(CfgX::new(CompressionCacheEntry {
             algorithm,
             original: Vec::new(),
             compressed: CompressedCertificatePayload {

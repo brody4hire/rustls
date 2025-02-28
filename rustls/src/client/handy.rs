@@ -2,7 +2,7 @@ use pki_types::ServerName;
 
 use crate::enums::SignatureScheme;
 use crate::msgs::persist;
-use crate::super_alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcBox};
 use crate::{NamedGroup, client, sign};
 
 /// An implementer of `ClientSessionStore` which does nothing.
@@ -217,7 +217,7 @@ impl client::ResolvesClientCert for FailResolveClientCert {
 pub struct AlwaysResolvesClientRawPublicKeys(Rc<sign::CertifiedKey>);
 impl AlwaysResolvesClientRawPublicKeys {
     /// Create a new `AlwaysResolvesClientRawPublicKeys` instance.
-    pub fn new(certified_key: Boxx<sign::CertifiedKey>) -> Self {
+    pub fn new(certified_key: CfgX<sign::CertifiedKey>) -> Self {
         Self(rc_xxx_from_box!(certified_key))
     }
 }
@@ -261,7 +261,7 @@ mod tests {
     use crate::msgs::handshake::SessionId;
     use crate::msgs::persist::Tls13ClientSessionValue;
     use crate::suites::SupportedCipherSuite;
-    use crate::super_alias::{Boxx, Rc, RcBox};
+    use crate::super_alias::{CfgX, Rc, RcBox};
 
     #[test]
     fn test_noclientsessionstorage_does_nothing() {
@@ -286,7 +286,7 @@ mod tests {
                 Tls12ClientSessionValue::new(
                     tls12_suite,
                     SessionId::empty(),
-                    Boxx::new(PayloadU16::empty()),
+                    CfgX::new(PayloadU16::empty()),
                     &[],
                     CertificateChain::default(),
                     now,
@@ -306,7 +306,7 @@ mod tests {
             name.clone(),
             Tls13ClientSessionValue::new(
                 tls13_suite,
-                Boxx::new(PayloadU16::empty()),
+                CfgX::new(PayloadU16::empty()),
                 &[],
                 CertificateChain::default(),
                 now,

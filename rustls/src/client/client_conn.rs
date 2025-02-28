@@ -21,7 +21,7 @@ use crate::msgs::enums::NamedGroup;
 use crate::msgs::handshake::ClientExtension;
 use crate::msgs::persist;
 use crate::suites::{ExtractedSecrets, SupportedCipherSuite};
-use crate::super_alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcBox};
 #[cfg(feature = "std")]
 use crate::time_provider::DefaultTimeProvider;
 use crate::time_provider::TimeProvider;
@@ -296,7 +296,7 @@ impl ClientConfig {
         // Safety assumptions:
         // 1. that the provider has been installed (explicitly or implicitly)
         // 2. that the process-level default provider is usable with the supplied protocol versions.
-        Self::builder_with_provider(Boxx::clone(
+        Self::builder_with_provider(CfgX::clone(
             CryptoProvider::get_default_or_install_from_crate_features(),
         ))
         .with_protocol_versions(versions)
@@ -313,12 +313,12 @@ impl ClientConfig {
     /// For more information, see the [`ConfigBuilder`] documentation.
     #[cfg(feature = "std-x")]
     pub fn builder_with_provider(
-        provider: Boxx<CryptoProvider>,
+        provider: CfgX<CryptoProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
             provider,
-            time_provider: Boxx::new(DefaultTimeProvider),
+            time_provider: CfgX::new(DefaultTimeProvider),
             side: PhantomData,
         }
     }
@@ -337,8 +337,8 @@ impl ClientConfig {
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
     pub fn builder_with_details(
-        provider: Boxx<CryptoProvider>,
-        time_provider: Boxx<dyn TimeProvider>,
+        provider: CfgX<CryptoProvider>,
+        time_provider: CfgX<dyn TimeProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
@@ -446,7 +446,7 @@ impl Resumption {
     #[cfg(feature = "std-x")]
     pub fn in_memory_sessions(num: usize) -> Self {
         Self {
-            store: Boxx::new(super::handy::ClientSessionMemoryCache::new(num)),
+            store: CfgX::new(super::handy::ClientSessionMemoryCache::new(num)),
             tls12_resumption: Tls12Resumption::SessionIdOrTickets,
         }
     }
@@ -454,7 +454,7 @@ impl Resumption {
     /// Use a custom [`ClientSessionStore`] implementation to store sessions.
     ///
     /// By default, enables resuming a TLS 1.2 session with a session id or RFC 5077 ticket.
-    pub fn store(store: Boxx<dyn ClientSessionStore>) -> Self {
+    pub fn store(store: CfgX<dyn ClientSessionStore>) -> Self {
         Self {
             store: store.into(),
             tls12_resumption: Tls12Resumption::SessionIdOrTickets,
@@ -513,7 +513,7 @@ pub enum Tls12Resumption {
 pub(super) mod danger {
     use super::ClientConfig;
     use super::verify::ServerCertVerifier;
-    use crate::super_alias::{Boxx, Rc, RcBox};
+    use crate::super_alias::{CfgX, Rc, RcBox};
 
     /// Accessor for dangerous configuration options.
     #[derive(Debug)]
@@ -524,7 +524,7 @@ pub(super) mod danger {
 
     impl DangerousClientConfig<'_> {
         /// Overrides the default `ServerCertVerifier` with something else.
-        pub fn set_certificate_verifier(&mut self, verifier: Boxx<dyn ServerCertVerifier>) {
+        pub fn set_certificate_verifier(&mut self, verifier: CfgX<dyn ServerCertVerifier>) {
             self.cfg.verifier = rc_xxx_from_box!(verifier);
         }
     }
@@ -624,7 +624,7 @@ mod connection {
     use crate::conn::{ConnectionCommon, ConnectionCore};
     use crate::error::Error;
     use crate::suites::ExtractedSecrets;
-    use crate::super_alias::{Boxx, Rc, RcBox};
+    use crate::super_alias::{CfgX, Rc, RcBox};
 
     /// Stub that implements io::Write and dispatches to `write_early_data`.
     pub struct WriteEarlyData<'a> {
@@ -685,7 +685,7 @@ mod connection {
         /// Make a new ClientConnection.  `config` controls how
         /// we behave in the TLS protocol, `name` is the
         /// name of the server we want to talk to.
-        pub fn new(config: Boxx<ClientConfig>, name: ServerName<'static>) -> Result<Self, Error> {
+        pub fn new(config: CfgX<ClientConfig>, name: ServerName<'static>) -> Result<Self, Error> {
             Ok(Self {
                 inner: ConnectionCore::for_client(config, name, Vec::new(), Protocol::Tcp)?.into(),
             })
@@ -803,7 +803,7 @@ pub use connection::{ClientConnection, WriteEarlyData};
 
 impl ConnectionCore<ClientConnectionData> {
     pub(crate) fn for_client(
-        config: Boxx<ClientConfig>,
+        config: CfgX<ClientConfig>,
         name: ServerName<'static>,
         extra_exts: Vec<ClientExtension>,
         proto: Protocol,
@@ -842,7 +842,7 @@ pub struct UnbufferedClientConnection {
 impl UnbufferedClientConnection {
     /// Make a new ClientConnection. `config` controls how we behave in the TLS protocol, `name` is
     /// the name of the server we want to talk to.
-    pub fn new(config: Boxx<ClientConfig>, name: ServerName<'static>) -> Result<Self, Error> {
+    pub fn new(config: CfgX<ClientConfig>, name: ServerName<'static>) -> Result<Self, Error> {
         Ok(Self {
             inner: ConnectionCore::for_client(config, name, Vec::new(), Protocol::Tcp)?.into(),
         })

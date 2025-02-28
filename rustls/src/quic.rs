@@ -34,7 +34,7 @@ mod connection {
     use crate::msgs::handshake::{ClientExtension, ServerExtension};
     use crate::msgs::message::InboundPlainMessage;
     use crate::server::{ServerConfig, ServerConnectionData};
-    use crate::super_alias::{Boxx, Rc, RcBox};
+    use crate::super_alias::{CfgX, Rc, RcBox};
     use crate::vecbuf::ChunkVecBuffer;
 
     /// A QUIC client or server connection.
@@ -159,7 +159,7 @@ mod connection {
         /// This differs from `ClientConnection::new()` in that it takes an extra `params` argument,
         /// which contains the TLS-encoded transport parameters to send.
         pub fn new(
-            config: Boxx<ClientConfig>,
+            config: CfgX<ClientConfig>,
             quic_version: Version,
             name: ServerName<'static>,
             params: Vec<u8>,
@@ -236,7 +236,7 @@ mod connection {
         /// This differs from `ServerConnection::new()` in that it takes an extra `params` argument,
         /// which contains the TLS-encoded transport parameters to send.
         pub fn new(
-            config: Boxx<ServerConfig>,
+            config: CfgX<ServerConfig>,
             quic_version: Version,
             params: Vec<u8>,
         ) -> Result<Self, Error> {

@@ -7,7 +7,7 @@ use super::{ResolvesServerCert, ServerConfig, handy};
 use crate::builder::{ConfigBuilder, WantsVerifier};
 use crate::error::Error;
 use crate::sign::{CertifiedKey, SingleCertAndKey};
-use crate::super_alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcBox};
 use crate::verify::{ClientCertVerifier, NoClientAuth};
 use crate::{NoKeyLog, compress, versions};
 
@@ -15,7 +15,7 @@ impl ConfigBuilder<ServerConfig, WantsVerifier> {
     /// Choose how to verify client certificates.
     pub fn with_client_cert_verifier(
         self,
-        client_cert_verifier: Boxx<dyn ClientCertVerifier>,
+        client_cert_verifier: CfgX<dyn ClientCertVerifier>,
     ) -> ConfigBuilder<ServerConfig, WantsServerCert> {
         ConfigBuilder {
             state: WantsServerCert {
@@ -30,7 +30,7 @@ impl ConfigBuilder<ServerConfig, WantsVerifier> {
 
     /// Disable client authentication.
     pub fn with_no_client_auth(self) -> ConfigBuilder<ServerConfig, WantsServerCert> {
-        self.with_client_cert_verifier(Boxx::new(NoClientAuth))
+        self.with_client_cert_verifier(CfgX::new(NoClientAuth))
     }
 }
 
@@ -68,7 +68,7 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
         key_der: PrivateKeyDer<'static>,
     ) -> Result<ServerConfig, Error> {
         let certified_key = CertifiedKey::from_der(cert_chain, key_der, self.crypto_provider())?;
-        Ok(self.with_cert_resolver(Boxx::new(SingleCertAndKey::from(certified_key))))
+        Ok(self.with_cert_resolver(CfgX::new(SingleCertAndKey::from(certified_key))))
     }
 
     /// Sets a single certificate chain, matching private key and optional OCSP
@@ -93,11 +93,11 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
         let mut certified_key =
             CertifiedKey::from_der(cert_chain, key_der, self.crypto_provider())?;
         certified_key.ocsp = Some(ocsp);
-        Ok(self.with_cert_resolver(Boxx::new(SingleCertAndKey::from(certified_key))))
+        Ok(self.with_cert_resolver(CfgX::new(SingleCertAndKey::from(certified_key))))
     }
 
     /// Sets a custom [`ResolvesServerCert`].
-    pub fn with_cert_resolver(self, cert_resolver: Boxx<dyn ResolvesServerCert>) -> ServerConfig {
+    pub fn with_cert_resolver(self, cert_resolver: CfgX<dyn ResolvesServerCert>) -> ServerConfig {
         ServerConfig {
             provider: self.provider,
             verifier: self.state.verifier,

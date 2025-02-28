@@ -11,7 +11,7 @@ use crate::crypto;
 use crate::crypto::{CryptoProvider, WebPkiSupportedAlgorithms};
 #[cfg(doc)]
 use crate::server::ServerConfig;
-use crate::super_alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcBox};
 use crate::verify::{
     ClientCertVerified, ClientCertVerifier, DigitallySignedStruct, HandshakeSignatureValid,
     NoClientAuth,
@@ -25,7 +25,7 @@ use crate::{DistinguishedName, Error, RootCertStore, SignatureScheme};
 /// For more information, see the [`WebPkiClientVerifier`] documentation.
 #[derive(Debug, Clone)]
 pub struct ClientCertVerifierBuilder {
-    roots: Boxx<RootCertStore>,
+    roots: CfgX<RootCertStore>,
     root_hint_subjects: Vec<DistinguishedName>,
     crls: Vec<CertificateRevocationListDer<'static>>,
     revocation_check_depth: RevocationCheckDepth,
@@ -37,7 +37,7 @@ pub struct ClientCertVerifierBuilder {
 
 impl ClientCertVerifierBuilder {
     pub(crate) fn new(
-        roots: Boxx<RootCertStore>,
+        roots: CfgX<RootCertStore>,
         supported_algs: WebPkiSupportedAlgorithms,
     ) -> Self {
         Self {
@@ -169,12 +169,12 @@ impl ClientCertVerifierBuilder {
     /// This function will return a [`VerifierBuilderError`] if:
     /// 1. No trust anchors have been provided.
     /// 2. DER encoded CRLs have been provided that can not be parsed successfully.
-    pub fn build(self) -> Result<Boxx<dyn ClientCertVerifier>, VerifierBuilderError> {
+    pub fn build(self) -> Result<CfgX<dyn ClientCertVerifier>, VerifierBuilderError> {
         if self.roots.is_empty() {
             return Err(VerifierBuilderError::NoRootAnchors);
         }
 
-        Ok(Boxx::new(WebPkiClientVerifier::new(
+        Ok(CfgX::new(WebPkiClientVerifier::new(
             self.roots,
             self.root_hint_subjects,
             parse_crls(self.crls)?,
@@ -250,7 +250,7 @@ impl ClientCertVerifierBuilder {
 /// [^1]: <https://github.com/rustls/webpki>
 #[derive(Debug)]
 pub struct WebPkiClientVerifier {
-    roots: Boxx<RootCertStore>,
+    roots: CfgX<RootCertStore>,
     root_hint_subjects: Vec<DistinguishedName>,
     crls: Vec<CertRevocationList<'static>>,
     revocation_check_depth: RevocationCheckDepth,
@@ -271,10 +271,10 @@ impl WebPkiClientVerifier {
     /// Use [`Self::builder_with_provider`] if you wish to specify an explicit provider.
     ///
     /// For more information, see the [`ClientCertVerifierBuilder`] documentation.
-    pub fn builder(roots: Boxx<RootCertStore>) -> ClientCertVerifierBuilder {
+    pub fn builder(roots: CfgX<RootCertStore>) -> ClientCertVerifierBuilder {
         Self::builder_with_provider(
             roots,
-            Boxx::clone(CryptoProvider::get_default_or_install_from_crate_features()),
+            CfgX::clone(CryptoProvider::get_default_or_install_from_crate_features()),
         )
     }
 
@@ -289,8 +289,8 @@ impl WebPkiClientVerifier {
     ///
     /// For more information, see the [`ClientCertVerifierBuilder`] documentation.
     pub fn builder_with_provider(
-        roots: Boxx<RootCertStore>,
-        provider: Boxx<CryptoProvider>,
+        roots: CfgX<RootCertStore>,
+        provider: CfgX<CryptoProvider>,
     ) -> ClientCertVerifierBuilder {
         ClientCertVerifierBuilder::new(roots, provider.signature_verification_algorithms)
     }
@@ -300,8 +300,8 @@ impl WebPkiClientVerifier {
     ///
     /// This is in contrast to using `WebPkiClientVerifier::builder().allow_unauthenticated().build()`,
     /// which will produce a verifier that will offer client authentication, but not require it.
-    pub fn no_client_auth() -> Boxx<dyn ClientCertVerifier> {
-        Boxx::new(NoClientAuth {})
+    pub fn no_client_auth() -> CfgX<dyn ClientCertVerifier> {
+        CfgX::new(NoClientAuth {})
     }
 
     /// Construct a new `WebpkiClientVerifier`.
@@ -319,7 +319,7 @@ impl WebPkiClientVerifier {
     ///   clients can connect.
     /// * `supported_algs` specifies which signature verification algorithms should be used.
     pub(crate) fn new(
-        roots: Boxx<RootCertStore>,
+        roots: CfgX<RootCertStore>,
         root_hint_subjects: Vec<DistinguishedName>,
         crls: Vec<CertRevocationList<'static>>,
         revocation_check_depth: RevocationCheckDepth,
@@ -440,7 +440,7 @@ mod tests {
     use super::{WebPkiClientVerifier, provider};
     use crate::RootCertStore;
     use crate::server::VerifierBuilderError;
-    use crate::super_alias::{Boxx, Rc, RcBox};
+    use crate::super_alias::{CfgX, Rc, RcBox};
 
     fn load_crls(crls_der: &[&[u8]]) -> Vec<CertificateRevocationListDer<'static>> {
         crls_der
@@ -456,7 +456,7 @@ mod tests {
         ])
     }
 
-    fn load_roots(roots_der: &[&[u8]]) -> Boxx<RootCertStore> {
+    fn load_roots(roots_der: &[&[u8]]) -> CfgX<RootCertStore> {
         let mut roots = RootCertStore::empty();
         roots_der.iter().for_each(|der| {
             roots
@@ -466,7 +466,7 @@ mod tests {
         roots.into()
     }
 
-    fn test_roots() -> Boxx<RootCertStore> {
+    fn test_roots() -> CfgX<RootCertStore> {
         load_roots(&[
             include_bytes!("../../../test-ca/ecdsa-p256/ca.der").as_slice(),
             include_bytes!("../../../test-ca/rsa-2048/ca.der").as_slice(),

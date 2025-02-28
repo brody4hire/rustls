@@ -8,7 +8,7 @@ use crate::client::ResolvesClientCert;
 use crate::enums::{SignatureAlgorithm, SignatureScheme};
 use crate::error::{Error, InconsistentKeys};
 use crate::server::{ClientHello, ParsedCertificate, ResolvesServerCert};
-use crate::super_alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcBox};
 use crate::x509;
 
 use super::CryptoProvider;
@@ -172,7 +172,7 @@ impl CertifiedKey {
     ///
     /// The cert chain must not be empty. The first certificate in the chain
     /// must be the end-entity certificate.
-    pub fn new(cert: Vec<CertificateDer<'static>>, key: Boxx<dyn SigningKey>) -> Self {
+    pub fn new(cert: Vec<CertificateDer<'static>>, key: CfgX<dyn SigningKey>) -> Self {
         Self {
             cert,
             key: key.into(),

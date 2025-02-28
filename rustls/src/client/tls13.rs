@@ -36,7 +36,7 @@ use crate::msgs::message::{Message, MessagePayload};
 use crate::msgs::persist;
 use crate::sign::{CertifiedKey, Signer};
 use crate::suites::PartiallyExtractedSecrets;
-use crate::super_alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcBox};
 use crate::tls13::key_schedule::{
     KeyScheduleEarly, KeyScheduleHandshake, KeySchedulePreHandshake, KeyScheduleTraffic,
     ResumptionSecret,
@@ -64,7 +64,7 @@ static DISALLOWED_TLS13_EXTS: &[ExtensionType] = &[
 ];
 
 pub(super) fn handle_server_hello(
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     cx: &mut ClientContext<'_>,
     server_hello: &ServerHelloPayload,
     mut resuming_session: Option<persist::Tls13ClientSessionValue>,
@@ -227,7 +227,7 @@ impl KeyExchangeChoice {
     /// Decide between `our_key_share` or `our_key_share.hybrid_component()`
     /// based on the selection of the server expressed in `their_key_share`.
     fn new(
-        config: &Boxx<ClientConfig>,
+        config: &CfgX<ClientConfig>,
         cx: &mut ClientContext<'_>,
         our_key_share: Box<dyn ActiveKeyExchange>,
         their_key_share: &KeyShareEntry,
@@ -444,7 +444,7 @@ fn validate_encrypted_extensions(
 }
 
 struct ExpectEncryptedExtensions {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     resuming_session: Option<persist::Tls13ClientSessionValue>,
     server_name: ServerName<'static>,
     randoms: ConnectionRandoms,
@@ -585,7 +585,7 @@ impl State<ClientConnectionData> for ExpectEncryptedExtensions {
 }
 
 struct ExpectCertificateOrCompressedCertificateOrCertReq {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     server_name: ServerName<'static>,
     randoms: ConnectionRandoms,
     suite: &'static Tls13CipherSuite,
@@ -677,7 +677,7 @@ impl State<ClientConnectionData> for ExpectCertificateOrCompressedCertificateOrC
 }
 
 struct ExpectCertificateOrCompressedCertificate {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     server_name: ServerName<'static>,
     randoms: ConnectionRandoms,
     suite: &'static Tls13CipherSuite,
@@ -751,7 +751,7 @@ impl State<ClientConnectionData> for ExpectCertificateOrCompressedCertificate {
 }
 
 struct ExpectCertificateOrCertReq {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     server_name: ServerName<'static>,
     randoms: ConnectionRandoms,
     suite: &'static Tls13CipherSuite,
@@ -827,7 +827,7 @@ impl State<ClientConnectionData> for ExpectCertificateOrCertReq {
 // Certificate. Unfortunately the CertificateRequest type changed in an annoying way
 // in TLS1.3.
 struct ExpectCertificateRequest {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     server_name: ServerName<'static>,
     randoms: ConnectionRandoms,
     suite: &'static Tls13CipherSuite,
@@ -934,7 +934,7 @@ impl State<ClientConnectionData> for ExpectCertificateRequest {
 }
 
 struct ExpectCompressedCertificate {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     server_name: ServerName<'static>,
     randoms: ConnectionRandoms,
     suite: &'static Tls13CipherSuite,
@@ -1038,7 +1038,7 @@ impl State<ClientConnectionData> for ExpectCompressedCertificate {
 }
 
 struct ExpectCertificate {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     server_name: ServerName<'static>,
     randoms: ConnectionRandoms,
     suite: &'static Tls13CipherSuite,
@@ -1111,7 +1111,7 @@ impl State<ClientConnectionData> for ExpectCertificate {
 
 // --- TLS1.3 CertificateVerify ---
 struct ExpectCertificateVerify<'a> {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     server_name: ServerName<'static>,
     randoms: ConnectionRandoms,
     suite: &'static Tls13CipherSuite,
@@ -1294,7 +1294,7 @@ fn emit_end_of_early_data_tls13(transcript: &mut HandshakeHash, common: &mut Com
 }
 
 struct ExpectFinished {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     server_name: ServerName<'static>,
     randoms: ConnectionRandoms,
     suite: &'static Tls13CipherSuite,
@@ -1422,7 +1422,7 @@ impl State<ClientConnectionData> for ExpectFinished {
 
         let st = ExpectTraffic {
             // XXX TBD ??? ???
-            config: Boxx::clone(&st.config).into(),
+            config: CfgX::clone(&st.config).into(),
             // XXX TBD ??? ???
             session_storage: RcBox::clone(&st.config.resumption.store),
             server_name: st.server_name,
@@ -1483,7 +1483,7 @@ impl ExpectTraffic {
         #[allow(unused_mut)]
         let mut value = persist::Tls13ClientSessionValue::new(
             self.suite,
-            Boxx::clone(&nst.ticket),
+            CfgX::clone(&nst.ticket),
             secret.as_ref(),
             cx.common
                 .peer_certificates

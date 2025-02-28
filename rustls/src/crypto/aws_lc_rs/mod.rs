@@ -13,7 +13,7 @@ use crate::enums::SignatureScheme;
 use crate::rand::GetRandomFailed;
 use crate::sign::SigningKey;
 use crate::suites::SupportedCipherSuite;
-use crate::super_alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcBox};
 use crate::webpki::WebPkiSupportedAlgorithms;
 use crate::{Error, OtherError};
 
@@ -85,7 +85,7 @@ impl KeyProvider for AwsLcRs {
     fn load_private_key(
         &self,
         key_der: PrivateKeyDer<'static>,
-    ) -> Result<Boxx<dyn SigningKey>, Error> {
+    ) -> Result<CfgX<dyn SigningKey>, Error> {
         sign::any_supported_type(&key_der)
     }
 
@@ -284,7 +284,7 @@ pub(super) fn fips() -> bool {
 pub(super) fn unspecified_err(_e: aws_lc_rs::error::Unspecified) -> Error {
     #[cfg(feature = "std")]
     {
-        Error::Other(OtherError(Boxx::new(_e)))
+        Error::Other(OtherError(CfgX::new(_e)))
     }
     #[cfg(not(feature = "std"))]
     {

@@ -28,7 +28,7 @@ use crate::msgs::message::{Message, MessagePayload};
 use crate::msgs::persist;
 use crate::server::common::ActiveCertifiedKey;
 use crate::server::{ClientHello, ServerConfig, tls13};
-use crate::super_alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcBox};
 use crate::{SupportedCipherSuite, suites};
 
 pub(super) type NextState<'a> = Box<dyn State<ServerConnectionData> + 'a>;
@@ -295,7 +295,7 @@ impl ExtensionProcessing {
 }
 
 pub(super) struct ExpectClientHello {
-    pub(super) config: Boxx<ServerConfig>,
+    pub(super) config: CfgX<ServerConfig>,
     pub(super) extra_exts: Vec<ServerExtension>,
     pub(super) transcript: HandshakeHashOrBuffer,
     #[cfg(feature = "tls12")]
@@ -307,7 +307,7 @@ pub(super) struct ExpectClientHello {
 }
 
 impl ExpectClientHello {
-    pub(super) fn new(config: Boxx<ServerConfig>, extra_exts: Vec<ServerExtension>) -> Self {
+    pub(super) fn new(config: CfgX<ServerConfig>, extra_exts: Vec<ServerExtension>) -> Self {
         let mut transcript_buffer = HandshakeHashBuffer::new();
 
         if config.verifier.offer_client_auth() {

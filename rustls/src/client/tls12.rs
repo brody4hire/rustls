@@ -30,7 +30,7 @@ use crate::msgs::message::{Message, MessagePayload};
 use crate::msgs::persist;
 use crate::sign::Signer;
 use crate::suites::{PartiallyExtractedSecrets, SupportedCipherSuite};
-use crate::super_alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcBox};
 use crate::tls12::{self, ConnectionSecrets, Tls12CipherSuite};
 use crate::verify::{self, DigitallySignedStruct};
 
@@ -40,7 +40,7 @@ mod server_hello {
     use crate::msgs::handshake::{HasServerExtensions, ServerHelloPayload};
 
     pub(in crate::client) struct CompleteServerHelloHandling {
-        pub(in crate::client) config: Boxx<ClientConfig>,
+        pub(in crate::client) config: CfgX<ClientConfig>,
         pub(in crate::client) resuming_session: Option<persist::Tls12ClientSessionValue>,
         pub(in crate::client) server_name: ServerName<'static>,
         pub(in crate::client) randoms: ConnectionRandoms,
@@ -190,7 +190,7 @@ mod server_hello {
 }
 
 struct ExpectCertificate {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     resuming_session: Option<persist::Tls12ClientSessionValue>,
     session_id: SessionId,
     server_name: ServerName<'static>,
@@ -255,7 +255,7 @@ impl State<ClientConnectionData> for ExpectCertificate {
 }
 
 struct ExpectCertificateStatusOrServerKx<'m> {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     resuming_session: Option<persist::Tls12ClientSessionValue>,
     session_id: SessionId,
     server_name: ServerName<'static>,
@@ -345,7 +345,7 @@ impl State<ClientConnectionData> for ExpectCertificateStatusOrServerKx<'_> {
 }
 
 struct ExpectCertificateStatus<'a> {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     resuming_session: Option<persist::Tls12ClientSessionValue>,
     session_id: SessionId,
     server_name: ServerName<'static>,
@@ -412,7 +412,7 @@ impl State<ClientConnectionData> for ExpectCertificateStatus<'_> {
 }
 
 struct ExpectServerKx<'a> {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     resuming_session: Option<persist::Tls12ClientSessionValue>,
     session_id: SessionId,
     server_name: ServerName<'static>,
@@ -618,7 +618,7 @@ impl ServerKxDetails {
 // Existence of the CertificateRequest tells us the server is asking for
 // client auth.  Otherwise we go straight to ServerHelloDone.
 struct ExpectServerDoneOrCertReq<'a> {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     resuming_session: Option<persist::Tls12ClientSessionValue>,
     session_id: SessionId,
     server_name: ServerName<'static>,
@@ -703,7 +703,7 @@ impl State<ClientConnectionData> for ExpectServerDoneOrCertReq<'_> {
 }
 
 struct ExpectCertificateRequest<'a> {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     resuming_session: Option<persist::Tls12ClientSessionValue>,
     session_id: SessionId,
     server_name: ServerName<'static>,
@@ -785,7 +785,7 @@ impl State<ClientConnectionData> for ExpectCertificateRequest<'_> {
 }
 
 struct ExpectServerDone<'a> {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     resuming_session: Option<persist::Tls12ClientSessionValue>,
     session_id: SessionId,
     server_name: ServerName<'static>,
@@ -1039,7 +1039,7 @@ impl State<ClientConnectionData> for ExpectServerDone<'_> {
 }
 
 struct ExpectNewTicket {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     secrets: ConnectionSecrets,
     resuming_session: Option<persist::Tls12ClientSessionValue>,
     session_id: SessionId,
@@ -1090,7 +1090,7 @@ impl State<ClientConnectionData> for ExpectNewTicket {
 
 // -- Waiting for their CCS --
 struct ExpectCcs {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     secrets: ConnectionSecrets,
     resuming_session: Option<persist::Tls12ClientSessionValue>,
     session_id: SessionId,
@@ -1151,7 +1151,7 @@ impl State<ClientConnectionData> for ExpectCcs {
 }
 
 struct ExpectFinished {
-    config: Boxx<ClientConfig>,
+    config: CfgX<ClientConfig>,
     resuming_session: Option<persist::Tls12ClientSessionValue>,
     session_id: SessionId,
     server_name: ServerName<'static>,
@@ -1171,7 +1171,7 @@ impl ExpectFinished {
         // original ticket again.
         let (mut ticket, lifetime) = match self.ticket.take() {
             Some(nst) => (nst.ticket, nst.lifetime_hint),
-            None => (Boxx::new(PayloadU16::empty()), 0),
+            None => (CfgX::new(PayloadU16::empty()), 0),
         };
 
         if ticket.0.is_empty() {

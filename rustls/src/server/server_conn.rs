@@ -28,7 +28,7 @@ use crate::msgs::enums::CertificateType;
 use crate::msgs::handshake::{ClientHelloPayload, ProtocolName, ServerExtension};
 use crate::msgs::message::Message;
 use crate::suites::ExtractedSecrets;
-use crate::super_alias::{Boxx, Rc};
+use crate::super_alias::{CfgX, Rc};
 // XXX XXX
 // type RcBox<T> = Rc<Box<T>>;
 use crate::super_alias::Rc as RcBox;
@@ -544,7 +544,7 @@ mod connection {
     use crate::error::Error;
     use crate::server::hs;
     use crate::suites::ExtractedSecrets;
-    use crate::super_alias::{Boxx, Rc, RcBox};
+    use crate::super_alias::{CfgX, Rc, RcBox};
     use crate::vecbuf::ChunkVecBuffer;
 
     /// Allows reading of early data in resumed TLS1.3 connections.
@@ -584,7 +584,7 @@ mod connection {
     impl ServerConnection {
         /// Make a new ServerConnection.  `config` controls how
         /// we behave in the TLS protocol.
-        pub fn new(config: Boxx<ServerConfig>) -> Result<Self, Error> {
+        pub fn new(config: CfgX<ServerConfig>) -> Result<Self, Error> {
             Ok(Self {
                 inner: ConnectionCommon::from(ConnectionCore::for_server(config, Vec::new())?),
             })
@@ -887,7 +887,7 @@ pub struct UnbufferedServerConnection {
 
 impl UnbufferedServerConnection {
     /// Make a new ServerConnection. `config` controls how we behave in the TLS protocol.
-    pub fn new(config: Boxx<ServerConfig>) -> Result<Self, Error> {
+    pub fn new(config: CfgX<ServerConfig>) -> Result<Self, Error> {
         Ok(Self {
             inner: UnbufferedConnectionCommon::from(ConnectionCore::for_server(
                 config,
@@ -962,7 +962,7 @@ impl Accepted {
     #[cfg(feature = "std")]
     pub fn into_connection(
         mut self,
-        config: Boxx<ServerConfig>,
+        config: CfgX<ServerConfig>,
     ) -> Result<ServerConnection, (Error, AcceptedAlert)> {
         if let Err(err) = self
             .connection
@@ -1130,7 +1130,7 @@ impl Debug for EarlyDataState {
 
 impl ConnectionCore<ServerConnectionData> {
     pub(crate) fn for_server(
-        config: Boxx<ServerConfig>,
+        config: CfgX<ServerConfig>,
         extra_exts: Vec<ServerExtension>,
     ) -> Result<Self, Error> {
         let mut common = CommonState::new(Side::Server);

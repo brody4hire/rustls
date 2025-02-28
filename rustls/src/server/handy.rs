@@ -2,7 +2,7 @@ use alloc::vec::Vec;
 use core::fmt::Debug;
 
 use crate::server::ClientHello;
-use crate::super_alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcBox};
 use crate::{server, sign};
 
 /// Something which never stores sessions.
@@ -30,7 +30,7 @@ mod cache {
     use core::fmt::{Debug, Formatter};
 
     use crate::lock::Mutex;
-    use crate::super_alias::{Boxx, Rc, RcBox};
+    use crate::super_alias::{CfgX, Rc, RcBox};
     use crate::{limited_cache, server};
 
     /// An implementer of `StoresServerSessions` that stores everything
@@ -45,8 +45,8 @@ mod cache {
         /// number of stored sessions, and may be rounded-up for
         /// efficiency.
         #[cfg(feature = "std")]
-        pub fn new(size: usize) -> Boxx<Self> {
-            Boxx::new(Self {
+        pub fn new(size: usize) -> CfgX<Self> {
+            CfgX::new(Self {
                 cache: Mutex::new(limited_cache::LimitedCache::new(size)),
             })
         }
@@ -55,8 +55,8 @@ mod cache {
         /// number of stored sessions, and may be rounded-up for
         /// efficiency.
         #[cfg(not(feature = "std"))]
-        pub fn new<M: crate::lock::MakeMutex>(size: usize) -> Boxx<Self> {
-            Boxx::new(Self {
+        pub fn new<M: crate::lock::MakeMutex>(size: usize) -> CfgX<Self> {
+            CfgX::new(Self {
                 cache: Mutex::new::<M>(limited_cache::LimitedCache::new(size)),
             })
         }
@@ -175,7 +175,7 @@ pub struct AlwaysResolvesServerRawPublicKeys(RcBox<sign::CertifiedKey>);
 
 impl AlwaysResolvesServerRawPublicKeys {
     /// Create a new `AlwaysResolvesServerRawPublicKeys` instance.
-    pub fn new(certified_key: Boxx<sign::CertifiedKey>) -> Self {
+    pub fn new(certified_key: CfgX<sign::CertifiedKey>) -> Self {
         Self(certified_key.into())
     }
 }
@@ -200,7 +200,7 @@ mod sni_resolver {
     use crate::error::Error;
     use crate::hash_map::HashMap;
     use crate::server::ClientHello;
-    use crate::super_alias::{Boxx, Rc, RcBox};
+    use crate::super_alias::{CfgX, Rc, RcBox};
     use crate::webpki::{ParsedCertificate, verify_server_name};
     use crate::{server, sign};
 
@@ -208,7 +208,7 @@ mod sni_resolver {
     /// on client-supplied server name (via SNI).
     #[derive(Debug)]
     pub struct ResolvesServerCertUsingSni {
-        by_name: HashMap<String, Boxx<sign::CertifiedKey>>,
+        by_name: HashMap<String, CfgX<sign::CertifiedKey>>,
     }
 
     impl ResolvesServerCertUsingSni {
@@ -247,7 +247,7 @@ mod sni_resolver {
 
             if let ServerName::DnsName(name) = server_name {
                 self.by_name
-                    .insert(name.as_ref().to_string(), Boxx::new(ck));
+                    .insert(name.as_ref().to_string(), CfgX::new(ck));
             }
             Ok(())
         }
