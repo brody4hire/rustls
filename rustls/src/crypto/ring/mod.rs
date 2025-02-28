@@ -8,7 +8,7 @@ use crate::enums::SignatureScheme;
 use crate::rand::GetRandomFailed;
 use crate::sign::SigningKey;
 use crate::suites::SupportedCipherSuite;
-use crate::super_alias::CfgX;
+use crate::super_alias::{CfgX, Rc, RcX};
 use crate::webpki::WebPkiSupportedAlgorithms;
 
 /// Using software keys for authentication.

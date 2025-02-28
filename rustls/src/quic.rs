@@ -34,7 +34,7 @@ mod connection {
     use crate::msgs::handshake::{ClientExtension, ServerExtension};
     use crate::msgs::message::InboundPlainMessage;
     use crate::server::{ServerConfig, ServerConnectionData};
-    use crate::super_alias::CfgX;
+    use crate::super_alias::{CfgX, Rc, RcX};
     use crate::vecbuf::ChunkVecBuffer;
 
     /// A QUIC client or server connection.
