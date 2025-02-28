@@ -28,10 +28,7 @@ use crate::msgs::enums::CertificateType;
 use crate::msgs::handshake::{ClientHelloPayload, ProtocolName, ServerExtension};
 use crate::msgs::message::Message;
 use crate::suites::ExtractedSecrets;
-use crate::super_alias::{CfgX, Rc1};
-// XXX XXX
-// type RcBox<T> = Rc<Box<T>>;
-use crate::super_alias::Rc1 as RcBox;
+use crate::super_alias::{CfgRc, CfgRcRef, CfgRcX, CfgX, ErrorRc, Rc1, RcX};
 #[cfg(feature = "std")]
 use crate::time_provider::DefaultTimeProvider;
 use crate::time_provider::TimeProvider;
@@ -271,15 +268,15 @@ pub struct ServerConfig {
     pub max_fragment_size: Option<usize>,
 
     /// How to store client sessions.
-    pub session_storage: RcBox<dyn StoresServerSessions>,
+    pub session_storage: CfgRcX<dyn StoresServerSessions>,
 
     /// How to produce tickets.
-    pub ticketer: RcBox<dyn ProducesTickets>,
+    pub ticketer: CfgRcX<dyn ProducesTickets>,
 
     /// How to choose a server cert and key. This is usually set by
     /// [ConfigBuilder::with_single_cert] or [ConfigBuilder::with_cert_resolver].
     /// For async applications, see also [Acceptor].
-    pub cert_resolver: RcBox<dyn ResolvesServerCert>,
+    pub cert_resolver: CfgRcX<dyn ResolvesServerCert>,
 
     /// Protocol names we support, most preferred first.
     /// If empty we don't do ALPN at all.
@@ -290,11 +287,11 @@ pub struct ServerConfig {
     pub(super) versions: versions::EnabledVersions,
 
     /// How to verify client certificates.
-    pub(super) verifier: RcBox<dyn verify::ClientCertVerifier>,
+    pub(super) verifier: CfgRcX<dyn verify::ClientCertVerifier>,
 
     /// How to output key material for debugging.  The default
     /// does nothing.
-    pub key_log: RcBox<dyn KeyLog>,
+    pub key_log: CfgRcX<dyn KeyLog>,
 
     /// Allows traffic secrets to be extracted after the handshake,
     /// e.g. for kTLS setup.
@@ -362,7 +359,7 @@ pub struct ServerConfig {
     pub require_ems: bool,
 
     /// Provides the current system time
-    pub time_provider: RcBox<dyn TimeProvider>,
+    pub time_provider: CfgRcX<dyn TimeProvider>,
 
     /// How to compress the server's certificate chain.
     ///
@@ -380,7 +377,7 @@ pub struct ServerConfig {
     ///
     /// This is optional: [`compress::CompressionCache::Disabled`] gives
     /// a cache that does no caching.
-    pub cert_compression_cache: RcBox<compress::CompressionCache>,
+    pub cert_compression_cache: CfgRcX<compress::CompressionCache>,
 
     /// How to decompress the clients's certificate chain.
     ///
@@ -426,7 +423,7 @@ impl ServerConfig {
         // Safety assumptions:
         // 1. that the provider has been installed (explicitly or implicitly)
         // 2. that the process-level default provider is usable with the supplied protocol versions.
-        Self::builder_with_provider(RcBox::clone(
+        Self::builder_with_provider(CfgRcX::clone(
             CryptoProvider::get_default_or_install_from_crate_features(),
         ))
         .with_protocol_versions(versions)
@@ -443,12 +440,12 @@ impl ServerConfig {
     /// For more information, see the [`ConfigBuilder`] documentation.
     #[cfg(feature = "std-x")]
     pub fn builder_with_provider(
-        provider: RcBox<CryptoProvider>,
+        provider: CfgRcX<CryptoProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
             provider,
-            time_provider: RcBox::new(DefaultTimeProvider),
+            time_provider: CfgRcX::new(DefaultTimeProvider),
             side: PhantomData,
         }
     }
@@ -468,8 +465,8 @@ impl ServerConfig {
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
     pub fn builder_with_details(
-        provider: RcBox<CryptoProvider>,
-        time_provider: RcBox<dyn TimeProvider>,
+        provider: CfgRcX<CryptoProvider>,
+        time_provider: CfgRcX<dyn TimeProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
@@ -498,7 +495,7 @@ impl ServerConfig {
     }
 
     /// Return the crypto provider used to construct this client configuration.
-    pub fn crypto_provider(&self) -> &RcBox<CryptoProvider> {
+    pub fn crypto_provider(&self) -> &CfgRcX<CryptoProvider> {
         &self.provider
     }
 
