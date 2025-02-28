@@ -2,7 +2,7 @@ use alloc::vec::Vec;
 use core::fmt::Debug;
 
 use crate::server::ClientHello;
-use crate::alias::{Boxx, RcBox};
+use crate::alias::{Boxx, Rc, RcBox};
 use crate::{server, sign};
 
 /// Something which never stores sessions.

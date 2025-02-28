@@ -513,7 +513,7 @@ pub enum Tls12Resumption {
 pub(super) mod danger {
     use super::ClientConfig;
     use super::verify::ServerCertVerifier;
-    use crate::alias::{Boxx, Rc};
+    use crate::alias::{Boxx, Rc, RcBox};
 
     /// Accessor for dangerous configuration options.
     #[derive(Debug)]
