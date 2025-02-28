@@ -428,9 +428,15 @@ mod alias {
     pub(crate) use alloc::rc::Rc as RcBox;
 }
 
-macro_rules! rc_xxx_new_from_box {
+macro_rules! rc_xxx_new_from_ref {
     ($x:expr) => {
         RcBox::new(*$x)
+    };
+}
+
+macro_rules! rc_xxx_from_box {
+    ($x:expr) => {
+        RcBox::from($x)
     };
 }
 

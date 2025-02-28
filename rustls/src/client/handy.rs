@@ -218,7 +218,7 @@ pub struct AlwaysResolvesClientRawPublicKeys(Rc<sign::CertifiedKey>);
 impl AlwaysResolvesClientRawPublicKeys {
     /// Create a new `AlwaysResolvesClientRawPublicKeys` instance.
     pub fn new(certified_key: Boxx<sign::CertifiedKey>) -> Self {
-        Self(rc_xxx_new_from_box!(certified_key))
+        Self(rc_xxx_from_box!(certified_key))
     }
 }
 
