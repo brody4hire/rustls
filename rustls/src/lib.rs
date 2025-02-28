@@ -442,9 +442,7 @@ macro_rules! rc_xxx_from_box {
 
 macro_rules! ref_from_rc_xxx {
     ($x:expr) => {
-        // XXX XXX
-        // &*$x
-        panic!("XXX")
+        &*$x
     };
 }
 
