@@ -805,7 +805,7 @@ mod other_error {
 
     use super::Error;
     #[cfg(feature = "std")]
-    use crate::sync::Arc;
+    use crate::super_alias::Arc;
 
     /// Any other error that cannot be expressed by a more specific [`Error`] variant.
     ///
@@ -861,7 +861,7 @@ mod tests {
         CertRevocationListError, Error, InconsistentKeys, InvalidMessage, OtherError, UnixTime,
     };
     #[cfg(feature = "std")]
-    use crate::sync::Arc;
+    use crate::super_alias::Arc;
     use pki_types::ServerName;
 
     #[test]

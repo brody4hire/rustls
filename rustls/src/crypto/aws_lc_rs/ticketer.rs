@@ -18,7 +18,7 @@ use crate::log::debug;
 use crate::polyfill::try_split_at;
 use crate::rand::GetRandomFailed;
 use crate::server::ProducesTickets;
-use crate::sync::Arc;
+use crate::super_alias::Arc;
 
 /// A concrete, safe ticket creation mechanism.
 pub struct Ticketer {}
