@@ -92,7 +92,7 @@ pub(super) mod danger {
     use core::marker::PhantomData;
 
     use crate::client::WantsClientCert;
-    use crate::alias::{Boxx, Rc, RcBox};
+    use crate::alias::Boxx;
     use crate::{ClientConfig, ConfigBuilder, WantsVerifier, verify};
 
     /// Accessor for dangerous configuration options.

@@ -2,7 +2,7 @@ use pki_types::ServerName;
 
 use crate::enums::SignatureScheme;
 use crate::msgs::persist;
-use crate::alias::{Boxx, Rc, RcBox};
+use crate::alias::Boxx;
 use crate::{NamedGroup, client, sign};
 
 /// An implementer of `ClientSessionStore` which does nothing.

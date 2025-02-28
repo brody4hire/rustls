@@ -11,7 +11,7 @@ use crate::crypto;
 use crate::crypto::{CryptoProvider, WebPkiSupportedAlgorithms};
 #[cfg(doc)]
 use crate::server::ServerConfig;
-use crate::alias::{Boxx, Rc, RcBox};
+use crate::alias::Boxx;
 use crate::verify::{
     ClientCertVerified, ClientCertVerifier, DigitallySignedStruct, HandshakeSignatureValid,
     NoClientAuth,
