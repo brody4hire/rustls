@@ -432,6 +432,7 @@ mod super_alias {
     pub(crate) type CfgRc = i32;
     pub(crate) type ErrorRc = i32;
     pub(crate) type CfgRcRef = i32;
+    pub(crate) type CfgRcX = i32;
 }
 
 // XXX TODO RENAME
