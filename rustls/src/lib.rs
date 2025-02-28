@@ -429,6 +429,8 @@ mod super_alias {
     // INTENDED for STORED CONFIG
     // pub(crate) type RcX<T> = alloc::sync::Arc<alloc::boxed::Box<T>>;
     pub(crate) type RcX<T> = InnerRcX<alloc::boxed::Box<T>>;
+    // INTENDED to STORE SHARED CONFIG THAT MAY NEED TO BE ACCESSED
+    pub(crate) type CfgRcX<T> = CfgRc<T>;
     #[derive(Debug)]
     pub(crate) struct InnerRcX<T>(alloc::sync::Arc<T>);
     impl<T> InnerRcX<T> {
