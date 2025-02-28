@@ -417,6 +417,8 @@ mod super_alias {
     pub(crate) type CfgX<T> = alloc::sync::Arc<T>;
     // INTENDED for OUTPUT CONFIG - TBD MAY ALIAS to alloc::sync::Arc, alloc::rc::Rc, or portable_atomic_util::Arc
     pub(crate) type Rc<T> = alloc::sync::Arc<T>;
+    // INTENDED for OUTPUT of STORED CONFIG AS A REFERENCE - TBD MAY COMBINE WITH "Rc" ALIAS ABOVE
+    pub(crate) type RcXRef<'a, T> = &'a RcX<T>;
     // INTENDED for STORED CONFIG
     pub(crate) type RcX<T> = alloc::sync::Arc<alloc::boxed::Box<T>>;
 }
