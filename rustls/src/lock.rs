@@ -38,7 +38,7 @@ mod no_std_lock {
     use core::fmt::Debug;
     use core::ops::DerefMut;
 
-    use crate::super_alias::{CfgX, Rc, RcX};
+    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
     // XXX XXX XXX
     type Arc<T> = CfgX<T>;
 

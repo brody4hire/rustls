@@ -805,7 +805,7 @@ mod other_error {
 
     use super::Error;
     #[cfg(feature = "std-xxx")]
-    use crate::super_alias::{CfgX, Rc, RcX};
+    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
 
     /// Any other error that cannot be expressed by a more specific [`Error`] variant.
     ///
@@ -861,7 +861,7 @@ mod tests {
         CertRevocationListError, Error, InconsistentKeys, InvalidMessage, OtherError, UnixTime,
     };
     #[cfg(feature = "std-xxx")]
-    use crate::super_alias::{CfgX, Rc, RcX};
+    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
     use pki_types::ServerName;
 
     #[test]

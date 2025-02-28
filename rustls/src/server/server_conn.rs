@@ -544,7 +544,7 @@ mod connection {
     use crate::error::Error;
     use crate::server::hs;
     use crate::suites::ExtractedSecrets;
-    use crate::super_alias::{CfgX, Rc, RcX};
+    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
     use crate::vecbuf::ChunkVecBuffer;
 
     /// Allows reading of early data in resumed TLS1.3 connections.
