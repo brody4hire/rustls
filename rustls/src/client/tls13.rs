@@ -36,7 +36,7 @@ use crate::msgs::message::{Message, MessagePayload};
 use crate::msgs::persist;
 use crate::sign::{CertifiedKey, Signer};
 use crate::suites::PartiallyExtractedSecrets;
-use crate::super_alias::{CfgX, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcX};
 use crate::tls13::key_schedule::{
     KeyScheduleEarly, KeyScheduleHandshake, KeySchedulePreHandshake, KeyScheduleTraffic,
     ResumptionSecret,
@@ -1424,7 +1424,7 @@ impl State<ClientConnectionData> for ExpectFinished {
             // XXX TBD ??? ???
             config: CfgX::clone(&st.config).into(),
             // XXX TBD ??? ???
-            session_storage: RcBox::clone(&st.config.resumption.store),
+            session_storage: RcX::clone(&st.config.resumption.store),
             server_name: st.server_name,
             suite: st.suite,
             transcript: st.transcript,
@@ -1450,8 +1450,8 @@ impl State<ClientConnectionData> for ExpectFinished {
 // and application data.
 struct ExpectTraffic {
     // XXX TBD ??? ???
-    config: RcBox<ClientConfig>,
-    session_storage: RcBox<dyn ClientSessionStore>,
+    config: RcX<ClientConfig>,
+    session_storage: RcX<dyn ClientSessionStore>,
     server_name: ServerName<'static>,
     suite: &'static Tls13CipherSuite,
     transcript: HandshakeHash,

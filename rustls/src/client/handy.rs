@@ -2,7 +2,7 @@ use pki_types::ServerName;
 
 use crate::enums::SignatureScheme;
 use crate::msgs::persist;
-use crate::super_alias::{CfgX, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcX};
 use crate::{NamedGroup, client, sign};
 
 /// An implementer of `ClientSessionStore` which does nothing.
@@ -261,7 +261,7 @@ mod tests {
     use crate::msgs::handshake::SessionId;
     use crate::msgs::persist::Tls13ClientSessionValue;
     use crate::suites::SupportedCipherSuite;
-    use crate::super_alias::{CfgX, Rc, RcBox};
+    use crate::super_alias::{CfgX, Rc, RcX};
 
     #[test]
     fn test_noclientsessionstorage_does_nothing() {

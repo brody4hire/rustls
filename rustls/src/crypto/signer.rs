@@ -8,7 +8,7 @@ use crate::client::ResolvesClientCert;
 use crate::enums::{SignatureAlgorithm, SignatureScheme};
 use crate::error::{Error, InconsistentKeys};
 use crate::server::{ClientHello, ParsedCertificate, ResolvesServerCert};
-use crate::super_alias::{CfgX, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcX};
 use crate::x509;
 
 use super::CryptoProvider;
@@ -136,7 +136,7 @@ pub struct CertifiedKey {
     pub cert: Vec<CertificateDer<'static>>,
 
     /// The certified key.
-    pub key: RcBox<dyn SigningKey>,
+    pub key: RcX<dyn SigningKey>,
 
     /// An optional OCSP response from the certificate issuer,
     /// attesting to its continued validity.

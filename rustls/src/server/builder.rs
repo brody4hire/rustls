@@ -7,7 +7,7 @@ use super::{ResolvesServerCert, ServerConfig, handy};
 use crate::builder::{ConfigBuilder, WantsVerifier};
 use crate::error::Error;
 use crate::sign::{CertifiedKey, SingleCertAndKey};
-use crate::super_alias::{CfgX, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcX};
 use crate::verify::{ClientCertVerifier, NoClientAuth};
 use crate::{NoKeyLog, compress, versions};
 
@@ -41,7 +41,7 @@ impl ConfigBuilder<ServerConfig, WantsVerifier> {
 #[derive(Clone, Debug)]
 pub struct WantsServerCert {
     versions: versions::EnabledVersions,
-    verifier: RcBox<dyn ClientCertVerifier>,
+    verifier: RcX<dyn ClientCertVerifier>,
 }
 
 impl ConfigBuilder<ServerConfig, WantsServerCert> {

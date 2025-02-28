@@ -2,7 +2,7 @@ use alloc::vec::Vec;
 use core::fmt::Debug;
 
 use crate::server::ClientHello;
-use crate::super_alias::{CfgX, Rc, RcBox};
+use crate::super_alias::{CfgX, Rc, RcX};
 use crate::{server, sign};
 
 /// Something which never stores sessions.
@@ -30,7 +30,7 @@ mod cache {
     use core::fmt::{Debug, Formatter};
 
     use crate::lock::Mutex;
-    use crate::super_alias::{CfgX, Rc, RcBox};
+    use crate::super_alias::{CfgX, Rc, RcX};
     use crate::{limited_cache, server};
 
     /// An implementer of `StoresServerSessions` that stores everything
@@ -171,7 +171,7 @@ impl server::ProducesTickets for NeverProducesTickets {
 ///
 /// [RFC 7250]: https://tools.ietf.org/html/rfc7250
 #[derive(Clone, Debug)]
-pub struct AlwaysResolvesServerRawPublicKeys(RcBox<sign::CertifiedKey>);
+pub struct AlwaysResolvesServerRawPublicKeys(RcX<sign::CertifiedKey>);
 
 impl AlwaysResolvesServerRawPublicKeys {
     /// Create a new `AlwaysResolvesServerRawPublicKeys` instance.
@@ -181,8 +181,8 @@ impl AlwaysResolvesServerRawPublicKeys {
 }
 
 impl server::ResolvesServerCert for AlwaysResolvesServerRawPublicKeys {
-    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<RcBox<sign::CertifiedKey>> {
-        Some(RcBox::clone(&self.0))
+    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<RcX<sign::CertifiedKey>> {
+        Some(RcX::clone(&self.0))
     }
 
     fn only_raw_public_keys(&self) -> bool {
@@ -200,7 +200,7 @@ mod sni_resolver {
     use crate::error::Error;
     use crate::hash_map::HashMap;
     use crate::server::ClientHello;
-    use crate::super_alias::{CfgX, Rc, RcBox};
+    use crate::super_alias::{CfgX, Rc, RcX};
     use crate::webpki::{ParsedCertificate, verify_server_name};
     use crate::{server, sign};
 
@@ -254,7 +254,7 @@ mod sni_resolver {
     }
 
     impl server::ResolvesServerCert for ResolvesServerCertUsingSni {
-        fn resolve(&self, client_hello: ClientHello<'_>) -> Option<RcBox<sign::CertifiedKey>> {
+        fn resolve(&self, client_hello: ClientHello<'_>) -> Option<RcX<sign::CertifiedKey>> {
             if let Some(name) = client_hello.server_name() {
                 // XXX XXX XXX
                 // self.by_name.get(name).cloned()

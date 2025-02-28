@@ -424,19 +424,19 @@ mod super_alias {
     // pub(crate) type RcBox<T> = Arc<alloc::boxed::Box<T>>;
     // pub(crate) type RcBox<T> = Rc<alloc::boxed::Box<T>>;
     pub(crate) use alloc::rc::Rc;
-    // pub(crate) type RcBox<T> = Rc<alloc::boxed::Box<T>>;
-    pub(crate) use alloc::rc::Rc as RcBox;
+    pub(crate) type RcX<T> = Rc<T>;
+    // pub(crate) use alloc::rc::Rc as RcBox;
 }
 
 macro_rules! rc_xxx_new_from_ref {
     ($x:expr) => {
-        RcBox::new(*$x)
+        RcX::new(*$x)
     };
 }
 
 macro_rules! rc_xxx_from_box {
     ($x:expr) => {
-        RcBox::from($x)
+        RcX::from($x)
     };
 }
 
