@@ -2,7 +2,7 @@ use pki_types::ServerName;
 
 use crate::enums::SignatureScheme;
 use crate::msgs::persist;
-use crate::alias::Boxx;
+use crate::alias::{Boxx, Rc};
 use crate::{NamedGroup, client, sign};
 
 /// An implementer of `ClientSessionStore` which does nothing.
@@ -200,7 +200,7 @@ impl client::ResolvesClientCert for FailResolveClientCert {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<Boxx<sign::CertifiedKey>> {
+    ) -> Option<Rc<sign::CertifiedKey>> {
         None
     }
 
@@ -227,8 +227,8 @@ impl client::ResolvesClientCert for AlwaysResolvesClientRawPublicKeys {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<Boxx<sign::CertifiedKey>> {
-        Some(Boxx::clone(&self.0))
+    ) -> Option<Rc<sign::CertifiedKey>> {
+        Some(Rc::clone(&self.0))
     }
 
     fn only_raw_public_keys(&self) -> bool {

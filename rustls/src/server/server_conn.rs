@@ -126,7 +126,7 @@ pub trait ResolvesServerCert: Debug  {
     /// ClientHello information.
     ///
     /// Return `None` to abort the handshake.
-    fn resolve(&self, client_hello: ClientHello<'_>) -> Option<RcBox<sign::CertifiedKey>>;
+    fn resolve(&self, client_hello: ClientHello<'_>) -> Option<Rc<sign::CertifiedKey>>;
 
     /// Return true when the server only supports raw public keys.
     fn only_raw_public_keys(&self) -> bool {
