@@ -21,7 +21,7 @@ use crate::msgs::enums::NamedGroup;
 use crate::msgs::handshake::ClientExtension;
 use crate::msgs::persist;
 use crate::suites::{ExtractedSecrets, SupportedCipherSuite};
-use crate::alias::{Boxx, Arc, RcBox};
+use crate::alias::{Boxx, Rc, RcBox};
 #[cfg(feature = "std")]
 use crate::time_provider::DefaultTimeProvider;
 use crate::time_provider::TimeProvider;
@@ -464,7 +464,7 @@ impl Resumption {
     /// Disable all use of session resumption.
     pub fn disabled() -> Self {
         Self {
-            store: Arc::new(Boxx::new(NoClientSessionStorage)),
+            store: Rc::new(Boxx::new(NoClientSessionStorage)),
             tls12_resumption: Tls12Resumption::Disabled,
         }
     }
@@ -513,7 +513,7 @@ pub enum Tls12Resumption {
 pub(super) mod danger {
     use super::ClientConfig;
     use super::verify::ServerCertVerifier;
-    use crate::alias::{Boxx, Arc};
+    use crate::alias::{Boxx, Rc};
 
     /// Accessor for dangerous configuration options.
     #[derive(Debug)]
@@ -525,7 +525,7 @@ pub(super) mod danger {
     impl DangerousClientConfig<'_> {
         /// Overrides the default `ServerCertVerifier` with something else.
         pub fn set_certificate_verifier(&mut self, verifier: Boxx<dyn ServerCertVerifier>) {
-            self.cfg.verifier = Arc::new(verifier);
+            self.cfg.verifier = Rc::new(verifier);
         }
     }
 }
@@ -624,7 +624,7 @@ mod connection {
     use crate::conn::{ConnectionCommon, ConnectionCore};
     use crate::error::Error;
     use crate::suites::ExtractedSecrets;
-    use crate::alias::{Boxx, Arc, RcBox};
+    use crate::alias::{Boxx, Rc, RcBox};
 
     /// Stub that implements io::Write and dispatches to `write_early_data`.
     pub struct WriteEarlyData<'a> {

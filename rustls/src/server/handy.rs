@@ -30,7 +30,7 @@ mod cache {
     use core::fmt::{Debug, Formatter};
 
     use crate::lock::Mutex;
-    use crate::alias::{Boxx, Arc, RcBox};
+    use crate::alias::{Boxx, Rc, RcBox};
     use crate::{limited_cache, server};
 
     /// An implementer of `StoresServerSessions` that stores everything
@@ -200,7 +200,7 @@ mod sni_resolver {
     use crate::error::Error;
     use crate::hash_map::HashMap;
     use crate::server::ClientHello;
-    use crate::alias::{Boxx, Arc, RcBox};
+    use crate::alias::{Boxx, Rc, RcBox};
     use crate::webpki::{ParsedCertificate, verify_server_name};
     use crate::{server, sign};
 

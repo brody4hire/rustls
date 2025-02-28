@@ -9,7 +9,7 @@ use crate::client::{ClientConfig, EchMode, ResolvesClientCert, handy};
 use crate::error::Error;
 use crate::key_log::NoKeyLog;
 use crate::sign::{CertifiedKey, SingleCertAndKey};
-use crate::alias::{Boxx, Arc, RcBox};
+use crate::alias::{Boxx, Rc, RcBox};
 use crate::versions::TLS13;
 use crate::webpki::{self, WebPkiServerVerifier};
 use crate::{WantsVersions, compress, verify, versions};
@@ -71,7 +71,7 @@ impl ConfigBuilder<ClientConfig, WantsVerifier> {
         ConfigBuilder {
             state: WantsClientCert {
                 versions: self.state.versions,
-                verifier: Arc::new(verifier),
+                verifier: Rc::new(verifier),
                 client_ech_mode: self.state.client_ech_mode,
             },
             provider: self.provider,
@@ -171,7 +171,7 @@ impl ConfigBuilder<ClientConfig, WantsClientCert> {
             versions: self.state.versions,
             enable_sni: true,
             verifier: self.state.verifier,
-            key_log: Arc::new(Boxx::new(NoKeyLog {})),
+            key_log: Rc::new(Boxx::new(NoKeyLog {})),
             enable_secret_extraction: false,
             enable_early_data: false,
             #[cfg(feature = "tls12")]

@@ -7,7 +7,7 @@ use super::{ResolvesServerCert, ServerConfig, handy};
 use crate::builder::{ConfigBuilder, WantsVerifier};
 use crate::error::Error;
 use crate::sign::{CertifiedKey, SingleCertAndKey};
-use crate::alias::{Boxx, Arc, RcBox};
+use crate::alias::{Boxx, Rc, RcBox};
 use crate::verify::{ClientCertVerifier, NoClientAuth};
 use crate::{NoKeyLog, compress, versions};
 
@@ -111,12 +111,12 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
             #[cfg(not(feature = "std-x"))]
             // XXX TBD ???
             // session_storage: Boxx::new(handy::NoServerSessionStorage {}),
-            session_storage: Arc::new(Boxx::new(handy::NoServerSessionStorage {})),
-            ticketer: Arc::new(Boxx::new(handy::NeverProducesTickets {})),
+            session_storage: Rc::new(Boxx::new(handy::NoServerSessionStorage {})),
+            ticketer: Rc::new(Boxx::new(handy::NeverProducesTickets {})),
             alpn_protocols: Vec::new(),
             versions: self.state.versions,
             // XXX TBD ???
-            key_log: Arc::new(Boxx::new(NoKeyLog {})),
+            key_log: Rc::new(Boxx::new(NoKeyLog {})),
             enable_secret_extraction: false,
             max_early_data_size: 0,
             send_half_rtt_data: false,
@@ -126,7 +126,7 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
             time_provider: self.time_provider,
             cert_compressors: compress::default_cert_compressors().to_vec(),
             // XXX TBD ???
-            cert_compression_cache: Arc::new(Boxx::new(compress::CompressionCache::default())),
+            cert_compression_cache: Rc::new(Boxx::new(compress::CompressionCache::default())),
             cert_decompressors: compress::default_cert_decompressors().to_vec(),
         }
     }

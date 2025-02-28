@@ -30,7 +30,7 @@ use crate::msgs::message::{Message, MessagePayload};
 use crate::msgs::persist;
 use crate::sign::Signer;
 use crate::suites::{PartiallyExtractedSecrets, SupportedCipherSuite};
-use crate::alias::{Boxx, Arc, RcBox};
+use crate::alias::{Boxx, Rc, RcBox};
 use crate::tls12::{self, ConnectionSecrets, Tls12CipherSuite};
 use crate::verify::{self, DigitallySignedStruct};
 
