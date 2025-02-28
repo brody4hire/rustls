@@ -418,7 +418,7 @@ mod super_alias {
     // INTENDED for SHARED CONFIG
     pub(crate) type CfgRc<T> = alloc::sync::Arc<T>;
     // INTENDED for OUTPUT CONFIG - TBD MAY ALIAS to alloc::sync::Arc, alloc::rc::Rc, or portable_atomic_util::Arc
-    pub(crate) type Rc<T> = alloc::sync::Arc<T>;
+    pub(crate) type Rc1<T> = alloc::sync::Arc<T>;
     // INTENDED for ERROR CONTENTS
     pub(crate) type ErrorRc<T> = alloc::sync::Arc<T>;
     // INTENDED for OUTPUT of STORED CONFIG AS A REFERENCE - TBD MAY COMBINE WITH "Rc" ALIAS ABOVE

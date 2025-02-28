@@ -27,7 +27,7 @@ use crate::msgs::enums::{
     NamedGroup, PSKKeyExchangeMode, ServerNameType,
 };
 use crate::rand;
-use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
+use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
 use crate::verify::DigitallySignedStruct;
 use crate::x509::wrap_in_sequence;
 
