@@ -2,7 +2,7 @@ use pki_types::ServerName;
 
 use crate::enums::SignatureScheme;
 use crate::msgs::persist;
-use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
+use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
 use crate::{NamedGroup, client, sign};
 
 /// An implementer of `ClientSessionStore` which does nothing.
@@ -200,7 +200,7 @@ impl client::ResolvesClientCert for FailResolveClientCert {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<Rc<sign::CertifiedKey>> {
+    ) -> Option<Rc1<sign::CertifiedKey>> {
         None
     }
 
@@ -214,7 +214,7 @@ impl client::ResolvesClientCert for FailResolveClientCert {
 ///
 /// [RFC 7250]: https://tools.ietf.org/html/rfc7250
 #[derive(Clone, Debug)]
-pub struct AlwaysResolvesClientRawPublicKeys(Rc<sign::CertifiedKey>);
+pub struct AlwaysResolvesClientRawPublicKeys(Rc1<sign::CertifiedKey>);
 impl AlwaysResolvesClientRawPublicKeys {
     /// Create a new `AlwaysResolvesClientRawPublicKeys` instance.
     pub fn new(certified_key: CfgX<sign::CertifiedKey>) -> Self {
@@ -227,8 +227,8 @@ impl client::ResolvesClientCert for AlwaysResolvesClientRawPublicKeys {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<Rc<sign::CertifiedKey>> {
-        Some(Rc::clone(&self.0))
+    ) -> Option<Rc1<sign::CertifiedKey>> {
+        Some(Rc1::clone(&self.0))
     }
 
     fn only_raw_public_keys(&self) -> bool {
@@ -261,7 +261,7 @@ mod tests {
     use crate::msgs::handshake::SessionId;
     use crate::msgs::persist::Tls13ClientSessionValue;
     use crate::suites::SupportedCipherSuite;
-    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
+    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
 
     #[test]
     fn test_noclientsessionstorage_does_nothing() {

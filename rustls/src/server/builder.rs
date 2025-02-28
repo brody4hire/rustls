@@ -7,7 +7,7 @@ use super::{ResolvesServerCert, ServerConfig, handy};
 use crate::builder::{ConfigBuilder, WantsVerifier};
 use crate::error::Error;
 use crate::sign::{CertifiedKey, SingleCertAndKey};
-use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
+use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
 use crate::verify::{ClientCertVerifier, NoClientAuth};
 use crate::{NoKeyLog, compress, versions};
 
@@ -111,12 +111,12 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
             #[cfg(not(feature = "std-x"))]
             // XXX TBD ???
             // session_storage: Boxx::new(handy::NoServerSessionStorage {}),
-            session_storage: Rc::new(handy::NoServerSessionStorage {}),
-            ticketer: Rc::new(handy::NeverProducesTickets {}),
+            session_storage: Rc1::new(handy::NoServerSessionStorage {}),
+            ticketer: Rc1::new(handy::NeverProducesTickets {}),
             alpn_protocols: Vec::new(),
             versions: self.state.versions,
             // XXX TBD ???
-            key_log: Rc::new(NoKeyLog {}),
+            key_log: Rc1::new(NoKeyLog {}),
             enable_secret_extraction: false,
             max_early_data_size: 0,
             send_half_rtt_data: false,
@@ -126,7 +126,7 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
             time_provider: self.time_provider,
             cert_compressors: compress::default_cert_compressors().to_vec(),
             // XXX TBD ???
-            cert_compression_cache: Rc::new(compress::CompressionCache::default()),
+            cert_compression_cache: Rc1::new(compress::CompressionCache::default()),
             cert_decompressors: compress::default_cert_decompressors().to_vec(),
         }
     }

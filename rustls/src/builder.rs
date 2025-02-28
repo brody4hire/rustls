@@ -7,7 +7,7 @@ use crate::client::EchMode;
 use crate::crypto::CryptoProvider;
 use crate::error::Error;
 use crate::msgs::handshake::ALL_KEY_EXCHANGE_ALGORITHMS;
-use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
+use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
 use crate::time_provider::TimeProvider;
 use crate::versions;
 #[cfg(doc)]
@@ -163,14 +163,14 @@ use crate::{ClientConfig, ServerConfig};
 #[derive(Clone)]
 pub struct ConfigBuilder<Side: ConfigSide, State> {
     pub(crate) state: State,
-    pub(crate) provider: Rc<CryptoProvider>,
+    pub(crate) provider: Rc1<CryptoProvider>,
     pub(crate) time_provider: RcX<dyn TimeProvider>,
     pub(crate) side: PhantomData<Side>,
 }
 
 impl<Side: ConfigSide, State> ConfigBuilder<Side, State> {
     /// Return the crypto provider used to construct this builder.
-    pub fn crypto_provider(&self) -> &Rc<CryptoProvider> {
+    pub fn crypto_provider(&self) -> &Rc1<CryptoProvider> {
         &self.provider
     }
 }

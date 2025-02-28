@@ -9,7 +9,7 @@ use crate::client::{ClientConfig, EchMode, ResolvesClientCert, handy};
 use crate::error::Error;
 use crate::key_log::NoKeyLog;
 use crate::sign::{CertifiedKey, SingleCertAndKey};
-use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
+use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
 use crate::versions::TLS13;
 use crate::webpki::{self, WebPkiServerVerifier};
 use crate::{WantsVersions, compress, verify, versions};
@@ -92,7 +92,7 @@ pub(super) mod danger {
     use core::marker::PhantomData;
 
     use crate::client::WantsClientCert;
-    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
+    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
     use crate::{ClientConfig, ConfigBuilder, WantsVerifier, verify};
 
     /// Accessor for dangerous configuration options.
@@ -129,7 +129,7 @@ pub(super) mod danger {
 #[derive(Clone)]
 pub struct WantsClientCert {
     versions: versions::EnabledVersions,
-    verifier: Rc<dyn verify::ServerCertVerifier>,
+    verifier: Rc1<dyn verify::ServerCertVerifier>,
     client_ech_mode: Option<EchMode>,
 }
 
@@ -171,7 +171,7 @@ impl ConfigBuilder<ClientConfig, WantsClientCert> {
             versions: self.state.versions,
             enable_sni: true,
             verifier: self.state.verifier,
-            key_log: Rc::new(NoKeyLog {}),
+            key_log: Rc1::new(NoKeyLog {}),
             enable_secret_extraction: false,
             enable_early_data: false,
             #[cfg(feature = "tls12")]

@@ -21,7 +21,7 @@ use crate::msgs::enums::NamedGroup;
 use crate::msgs::handshake::ClientExtension;
 use crate::msgs::persist;
 use crate::suites::{ExtractedSecrets, SupportedCipherSuite};
-use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
+use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
 #[cfg(feature = "std")]
 use crate::time_provider::DefaultTimeProvider;
 use crate::time_provider::TimeProvider;
@@ -118,7 +118,7 @@ pub trait ResolvesClientCert: fmt::Debug + Send + Sync {
         &self,
         root_hint_subjects: &[&[u8]],
         sigschemes: &[SignatureScheme],
-    ) -> Option<Rc<sign::CertifiedKey>>;
+    ) -> Option<Rc1<sign::CertifiedKey>>;
 
     /// Return true if the client only supports raw public keys.
     ///
@@ -370,7 +370,7 @@ impl ClientConfig {
     }
 
     /// Return the crypto provider used to construct this client configuration.
-    pub fn crypto_provider(&self) -> &Rc<CryptoProvider> {
+    pub fn crypto_provider(&self) -> &Rc1<CryptoProvider> {
         &self.provider
     }
 
@@ -464,7 +464,7 @@ impl Resumption {
     /// Disable all use of session resumption.
     pub fn disabled() -> Self {
         Self {
-            store: Rc::new(NoClientSessionStorage),
+            store: Rc1::new(NoClientSessionStorage),
             tls12_resumption: Tls12Resumption::Disabled,
         }
     }
@@ -513,7 +513,7 @@ pub enum Tls12Resumption {
 pub(super) mod danger {
     use super::ClientConfig;
     use super::verify::ServerCertVerifier;
-    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
+    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
 
     /// Accessor for dangerous configuration options.
     #[derive(Debug)]
@@ -624,7 +624,7 @@ mod connection {
     use crate::conn::{ConnectionCommon, ConnectionCore};
     use crate::error::Error;
     use crate::suites::ExtractedSecrets;
-    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
+    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
 
     /// Stub that implements io::Write and dispatches to `write_early_data`.
     pub struct WriteEarlyData<'a> {

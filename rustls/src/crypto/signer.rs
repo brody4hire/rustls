@@ -8,7 +8,7 @@ use crate::client::ResolvesClientCert;
 use crate::enums::{SignatureAlgorithm, SignatureScheme};
 use crate::error::{Error, InconsistentKeys};
 use crate::server::{ClientHello, ParsedCertificate, ResolvesServerCert};
-use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
+use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
 use crate::x509;
 
 use super::CryptoProvider;
@@ -62,7 +62,7 @@ pub trait SigningKey: Debug + Send + Sync {
     ///
     /// Expresses the choice by returning something that implements `Signer`,
     /// using the chosen scheme.
-    fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<Rc<dyn Signer>>;
+    fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<Rc1<dyn Signer>>;
 
     /// Get the RFC 5280-compliant SubjectPublicKeyInfo (SPKI) of this [`SigningKey`] if available.
     fn public_key(&self) -> Option<SubjectPublicKeyInfoDer<'_>> {
@@ -94,11 +94,11 @@ pub trait Signer: Debug + Send + Sync {
 ///
 /// [`ConfigBuilder::with_cert_resolver()`]: crate::ConfigBuilder::with_cert_resolver
 #[derive(Debug)]
-pub struct SingleCertAndKey(Rc<CertifiedKey>);
+pub struct SingleCertAndKey(Rc1<CertifiedKey>);
 
 impl From<CertifiedKey> for SingleCertAndKey {
     fn from(certified_key: CertifiedKey) -> Self {
-        Self(Rc::new(certified_key))
+        Self(Rc1::new(certified_key))
     }
 }
 
@@ -107,8 +107,8 @@ impl ResolvesClientCert for SingleCertAndKey {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<Rc<CertifiedKey>> {
-        Some(Rc::clone(&self.0))
+    ) -> Option<Rc1<CertifiedKey>> {
+        Some(Rc1::clone(&self.0))
     }
 
     fn has_certs(&self) -> bool {
@@ -117,8 +117,8 @@ impl ResolvesClientCert for SingleCertAndKey {
 }
 
 impl ResolvesServerCert for SingleCertAndKey {
-    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<Rc<CertifiedKey>> {
-        Some(Rc::clone(&self.0))
+    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<Rc1<CertifiedKey>> {
+        Some(Rc1::clone(&self.0))
     }
 }
 
