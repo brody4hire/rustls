@@ -492,6 +492,116 @@ mod suites;
 mod versions;
 mod webpki;
 
+
+mod super_alias1 {
+    use core::ops::Deref;
+
+    // IMPORTANT NOTICE: ALIAS(ES) SUBJECT TO CHANGE
+    #[allow(clippy::disallowed_types)]
+    // INTENDED for INPUT CONFIG
+    // XXX TODO REPLACE ALL USE OF CfgX::clone() IF POSSIBLE
+    pub(crate) type CfgX<T> = alloc::boxed::Box<T>;
+    // INTENDED for SHARED CONFIG
+    pub(crate) type CfgRc<T> = alloc::sync::Arc<alloc::boxed::Box<T>>;
+    // INTENDED for OUTPUT CONFIG - TBD MAY ALIAS to alloc::sync::Arc, alloc::rc::Rc, or portable_atomic_util::Arc
+    pub(crate) type Rc1<T> = alloc::sync::Arc<T>;
+    // INTENDED for ERROR CONTENTS
+    pub(crate) type ErrorRc<T> = alloc::sync::Arc<T>;
+    // INTENDED for OUTPUT of STORED CONFIG AS A REFERENCE - TBD MAY COMBINE WITH "Rc" ALIAS ABOVE
+    pub(crate) type CfgRcRef<'a, T> = &'a CfgRc<T>;
+    // INTENDED for STORED CONFIG
+    // pub(crate) type RcX<T> = alloc::sync::Arc<alloc::boxed::Box<T>>;
+    pub(crate) type RcX<T> = InnerRcX<alloc::boxed::Box<T>>;
+    // INTENDED to STORE SHARED CONFIG THAT MAY NEED TO BE ACCESSED
+    pub(crate) type CfgRcX<T> = CfgRc<T>;
+    #[derive(Debug)]
+    pub(crate) struct InnerRcX<T>(alloc::sync::Arc<T>);
+    impl<T> InnerRcX<T> {
+        pub(crate) fn new(x: T) -> InnerRcX<T> {
+            Self(alloc::sync::Arc::new(x))
+        }
+    }
+    impl<T> Clone for InnerRcX<T> {
+        fn clone(&self) -> Self {
+            Self(self.0.clone())
+        }
+    }
+    impl<T> Deref for InnerRcX<T> {
+        type Target = T;
+        fn deref(&self) -> &Self::Target {
+            self.0.deref()
+        }
+    }
+    impl<T> Into<alloc::sync::Arc<T>> for InnerRcX<T> {
+        fn into(self) -> alloc::sync::Arc<T> {
+            self.0.clone()
+        }
+    }
+    impl<T> Into<InnerRcX<T>> for alloc::sync::Arc<T> {
+        fn into(self) -> InnerRcX<T> {
+            InnerRcX(self.clone())
+        }
+    }
+}
+
+macro_rules! cfgrc_new {
+    ($x:expr) => {
+        alloc::sync::Arc::new($x)
+    };
+}
+
+macro_rules! cfgrc_with_cfg {
+    ($x:expr) => {
+        alloc::sync::Arc::new(alloc::boxed::Box::new($x))
+    };
+}
+
+macro_rules! rcx_new {
+    ($x:expr) => {
+        crate::super_alias::InnerRcX::new($x)
+    };
+}
+
+// XXX TBD ???
+macro_rules! rcx_copy {
+    ($x:expr) => {
+        $x
+    };
+}
+
+macro_rules! rcx_with_cfg {
+    ($x:expr) => {
+        crate::super_alias::InnerRcX::new(alloc::boxed::Box::new($x))
+    };
+}
+
+macro_rules! rcx_into_cfgrc {
+    ($x:expr) => {
+        $x.into()
+    };
+}
+
+// XXX TBD ???
+macro_rules! rcx_clone_into_cfgrc {
+    ($x:expr) => {
+        $x.clone().into()
+    };
+}
+
+// XXX THIS IS FOR EXPRESSIONS THAT NEED TO BE UPDATED - PANIC FOR NOW - XXX TODO COMPLETELY REMOVE THIS
+macro_rules! xxx_ignore_expression_and_panic_with_todo {
+    ($x:expr) => {
+        // XXX XXX
+        panic!("XXX TODO")
+    };
+}
+
+macro_rules! cfgrcx_from_cfgrc {
+    ($x:expr) => {
+        $x
+    };
+}
+
 /// Internal classes that are used in integration tests.
 /// The contents of this section DO NOT form part of the stable interface.
 #[allow(missing_docs)]
