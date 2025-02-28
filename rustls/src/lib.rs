@@ -425,7 +425,7 @@ mod super_alias {
     // INTENDED for ERROR CONTENTS
     pub(crate) type ErrorRc<T> = alloc::sync::Arc<T>;
     // INTENDED for OUTPUT of STORED CONFIG AS A REFERENCE - TBD MAY COMBINE WITH "Rc" ALIAS ABOVE
-    pub(crate) type RcXRef<'a, T> = &'a RcX<T>;
+    pub(crate) type CfgRcRef<'a, T> = &'a CfgRc<T>;
     // INTENDED for STORED CONFIG
     // pub(crate) type RcX<T> = alloc::sync::Arc<alloc::boxed::Box<T>>;
     pub(crate) type RcX<T> = InnerRcX<alloc::boxed::Box<T>>;
