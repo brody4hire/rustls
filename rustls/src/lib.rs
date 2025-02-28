@@ -426,20 +426,27 @@ mod super_alias {
     pub(crate) use alloc::rc::Rc;
     pub(crate) type RcX<T> = Rc<T>;
     // pub(crate) use alloc::rc::Rc as RcBox;
+    // XXX XXX
+    pub(crate) type CfgRc = i32;
+    pub(crate) type ErrorRc = i32;
+    pub(crate) type RcXRef = i32;
 }
 
+// XXX TODO RENAME
 macro_rules! rc_xxx_new_from_ref {
     ($x:expr) => {
         RcX::new(*$x)
     };
 }
 
+// XXX TODO RENAME
 macro_rules! rc_xxx_from_box {
     ($x:expr) => {
         RcX::from($x)
     };
 }
 
+// XXX TODO RENAME
 macro_rules! ref_from_rc_xxx {
     ($x:expr) => {
         &*$x
