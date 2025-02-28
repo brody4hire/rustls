@@ -430,9 +430,7 @@ mod alias {
 
 macro_rules! rc_xxx_new_from_box {
     ($x:expr) => {
-        // XXX XXX
-        // RcBox::new($x)
-        panic!("XXX")
+        RcBox::new(*$x)
     };
 }
 

@@ -525,7 +525,9 @@ pub(super) mod danger {
     impl DangerousClientConfig<'_> {
         /// Overrides the default `ServerCertVerifier` with something else.
         pub fn set_certificate_verifier(&mut self, verifier: Boxx<dyn ServerCertVerifier>) {
-            self.cfg.verifier = rc_xxx_new_from_box!(verifier);
+            // XXX XXX
+            // self.cfg.verifier = rc_xxx_new_from_box!(verifier);
+            self.cfg.verifier = Rc::from(verifier)
         }
     }
 }
