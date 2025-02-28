@@ -411,8 +411,11 @@ mod test_macros;
 /// of rustls targetting architectures without atomic pointers to replace the implementation
 /// with another implementation such as `portable_atomic_util::Arc` in one central location.
 mod super_alias {
+    // IMPORTANT NOTICE: ALIAS(ES) SUBJECT TO CHANGE
     #[allow(clippy::disallowed_types)]
     pub(crate) type CfgX<T> = alloc::sync::Arc<T>;
+    pub(crate) type Rc<T> = alloc::sync::Arc<T>;
+    pub(crate) type RcX<T> = alloc::sync::Arc<alloc::boxed::Box<T>>;
 }
 
 #[macro_use]
