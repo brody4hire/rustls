@@ -71,8 +71,7 @@ impl ConfigBuilder<ClientConfig, WantsVerifier> {
         ConfigBuilder {
             state: WantsClientCert {
                 versions: self.state.versions,
-                // XXX TBD ??? FN ???
-                verifier: Rc::new(*verifier),
+                verifier: rc_xxx_new_from_box!(verifier),
                 client_ech_mode: self.state.client_ech_mode,
             },
             provider: self.provider,

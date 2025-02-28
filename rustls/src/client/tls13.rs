@@ -199,7 +199,7 @@ pub(super) fn handle_server_hello(
         cx.data.early_data.is_enabled(),
         hash_at_client_recvd_server_hello,
         suite,
-        &**config.key_log,
+        ref_from_rc_xxx!((config.key_log)),
         &randoms.client,
         cx.common,
     );
@@ -1396,7 +1396,7 @@ impl State<ClientConnectionData> for ExpectFinished {
             .into_pre_finished_client_traffic(
                 hash_after_handshake,
                 flight.transcript.current_hash(),
-                &**st.config.key_log,
+                ref_from_rc_xxx!((st.config.key_log)),
                 &st.randoms.client,
             );
 

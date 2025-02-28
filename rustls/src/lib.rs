@@ -428,6 +428,22 @@ mod alias {
     pub(crate) use alloc::rc::Rc as RcBox;
 }
 
+macro_rules! rc_xxx_new_from_box {
+    ($x:expr) => {
+        // XXX XXX
+        // RcBox::new($x)
+        panic!("XXX")
+    };
+}
+
+macro_rules! ref_from_rc_xxx {
+    ($x:expr) => {
+        // XXX XXX
+        // &*$x
+        panic!("XXX")
+    };
+}
+
 #[macro_use]
 mod msgs;
 mod common_state;
