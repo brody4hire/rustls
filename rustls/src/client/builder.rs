@@ -9,7 +9,7 @@ use crate::client::{ClientConfig, EchMode, ResolvesClientCert, handy};
 use crate::error::Error;
 use crate::key_log::NoKeyLog;
 use crate::sign::{CertifiedKey, SingleCertAndKey};
-use crate::super_alias::Arc;
+use crate::super_alias::CfgX;
 use crate::versions::TLS13;
 use crate::webpki::{self, WebPkiServerVerifier};
 use crate::{WantsVersions, compress, verify, versions};
@@ -50,7 +50,7 @@ impl ConfigBuilder<ClientConfig, WantsVerifier> {
     /// ```
     pub fn with_root_certificates(
         self,
-        root_store: impl Into<Arc<webpki::RootCertStore>>,
+        root_store: impl Into<CfgX<webpki::RootCertStore>>,
     ) -> ConfigBuilder<ClientConfig, WantsClientCert> {
         let algorithms = self
             .provider
@@ -66,7 +66,7 @@ impl ConfigBuilder<ClientConfig, WantsVerifier> {
     /// [`webpki::WebPkiServerVerifier::builder_with_provider`] for more information.
     pub fn with_webpki_verifier(
         self,
-        verifier: Arc<WebPkiServerVerifier>,
+        verifier: CfgX<WebPkiServerVerifier>,
     ) -> ConfigBuilder<ClientConfig, WantsClientCert> {
         ConfigBuilder {
             state: WantsClientCert {
@@ -92,7 +92,7 @@ pub(super) mod danger {
     use core::marker::PhantomData;
 
     use crate::client::WantsClientCert;
-    use crate::super_alias::Arc;
+    use crate::super_alias::CfgX;
     use crate::{ClientConfig, ConfigBuilder, WantsVerifier, verify};
 
     /// Accessor for dangerous configuration options.
@@ -106,7 +106,7 @@ pub(super) mod danger {
         /// Set a custom certificate verifier.
         pub fn with_custom_certificate_verifier(
             self,
-            verifier: Arc<dyn verify::ServerCertVerifier>,
+            verifier: CfgX<dyn verify::ServerCertVerifier>,
         ) -> ConfigBuilder<ClientConfig, WantsClientCert> {
             ConfigBuilder {
                 state: WantsClientCert {
@@ -129,7 +129,7 @@ pub(super) mod danger {
 #[derive(Clone)]
 pub struct WantsClientCert {
     versions: versions::EnabledVersions,
-    verifier: Arc<dyn verify::ServerCertVerifier>,
+    verifier: CfgX<dyn verify::ServerCertVerifier>,
     client_ech_mode: Option<EchMode>,
 }
 
@@ -149,18 +149,18 @@ impl ConfigBuilder<ClientConfig, WantsClientCert> {
         key_der: PrivateKeyDer<'static>,
     ) -> Result<ClientConfig, Error> {
         let certified_key = CertifiedKey::from_der(cert_chain, key_der, &self.provider)?;
-        Ok(self.with_client_cert_resolver(Arc::new(SingleCertAndKey::from(certified_key))))
+        Ok(self.with_client_cert_resolver(CfgX::new(SingleCertAndKey::from(certified_key))))
     }
 
     /// Do not support client auth.
     pub fn with_no_client_auth(self) -> ClientConfig {
-        self.with_client_cert_resolver(Arc::new(handy::FailResolveClientCert {}))
+        self.with_client_cert_resolver(CfgX::new(handy::FailResolveClientCert {}))
     }
 
     /// Sets a custom [`ResolvesClientCert`].
     pub fn with_client_cert_resolver(
         self,
-        client_auth_cert_resolver: Arc<dyn ResolvesClientCert>,
+        client_auth_cert_resolver: CfgX<dyn ResolvesClientCert>,
     ) -> ClientConfig {
         ClientConfig {
             provider: self.provider,
@@ -171,14 +171,14 @@ impl ConfigBuilder<ClientConfig, WantsClientCert> {
             versions: self.state.versions,
             enable_sni: true,
             verifier: self.state.verifier,
-            key_log: Arc::new(NoKeyLog {}),
+            key_log: CfgX::new(NoKeyLog {}),
             enable_secret_extraction: false,
             enable_early_data: false,
             #[cfg(feature = "tls12")]
             require_ems: cfg!(feature = "fips"),
             time_provider: self.time_provider,
             cert_compressors: compress::default_cert_compressors().to_vec(),
-            cert_compression_cache: Arc::new(compress::CompressionCache::default()),
+            cert_compression_cache: CfgX::new(compress::CompressionCache::default()),
             cert_decompressors: compress::default_cert_decompressors().to_vec(),
             ech_mode: self.state.client_ech_mode,
         }

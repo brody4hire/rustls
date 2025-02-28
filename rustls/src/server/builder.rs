@@ -7,7 +7,7 @@ use super::{ResolvesServerCert, ServerConfig, handy};
 use crate::builder::{ConfigBuilder, WantsVerifier};
 use crate::error::Error;
 use crate::sign::{CertifiedKey, SingleCertAndKey};
-use crate::super_alias::Arc;
+use crate::super_alias::CfgX;
 use crate::verify::{ClientCertVerifier, NoClientAuth};
 use crate::{NoKeyLog, compress, versions};
 
@@ -15,7 +15,7 @@ impl ConfigBuilder<ServerConfig, WantsVerifier> {
     /// Choose how to verify client certificates.
     pub fn with_client_cert_verifier(
         self,
-        client_cert_verifier: Arc<dyn ClientCertVerifier>,
+        client_cert_verifier: CfgX<dyn ClientCertVerifier>,
     ) -> ConfigBuilder<ServerConfig, WantsServerCert> {
         ConfigBuilder {
             state: WantsServerCert {
@@ -30,7 +30,7 @@ impl ConfigBuilder<ServerConfig, WantsVerifier> {
 
     /// Disable client authentication.
     pub fn with_no_client_auth(self) -> ConfigBuilder<ServerConfig, WantsServerCert> {
-        self.with_client_cert_verifier(Arc::new(NoClientAuth))
+        self.with_client_cert_verifier(CfgX::new(NoClientAuth))
     }
 }
 
@@ -41,7 +41,7 @@ impl ConfigBuilder<ServerConfig, WantsVerifier> {
 #[derive(Clone, Debug)]
 pub struct WantsServerCert {
     versions: versions::EnabledVersions,
-    verifier: Arc<dyn ClientCertVerifier>,
+    verifier: CfgX<dyn ClientCertVerifier>,
 }
 
 impl ConfigBuilder<ServerConfig, WantsServerCert> {
@@ -68,7 +68,7 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
         key_der: PrivateKeyDer<'static>,
     ) -> Result<ServerConfig, Error> {
         let certified_key = CertifiedKey::from_der(cert_chain, key_der, self.crypto_provider())?;
-        Ok(self.with_cert_resolver(Arc::new(SingleCertAndKey::from(certified_key))))
+        Ok(self.with_cert_resolver(CfgX::new(SingleCertAndKey::from(certified_key))))
     }
 
     /// Sets a single certificate chain, matching private key and optional OCSP
@@ -93,11 +93,11 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
         let mut certified_key =
             CertifiedKey::from_der(cert_chain, key_der, self.crypto_provider())?;
         certified_key.ocsp = Some(ocsp);
-        Ok(self.with_cert_resolver(Arc::new(SingleCertAndKey::from(certified_key))))
+        Ok(self.with_cert_resolver(CfgX::new(SingleCertAndKey::from(certified_key))))
     }
 
     /// Sets a custom [`ResolvesServerCert`].
-    pub fn with_cert_resolver(self, cert_resolver: Arc<dyn ResolvesServerCert>) -> ServerConfig {
+    pub fn with_cert_resolver(self, cert_resolver: CfgX<dyn ResolvesServerCert>) -> ServerConfig {
         ServerConfig {
             provider: self.provider,
             verifier: self.state.verifier,
@@ -107,11 +107,11 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
             #[cfg(feature = "std")]
             session_storage: handy::ServerSessionMemoryCache::new(256),
             #[cfg(not(feature = "std"))]
-            session_storage: Arc::new(handy::NoServerSessionStorage {}),
-            ticketer: Arc::new(handy::NeverProducesTickets {}),
+            session_storage: CfgX::new(handy::NoServerSessionStorage {}),
+            ticketer: CfgX::new(handy::NeverProducesTickets {}),
             alpn_protocols: Vec::new(),
             versions: self.state.versions,
-            key_log: Arc::new(NoKeyLog {}),
+            key_log: CfgX::new(NoKeyLog {}),
             enable_secret_extraction: false,
             max_early_data_size: 0,
             send_half_rtt_data: false,
@@ -120,7 +120,7 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
             require_ems: cfg!(feature = "fips"),
             time_provider: self.time_provider,
             cert_compressors: compress::default_cert_compressors().to_vec(),
-            cert_compression_cache: Arc::new(compress::CompressionCache::default()),
+            cert_compression_cache: CfgX::new(compress::CompressionCache::default()),
             cert_decompressors: compress::default_cert_decompressors().to_vec(),
         }
     }

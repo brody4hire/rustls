@@ -21,7 +21,7 @@ use crate::msgs::enums::NamedGroup;
 use crate::msgs::handshake::ClientExtension;
 use crate::msgs::persist;
 use crate::suites::{ExtractedSecrets, SupportedCipherSuite};
-use crate::super_alias::Arc;
+use crate::super_alias::CfgX;
 #[cfg(feature = "std")]
 use crate::time_provider::DefaultTimeProvider;
 use crate::time_provider::TimeProvider;
@@ -118,7 +118,7 @@ pub trait ResolvesClientCert: fmt::Debug + Send + Sync {
         &self,
         root_hint_subjects: &[&[u8]],
         sigschemes: &[SignatureScheme],
-    ) -> Option<Arc<sign::CertifiedKey>>;
+    ) -> Option<CfgX<sign::CertifiedKey>>;
 
     /// Return true if the client only supports raw public keys.
     ///
@@ -182,7 +182,7 @@ pub struct ClientConfig {
     pub max_fragment_size: Option<usize>,
 
     /// How to decide what client auth certificate/keys to use.
-    pub client_auth_cert_resolver: Arc<dyn ResolvesClientCert>,
+    pub client_auth_cert_resolver: CfgX<dyn ResolvesClientCert>,
 
     /// Whether to send the Server Name Indication (SNI) extension
     /// during the client handshake.
@@ -192,7 +192,7 @@ pub struct ClientConfig {
 
     /// How to output key material for debugging.  The default
     /// does nothing.
-    pub key_log: Arc<dyn KeyLog>,
+    pub key_log: CfgX<dyn KeyLog>,
 
     /// Allows traffic secrets to be extracted after the handshake,
     /// e.g. for kTLS setup.
@@ -220,17 +220,17 @@ pub struct ClientConfig {
     pub require_ems: bool,
 
     /// Provides the current system time
-    pub time_provider: Arc<dyn TimeProvider>,
+    pub time_provider: CfgX<dyn TimeProvider>,
 
     /// Source of randomness and other crypto.
-    pub(super) provider: Arc<CryptoProvider>,
+    pub(super) provider: CfgX<CryptoProvider>,
 
     /// Supported versions, in no particular order.  The default
     /// is all supported versions.
     pub(super) versions: versions::EnabledVersions,
 
     /// How to verify the server certificate chain.
-    pub(super) verifier: Arc<dyn verify::ServerCertVerifier>,
+    pub(super) verifier: CfgX<dyn verify::ServerCertVerifier>,
 
     /// How to decompress the server's certificate chain.
     ///
@@ -260,7 +260,7 @@ pub struct ClientConfig {
     ///
     /// This is optional: [`compress::CompressionCache::Disabled`] gives
     /// a cache that does no caching.
-    pub cert_compression_cache: Arc<compress::CompressionCache>,
+    pub cert_compression_cache: CfgX<compress::CompressionCache>,
 
     /// How to offer Encrypted Client Hello (ECH). The default is to not offer ECH.
     pub(super) ech_mode: Option<EchMode>,
@@ -296,7 +296,7 @@ impl ClientConfig {
         // Safety assumptions:
         // 1. that the provider has been installed (explicitly or implicitly)
         // 2. that the process-level default provider is usable with the supplied protocol versions.
-        Self::builder_with_provider(Arc::clone(
+        Self::builder_with_provider(CfgX::clone(
             CryptoProvider::get_default_or_install_from_crate_features(),
         ))
         .with_protocol_versions(versions)
@@ -313,12 +313,12 @@ impl ClientConfig {
     /// For more information, see the [`ConfigBuilder`] documentation.
     #[cfg(feature = "std")]
     pub fn builder_with_provider(
-        provider: Arc<CryptoProvider>,
+        provider: CfgX<CryptoProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
             provider,
-            time_provider: Arc::new(DefaultTimeProvider),
+            time_provider: CfgX::new(DefaultTimeProvider),
             side: PhantomData,
         }
     }
@@ -337,8 +337,8 @@ impl ClientConfig {
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
     pub fn builder_with_details(
-        provider: Arc<CryptoProvider>,
-        time_provider: Arc<dyn TimeProvider>,
+        provider: CfgX<CryptoProvider>,
+        time_provider: CfgX<dyn TimeProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
@@ -370,7 +370,7 @@ impl ClientConfig {
     }
 
     /// Return the crypto provider used to construct this client configuration.
-    pub fn crypto_provider(&self) -> &Arc<CryptoProvider> {
+    pub fn crypto_provider(&self) -> &CfgX<CryptoProvider> {
         &self.provider
     }
 
@@ -432,7 +432,7 @@ impl ClientConfig {
 pub struct Resumption {
     /// How we store session data or tickets. The default is to use an in-memory
     /// [super::handy::ClientSessionMemoryCache].
-    pub(super) store: Arc<dyn ClientSessionStore>,
+    pub(super) store: CfgX<dyn ClientSessionStore>,
 
     /// What mechanism is used for resuming a TLS 1.2 session.
     pub(super) tls12_resumption: Tls12Resumption,
@@ -446,7 +446,7 @@ impl Resumption {
     #[cfg(feature = "std")]
     pub fn in_memory_sessions(num: usize) -> Self {
         Self {
-            store: Arc::new(super::handy::ClientSessionMemoryCache::new(num)),
+            store: CfgX::new(super::handy::ClientSessionMemoryCache::new(num)),
             tls12_resumption: Tls12Resumption::SessionIdOrTickets,
         }
     }
@@ -454,7 +454,7 @@ impl Resumption {
     /// Use a custom [`ClientSessionStore`] implementation to store sessions.
     ///
     /// By default, enables resuming a TLS 1.2 session with a session id or RFC 5077 ticket.
-    pub fn store(store: Arc<dyn ClientSessionStore>) -> Self {
+    pub fn store(store: CfgX<dyn ClientSessionStore>) -> Self {
         Self {
             store,
             tls12_resumption: Tls12Resumption::SessionIdOrTickets,
@@ -464,7 +464,7 @@ impl Resumption {
     /// Disable all use of session resumption.
     pub fn disabled() -> Self {
         Self {
-            store: Arc::new(NoClientSessionStorage),
+            store: CfgX::new(NoClientSessionStorage),
             tls12_resumption: Tls12Resumption::Disabled,
         }
     }
@@ -513,7 +513,7 @@ pub enum Tls12Resumption {
 pub(super) mod danger {
     use super::ClientConfig;
     use super::verify::ServerCertVerifier;
-    use crate::super_alias::Arc;
+    use crate::super_alias::CfgX;
 
     /// Accessor for dangerous configuration options.
     #[derive(Debug)]
@@ -524,7 +524,7 @@ pub(super) mod danger {
 
     impl DangerousClientConfig<'_> {
         /// Overrides the default `ServerCertVerifier` with something else.
-        pub fn set_certificate_verifier(&mut self, verifier: Arc<dyn ServerCertVerifier>) {
+        pub fn set_certificate_verifier(&mut self, verifier: CfgX<dyn ServerCertVerifier>) {
             self.cfg.verifier = verifier;
         }
     }
@@ -624,7 +624,7 @@ mod connection {
     use crate::conn::{ConnectionCommon, ConnectionCore};
     use crate::error::Error;
     use crate::suites::ExtractedSecrets;
-    use crate::super_alias::Arc;
+    use crate::super_alias::CfgX;
 
     /// Stub that implements io::Write and dispatches to `write_early_data`.
     pub struct WriteEarlyData<'a> {
@@ -685,7 +685,7 @@ mod connection {
         /// Make a new ClientConnection.  `config` controls how
         /// we behave in the TLS protocol, `name` is the
         /// name of the server we want to talk to.
-        pub fn new(config: Arc<ClientConfig>, name: ServerName<'static>) -> Result<Self, Error> {
+        pub fn new(config: CfgX<ClientConfig>, name: ServerName<'static>) -> Result<Self, Error> {
             Ok(Self {
                 inner: ConnectionCore::for_client(config, name, Vec::new(), Protocol::Tcp)?.into(),
             })
@@ -803,7 +803,7 @@ pub use connection::{ClientConnection, WriteEarlyData};
 
 impl ConnectionCore<ClientConnectionData> {
     pub(crate) fn for_client(
-        config: Arc<ClientConfig>,
+        config: CfgX<ClientConfig>,
         name: ServerName<'static>,
         extra_exts: Vec<ClientExtension>,
         proto: Protocol,
@@ -842,7 +842,7 @@ pub struct UnbufferedClientConnection {
 impl UnbufferedClientConnection {
     /// Make a new ClientConnection. `config` controls how we behave in the TLS protocol, `name` is
     /// the name of the server we want to talk to.
-    pub fn new(config: Arc<ClientConfig>, name: ServerName<'static>) -> Result<Self, Error> {
+    pub fn new(config: CfgX<ClientConfig>, name: ServerName<'static>) -> Result<Self, Error> {
         Ok(Self {
             inner: ConnectionCore::for_client(config, name, Vec::new(), Protocol::Tcp)?.into(),
         })

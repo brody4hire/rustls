@@ -8,7 +8,7 @@ use crate::enums::SignatureScheme;
 use crate::rand::GetRandomFailed;
 use crate::sign::SigningKey;
 use crate::suites::SupportedCipherSuite;
-use crate::super_alias::Arc;
+use crate::super_alias::CfgX;
 use crate::webpki::WebPkiSupportedAlgorithms;
 
 /// Using software keys for authentication.
@@ -56,7 +56,7 @@ impl KeyProvider for Ring {
     fn load_private_key(
         &self,
         key_der: PrivateKeyDer<'static>,
-    ) -> Result<Arc<dyn SigningKey>, Error> {
+    ) -> Result<CfgX<dyn SigningKey>, Error> {
         sign::any_supported_type(&key_der)
     }
 }

@@ -8,7 +8,7 @@ use crate::client::ResolvesClientCert;
 use crate::enums::{SignatureAlgorithm, SignatureScheme};
 use crate::error::{Error, InconsistentKeys};
 use crate::server::{ClientHello, ParsedCertificate, ResolvesServerCert};
-use crate::super_alias::Arc;
+use crate::super_alias::CfgX;
 use crate::x509;
 
 use super::CryptoProvider;
@@ -94,11 +94,11 @@ pub trait Signer: Debug + Send + Sync {
 ///
 /// [`ConfigBuilder::with_cert_resolver()`]: crate::ConfigBuilder::with_cert_resolver
 #[derive(Debug)]
-pub struct SingleCertAndKey(Arc<CertifiedKey>);
+pub struct SingleCertAndKey(CfgX<CertifiedKey>);
 
 impl From<CertifiedKey> for SingleCertAndKey {
     fn from(certified_key: CertifiedKey) -> Self {
-        Self(Arc::new(certified_key))
+        Self(CfgX::new(certified_key))
     }
 }
 
@@ -107,8 +107,8 @@ impl ResolvesClientCert for SingleCertAndKey {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<Arc<CertifiedKey>> {
-        Some(Arc::clone(&self.0))
+    ) -> Option<CfgX<CertifiedKey>> {
+        Some(CfgX::clone(&self.0))
     }
 
     fn has_certs(&self) -> bool {
@@ -117,8 +117,8 @@ impl ResolvesClientCert for SingleCertAndKey {
 }
 
 impl ResolvesServerCert for SingleCertAndKey {
-    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
-        Some(Arc::clone(&self.0))
+    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<CfgX<CertifiedKey>> {
+        Some(CfgX::clone(&self.0))
     }
 }
 
@@ -136,7 +136,7 @@ pub struct CertifiedKey {
     pub cert: Vec<CertificateDer<'static>>,
 
     /// The certified key.
-    pub key: Arc<dyn SigningKey>,
+    pub key: CfgX<dyn SigningKey>,
 
     /// An optional OCSP response from the certificate issuer,
     /// attesting to its continued validity.
@@ -172,7 +172,7 @@ impl CertifiedKey {
     ///
     /// The cert chain must not be empty. The first certificate in the chain
     /// must be the end-entity certificate.
-    pub fn new(cert: Vec<CertificateDer<'static>>, key: Arc<dyn SigningKey>) -> Self {
+    pub fn new(cert: Vec<CertificateDer<'static>>, key: CfgX<dyn SigningKey>) -> Self {
         Self {
             cert,
             key,

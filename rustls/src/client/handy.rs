@@ -2,7 +2,7 @@ use pki_types::ServerName;
 
 use crate::enums::SignatureScheme;
 use crate::msgs::persist;
-use crate::super_alias::Arc;
+use crate::super_alias::CfgX;
 use crate::{NamedGroup, client, sign};
 
 /// An implementer of `ClientSessionStore` which does nothing.
@@ -200,7 +200,7 @@ impl client::ResolvesClientCert for FailResolveClientCert {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<Arc<sign::CertifiedKey>> {
+    ) -> Option<CfgX<sign::CertifiedKey>> {
         None
     }
 
@@ -214,10 +214,10 @@ impl client::ResolvesClientCert for FailResolveClientCert {
 ///
 /// [RFC 7250]: https://tools.ietf.org/html/rfc7250
 #[derive(Clone, Debug)]
-pub struct AlwaysResolvesClientRawPublicKeys(Arc<sign::CertifiedKey>);
+pub struct AlwaysResolvesClientRawPublicKeys(CfgX<sign::CertifiedKey>);
 impl AlwaysResolvesClientRawPublicKeys {
     /// Create a new `AlwaysResolvesClientRawPublicKeys` instance.
-    pub fn new(certified_key: Arc<sign::CertifiedKey>) -> Self {
+    pub fn new(certified_key: CfgX<sign::CertifiedKey>) -> Self {
         Self(certified_key)
     }
 }
@@ -227,8 +227,8 @@ impl client::ResolvesClientCert for AlwaysResolvesClientRawPublicKeys {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<Arc<sign::CertifiedKey>> {
-        Some(Arc::clone(&self.0))
+    ) -> Option<CfgX<sign::CertifiedKey>> {
+        Some(CfgX::clone(&self.0))
     }
 
     fn only_raw_public_keys(&self) -> bool {
@@ -261,7 +261,7 @@ mod tests {
     use crate::msgs::handshake::SessionId;
     use crate::msgs::persist::Tls13ClientSessionValue;
     use crate::suites::SupportedCipherSuite;
-    use crate::super_alias::Arc;
+    use crate::super_alias::CfgX;
 
     #[test]
     fn test_noclientsessionstorage_does_nothing() {
@@ -286,7 +286,7 @@ mod tests {
                 Tls12ClientSessionValue::new(
                     tls12_suite,
                     SessionId::empty(),
-                    Arc::new(PayloadU16::empty()),
+                    CfgX::new(PayloadU16::empty()),
                     &[],
                     CertificateChain::default(),
                     now,
@@ -306,7 +306,7 @@ mod tests {
             name.clone(),
             Tls13ClientSessionValue::new(
                 tls13_suite,
-                Arc::new(PayloadU16::empty()),
+                CfgX::new(PayloadU16::empty()),
                 &[],
                 CertificateChain::default(),
                 now,

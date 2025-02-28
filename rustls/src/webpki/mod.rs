@@ -6,7 +6,7 @@ use webpki::{CertRevocationList, InvalidNameContext, OwnedCertRevocationList};
 
 use crate::error::{CertRevocationListError, CertificateError, Error, OtherError};
 #[cfg(feature = "std")]
-use crate::super_alias::Arc;
+use crate::super_alias::CfgX;
 
 mod anchors;
 mod client_verifier;
@@ -93,7 +93,7 @@ fn pki_error(error: webpki::Error) -> Error {
 
         _ => CertificateError::Other(OtherError(
             #[cfg(feature = "std")]
-            Arc::new(error),
+            CfgX::new(error),
         ))
         .into(),
     }
@@ -117,7 +117,7 @@ fn crl_error(e: webpki::Error) -> CertRevocationListError {
 
         _ => CertRevocationListError::Other(OtherError(
             #[cfg(feature = "std")]
-            Arc::new(e),
+            CfgX::new(e),
         )),
     }
 }

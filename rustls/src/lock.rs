@@ -38,7 +38,7 @@ mod no_std_lock {
     use core::fmt::Debug;
     use core::ops::DerefMut;
 
-    use crate::super_alias::Arc;
+    use crate::super_alias::CfgX;
 
     /// A no-std compatible wrapper around [`Lock`].
     #[derive(Debug)]

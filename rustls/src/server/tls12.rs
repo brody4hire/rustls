@@ -28,7 +28,7 @@ use crate::msgs::handshake::{
 use crate::msgs::message::{Message, MessagePayload};
 use crate::msgs::persist;
 use crate::suites::PartiallyExtractedSecrets;
-use crate::super_alias::Arc;
+use crate::super_alias::CfgX;
 use crate::tls12::{self, ConnectionSecrets, Tls12CipherSuite};
 use crate::verify;
 
@@ -49,7 +49,7 @@ mod client_hello {
     use crate::verify::DigitallySignedStruct;
 
     pub(in crate::server) struct CompleteClientHelloHandling {
-        pub(in crate::server) config: Arc<ServerConfig>,
+        pub(in crate::server) config: CfgX<ServerConfig>,
         pub(in crate::server) transcript: HandshakeHash,
         pub(in crate::server) session_id: SessionId,
         pub(in crate::server) suite: &'static Tls12CipherSuite,
@@ -459,7 +459,7 @@ mod client_hello {
 
 // --- Process client's Certificate for client auth ---
 struct ExpectCertificate {
-    config: Arc<ServerConfig>,
+    config: CfgX<ServerConfig>,
     transcript: HandshakeHash,
     randoms: ConnectionRandoms,
     session_id: SessionId,
@@ -540,7 +540,7 @@ impl State<ServerConnectionData> for ExpectCertificate {
 
 // --- Process client's KeyExchange ---
 struct ExpectClientKx<'a> {
-    config: Arc<ServerConfig>,
+    config: CfgX<ServerConfig>,
     transcript: HandshakeHash,
     randoms: ConnectionRandoms,
     session_id: SessionId,
@@ -639,7 +639,7 @@ impl State<ServerConnectionData> for ExpectClientKx<'_> {
 
 // --- Process client's certificate proof ---
 struct ExpectCertificateVerify<'a> {
-    config: Arc<ServerConfig>,
+    config: CfgX<ServerConfig>,
     secrets: ConnectionSecrets,
     transcript: HandshakeHash,
     session_id: SessionId,
@@ -721,7 +721,7 @@ impl State<ServerConnectionData> for ExpectCertificateVerify<'_> {
 
 // --- Process client's ChangeCipherSpec ---
 struct ExpectCcs {
-    config: Arc<ServerConfig>,
+    config: CfgX<ServerConfig>,
     secrets: ConnectionSecrets,
     transcript: HandshakeHash,
     session_id: SessionId,
@@ -864,7 +864,7 @@ fn emit_finished(
 }
 
 struct ExpectFinished {
-    config: Arc<ServerConfig>,
+    config: CfgX<ServerConfig>,
     secrets: ConnectionSecrets,
     transcript: HandshakeHash,
     session_id: SessionId,

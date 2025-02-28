@@ -14,7 +14,7 @@ use crate::log::debug;
 use crate::polyfill::try_split_at;
 use crate::rand::GetRandomFailed;
 use crate::server::ProducesTickets;
-use crate::super_alias::Arc;
+use crate::super_alias::CfgX;
 
 /// A concrete, safe ticket creation mechanism.
 pub struct Ticketer {}
@@ -25,8 +25,8 @@ impl Ticketer {
     ///
     /// The encryption mechanism used is Chacha20Poly1305.
     #[cfg(feature = "std")]
-    pub fn new() -> Result<Arc<dyn ProducesTickets>, Error> {
-        Ok(Arc::new(crate::ticketer::TicketRotator::new(
+    pub fn new() -> Result<CfgX<dyn ProducesTickets>, Error> {
+        Ok(CfgX::new(crate::ticketer::TicketRotator::new(
             6 * 60 * 60,
             make_ticket_generator,
         )?))
@@ -39,8 +39,8 @@ impl Ticketer {
     #[cfg(not(feature = "std"))]
     pub fn new<M: crate::lock::MakeMutex>(
         time_provider: &'static dyn TimeProvider,
-    ) -> Result<Arc<dyn ProducesTickets>, Error> {
-        Ok(Arc::new(crate::ticketer::TicketSwitcher::new::<M>(
+    ) -> Result<CfgX<dyn ProducesTickets>, Error> {
+        Ok(CfgX::new(crate::ticketer::TicketSwitcher::new::<M>(
             6 * 60 * 60,
             make_ticket_generator,
             time_provider,
@@ -245,7 +245,7 @@ mod tests {
 
     #[test]
     fn ticketrotator_switching_test() {
-        let t = Arc::new(crate::ticketer::TicketRotator::new(1, make_ticket_generator).unwrap());
+        let t = CfgX::new(crate::ticketer::TicketRotator::new(1, make_ticket_generator).unwrap());
         let now = UnixTime::now();
         let cipher1 = t.encrypt(b"ticket 1").unwrap();
         assert_eq!(t.decrypt(&cipher1).unwrap(), b"ticket 1");
@@ -306,7 +306,7 @@ mod tests {
     #[test]
     fn ticketswitcher_switching_test() {
         #[expect(deprecated)]
-        let t = Arc::new(crate::ticketer::TicketSwitcher::new(1, make_ticket_generator).unwrap());
+        let t = CfgX::new(crate::ticketer::TicketSwitcher::new(1, make_ticket_generator).unwrap());
         let now = UnixTime::now();
         let cipher1 = t.encrypt(b"ticket 1").unwrap();
         assert_eq!(t.decrypt(&cipher1).unwrap(), b"ticket 1");

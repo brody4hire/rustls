@@ -412,7 +412,7 @@ mod test_macros;
 /// with another implementation such as `portable_atomic_util::Arc` in one central location.
 mod super_alias {
     #[allow(clippy::disallowed_types)]
-    pub(crate) type Arc<T> = alloc::sync::Arc<T>;
+    pub(crate) type CfgX<T> = alloc::sync::Arc<T>;
 }
 
 #[macro_use]
