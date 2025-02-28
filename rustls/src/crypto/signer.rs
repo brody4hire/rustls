@@ -175,7 +175,7 @@ impl CertifiedKey {
     pub fn new(cert: Vec<CertificateDer<'static>>, key: CfgX<dyn SigningKey>) -> Self {
         Self {
             cert,
-            key: rcx_new!(key),
+            key: CfgRc::new(key),
             ocsp: None,
         }
     }

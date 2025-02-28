@@ -71,7 +71,10 @@ impl ConfigBuilder<ClientConfig, WantsVerifier> {
         ConfigBuilder {
             state: WantsClientCert {
                 versions: self.state.versions,
-                verifier: rcx_new!(verifier),
+                // XXX XXX
+                // verifier: rcx_new!(verifier),
+                // verifier: verifier.into(),
+                verifier: RcX::new(verifier),
                 client_ech_mode: self.state.client_ech_mode,
             },
             provider: self.provider,

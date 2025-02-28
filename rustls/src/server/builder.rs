@@ -101,7 +101,7 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
         ServerConfig {
             provider: self.provider,
             verifier: self.state.verifier,
-            cert_resolver: RcX::new(cert_resolver),
+            cert_resolver: cert_resolver.into(),
             ignore_client_order: false,
             max_fragment_size: None,
             #[cfg(feature = "std")]
@@ -121,7 +121,7 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
             require_ems: cfg!(feature = "fips"),
             // XXX XXX ??? ???
             // time_provider: CfgRc::new(self.time_provider),
-            time_provider: self.time_provider,
+            time_provider: self.time_provider.into(),
             cert_compressors: compress::default_cert_compressors().to_vec(),
             cert_compression_cache: cfgrc_with_cfg!(compress::CompressionCache::default()),
             cert_decompressors: compress::default_cert_decompressors().to_vec(),
