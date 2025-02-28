@@ -2,7 +2,7 @@ use alloc::vec::Vec;
 use core::fmt::Debug;
 
 use crate::server::ClientHello;
-use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
+use crate::super_alias::{CfgRc, CfgRcRef, CfgX, ErrorRc, Rc1, RcX};
 use crate::{server, sign};
 
 /// Something which never stores sessions.
@@ -30,7 +30,7 @@ mod cache {
     use core::fmt::{Debug, Formatter};
 
     use crate::lock::Mutex;
-    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
+    use crate::super_alias::{CfgRc, CfgRcRef, CfgX, ErrorRc, Rc1, RcX};
     use crate::{limited_cache, server};
 
     /// An implementer of `StoresServerSessions` that stores everything
@@ -200,7 +200,7 @@ mod sni_resolver {
     use crate::error::Error;
     use crate::hash_map::HashMap;
     use crate::server::ClientHello;
-    use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
+    use crate::super_alias::{CfgRc, CfgRcRef, CfgX, ErrorRc, Rc1, RcX};
     use crate::webpki::{ParsedCertificate, verify_server_name};
     use crate::{server, sign};
 

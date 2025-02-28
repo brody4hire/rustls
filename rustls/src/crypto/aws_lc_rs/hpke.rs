@@ -20,7 +20,7 @@ use crate::crypto::tls13::{HkdfExpander, HkdfPrkExtract, HkdfUsingHmac, expand};
 use crate::msgs::enums::{HpkeAead, HpkeKdf, HpkeKem};
 use crate::msgs::handshake::HpkeSymmetricCipherSuite;
 #[cfg(feature = "std")]
-use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
+use crate::super_alias::{CfgRc, CfgRcRef, CfgX, ErrorRc, Rc1, RcX};
 use crate::{Error, OtherError};
 
 /// Default [RFC 9180] Hybrid Public Key Encryption (HPKE) suites supported by aws-lc-rs cryptography.

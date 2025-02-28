@@ -28,7 +28,7 @@ use crate::msgs::message::{Message, MessagePayload};
 use crate::msgs::persist;
 use crate::server::common::ActiveCertifiedKey;
 use crate::server::{ClientHello, ServerConfig, tls13};
-use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc1, RcX, RcXRef};
+use crate::super_alias::{CfgRc, CfgRcRef, CfgX, ErrorRc, Rc1, RcX};
 use crate::{SupportedCipherSuite, suites};
 
 pub(super) type NextState<'a> = Box<dyn State<ServerConnectionData> + 'a>;
