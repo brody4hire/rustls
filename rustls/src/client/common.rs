@@ -72,7 +72,7 @@ pub(super) enum ClientAuthDetails {
     Empty { auth_context_tls13: Option<Vec<u8>> },
     /// Send a non-empty `Certificate` and a `CertificateVerify`.
     Verify {
-        certkey: CfgX<sign::CertifiedKey>,
+        certkey: CfgRcX<sign::CertifiedKey>,
         signer: Box<dyn sign::Signer>,
         auth_context_tls13: Option<Vec<u8>>,
         compressor: Option<&'static dyn compress::CertCompressor>,
@@ -97,7 +97,7 @@ impl ClientAuthDetails {
             if let Some(signer) = certkey.key.choose_scheme(sigschemes) {
                 debug!("Attempting client auth");
                 return Self::Verify {
-                    certkey,
+                    certkey: cfgrcx_from_cfgrc!(certkey),
                     signer,
                     auth_context_tls13,
                     compressor,

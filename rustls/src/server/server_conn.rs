@@ -120,11 +120,12 @@ pub trait ProducesTickets: Debug + Send + Sync {
 /// a certificate (for instance, fetching a certificate from a data store),
 /// the [`Acceptor`] interface is more suitable.
 pub trait ResolvesServerCert: Debug + Send + Sync {
+    // XXX XXX TODO RETURN Option<Rc1<...>>
     /// Choose a certificate chain and matching key given simplified
     /// ClientHello information.
     ///
     /// Return `None` to abort the handshake.
-    fn resolve(&self, client_hello: ClientHello<'_>) -> Option<CfgX<sign::CertifiedKey>>;
+    fn resolve(&self, client_hello: ClientHello<'_>) -> Option<CfgRc<sign::CertifiedKey>>;
 
     /// Return true when the server only supports raw public keys.
     fn only_raw_public_keys(&self) -> bool {

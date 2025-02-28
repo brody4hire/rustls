@@ -114,11 +114,12 @@ pub trait ResolvesClientCert: fmt::Debug + Send + Sync {
     /// if it requires authentication.
     ///
     /// [RFC 5280 A.1]: https://www.rfc-editor.org/rfc/rfc5280#appendix-A.1
+    // XXX XXX TODO RETURN Option<Rc1<...>>
     fn resolve(
         &self,
         root_hint_subjects: &[&[u8]],
         sigschemes: &[SignatureScheme],
-    ) -> Option<CfgX<sign::CertifiedKey>>;
+    ) -> Option<CfgRc<sign::CertifiedKey>>;
 
     /// Return true if the client only supports raw public keys.
     ///

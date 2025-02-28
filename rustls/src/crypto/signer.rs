@@ -94,11 +94,11 @@ pub trait Signer: Debug + Send + Sync {
 ///
 /// [`ConfigBuilder::with_cert_resolver()`]: crate::ConfigBuilder::with_cert_resolver
 #[derive(Debug)]
-pub struct SingleCertAndKey(CfgX<CertifiedKey>);
+pub struct SingleCertAndKey(RcX<CertifiedKey>);
 
 impl From<CertifiedKey> for SingleCertAndKey {
     fn from(certified_key: CertifiedKey) -> Self {
-        Self(CfgX::new(certified_key))
+        Self(rcx_with_cfg!(certified_key))
     }
 }
 
@@ -107,8 +107,8 @@ impl ResolvesClientCert for SingleCertAndKey {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<CfgX<CertifiedKey>> {
-        Some(CfgX::clone(&self.0))
+    ) -> Option<CfgRc<CertifiedKey>> {
+        Some(rcx_clone_into_cfgrc!(&self.0))
     }
 
     fn has_certs(&self) -> bool {
@@ -117,8 +117,8 @@ impl ResolvesClientCert for SingleCertAndKey {
 }
 
 impl ResolvesServerCert for SingleCertAndKey {
-    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<CfgX<CertifiedKey>> {
-        Some(CfgX::clone(&self.0))
+    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<CfgRc<CertifiedKey>> {
+        Some(rcx_clone_into_cfgrc!(&self.0))
     }
 }
 

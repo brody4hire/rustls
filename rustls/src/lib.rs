@@ -498,11 +498,24 @@ macro_rules! rcx_into_cfgrc {
     };
 }
 
+// XXX TBD ???
+macro_rules! rcx_clone_into_cfgrc {
+    ($x:expr) => {
+        $x.clone().into()
+    };
+}
+
 // XXX THIS IS FOR EXPRESSIONS THAT NEED TO BE UPDATED - PANIC FOR NOW - XXX TODO COMPLETELY REMOVE THIS
 macro_rules! xxx_ignore_expression_and_panic_with_todo {
     ($x:expr) => {
         // XXX XXX
         panic!("XXX TODO")
+    };
+}
+
+macro_rules! cfgrcx_from_cfgrc {
+    ($x:expr) => {
+        $x
     };
 }
 

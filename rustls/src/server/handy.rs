@@ -171,18 +171,18 @@ impl server::ProducesTickets for NeverProducesTickets {
 ///
 /// [RFC 7250]: https://tools.ietf.org/html/rfc7250
 #[derive(Clone, Debug)]
-pub struct AlwaysResolvesServerRawPublicKeys(CfgX<sign::CertifiedKey>);
+pub struct AlwaysResolvesServerRawPublicKeys(RcX<sign::CertifiedKey>);
 
 impl AlwaysResolvesServerRawPublicKeys {
     /// Create a new `AlwaysResolvesServerRawPublicKeys` instance.
     pub fn new(certified_key: CfgX<sign::CertifiedKey>) -> Self {
-        Self(certified_key)
+        Self(rcx_new!(certified_key))
     }
 }
 
 impl server::ResolvesServerCert for AlwaysResolvesServerRawPublicKeys {
-    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<CfgX<sign::CertifiedKey>> {
-        Some(CfgX::clone(&self.0))
+    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<CfgRc<sign::CertifiedKey>> {
+        Some(rcx_clone_into_cfgrc!(self.0))
     }
 
     fn only_raw_public_keys(&self) -> bool {
@@ -254,9 +254,10 @@ mod sni_resolver {
     }
 
     impl server::ResolvesServerCert for ResolvesServerCertUsingSni {
-        fn resolve(&self, client_hello: ClientHello<'_>) -> Option<CfgX<sign::CertifiedKey>> {
+        fn resolve(&self, client_hello: ClientHello<'_>) -> Option<CfgRc<sign::CertifiedKey>> {
             if let Some(name) = client_hello.server_name() {
                 self.by_name.get(name).cloned()
+                    .map(|x| cfgrc_new!(x))
             } else {
                 // This kind of resolver requires SNI
                 None
