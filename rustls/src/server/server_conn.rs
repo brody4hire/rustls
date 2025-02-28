@@ -29,8 +29,8 @@ use crate::msgs::handshake::{ClientHelloPayload, ProtocolName, ServerExtension};
 use crate::msgs::message::Message;
 use crate::suites::ExtractedSecrets;
 // XXX TBD XXX XXX
-use crate::alias::{Boxx, Rc};
-type RcBox<T> = Rc<Box<T>>;
+use crate::alias::{Boxx, Arc};
+type RcBox<T> = Arc<Box<T>>;
 #[cfg(feature = "std")]
 use crate::time_provider::DefaultTimeProvider;
 use crate::time_provider::TimeProvider;
@@ -543,7 +543,7 @@ mod connection {
     use crate::error::Error;
     use crate::server::hs;
     use crate::suites::ExtractedSecrets;
-    use crate::alias::{Boxx, Rc, RcBox};
+    use crate::alias::{Boxx, Arc, RcBox};
     use crate::vecbuf::ChunkVecBuffer;
 
     /// Allows reading of early data in resumed TLS1.3 connections.

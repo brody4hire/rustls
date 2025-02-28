@@ -311,7 +311,7 @@ mod tests {
 
     use super::{VerifierBuilderError, WebPkiServerVerifier, provider};
     use crate::RootCertStore;
-    use crate::alias::{Boxx, Rc, RcBox};
+    use crate::alias::{Boxx, Arc, RcBox};
 
     fn load_crls(crls_der: &[&[u8]]) -> Vec<CertificateRevocationListDer<'static>> {
         crls_der

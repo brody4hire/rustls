@@ -415,8 +415,8 @@ mod alias {
     // pub(crate) type Arc<T> = alloc::sync::Arc<T>;
     pub(crate) type Boxx<T> = alloc::boxed::Box<T>;
     // pub(crate) type Rc<T> = alloc::sync::Arc<T>;
-    pub(crate) type Rc<T> = alloc::rc::Rc<T>;
-    pub(crate) type RcBox<T> = Rc<alloc::boxed::Box<T>>;
+    pub(crate) type Arc<T> = alloc::rc::Rc<T>;
+    pub(crate) type RcBox<T> = Arc<alloc::boxed::Box<T>>;
 }
 
 #[macro_use]

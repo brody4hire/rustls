@@ -261,7 +261,7 @@ mod tests {
     use crate::msgs::handshake::SessionId;
     use crate::msgs::persist::Tls13ClientSessionValue;
     use crate::suites::SupportedCipherSuite;
-    use crate::alias::{Boxx, Rc, RcBox};
+    use crate::alias::{Boxx, Arc, RcBox};
 
     #[test]
     fn test_noclientsessionstorage_does_nothing() {

@@ -8,7 +8,7 @@ use crate::client::ResolvesClientCert;
 use crate::enums::{SignatureAlgorithm, SignatureScheme};
 use crate::error::{Error, InconsistentKeys};
 use crate::server::{ClientHello, ParsedCertificate, ResolvesServerCert};
-use crate::alias::{Boxx, Rc, RcBox};
+use crate::alias::{Boxx, Arc, RcBox};
 use crate::x509;
 
 use super::CryptoProvider;
@@ -98,7 +98,7 @@ pub struct SingleCertAndKey(RcBox<CertifiedKey>);
 
 impl From<CertifiedKey> for SingleCertAndKey {
     fn from(certified_key: CertifiedKey) -> Self {
-        Self(Rc::new(Boxx::new(certified_key)))
+        Self(Arc::new(Boxx::new(certified_key)))
     }
 }
 
