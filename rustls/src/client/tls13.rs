@@ -893,11 +893,8 @@ impl State<ClientConnectionData> for ExpectCertificateRequest {
             .cloned();
 
         let client_auth = ClientAuthDetails::resolve(
-            // self.config
-            //     .client_auth_cert_resolver
-            //     .as_ref(),
-            (*self.config
-                .client_auth_cert_resolver)
+            self.config
+                .client_auth_cert_resolver
                 .as_ref(),
             certreq.authorities_extension(),
             &compat_sigschemes,

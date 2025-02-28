@@ -163,7 +163,7 @@ use crate::{ClientConfig, ServerConfig};
 #[derive(Clone)]
 pub struct ConfigBuilder<Side: ConfigSide, State> {
     pub(crate) state: State,
-    pub(crate) provider: RcBox<CryptoProvider>,
+    pub(crate) provider: Rc<CryptoProvider>,
     pub(crate) time_provider: RcBox<dyn TimeProvider>,
     pub(crate) side: PhantomData<Side>,
 }

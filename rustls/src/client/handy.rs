@@ -214,11 +214,11 @@ impl client::ResolvesClientCert for FailResolveClientCert {
 ///
 /// [RFC 7250]: https://tools.ietf.org/html/rfc7250
 #[derive(Clone, Debug)]
-pub struct AlwaysResolvesClientRawPublicKeys(Boxx<sign::CertifiedKey>);
+pub struct AlwaysResolvesClientRawPublicKeys(Rc<sign::CertifiedKey>);
 impl AlwaysResolvesClientRawPublicKeys {
     /// Create a new `AlwaysResolvesClientRawPublicKeys` instance.
     pub fn new(certified_key: Boxx<sign::CertifiedKey>) -> Self {
-        Self(certified_key)
+        Self(rc_xxx_new_from_box!(certified_key))
     }
 }
 

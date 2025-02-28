@@ -370,7 +370,7 @@ impl ClientConfig {
     }
 
     /// Return the crypto provider used to construct this client configuration.
-    pub fn crypto_provider(&self) -> &Boxx<CryptoProvider> {
+    pub fn crypto_provider(&self) -> &Rc<CryptoProvider> {
         &self.provider
     }
 
@@ -464,7 +464,7 @@ impl Resumption {
     /// Disable all use of session resumption.
     pub fn disabled() -> Self {
         Self {
-            store: Rc::new(Boxx::new(NoClientSessionStorage)),
+            store: Rc::new(NoClientSessionStorage),
             tls12_resumption: Tls12Resumption::Disabled,
         }
     }
@@ -525,7 +525,7 @@ pub(super) mod danger {
     impl DangerousClientConfig<'_> {
         /// Overrides the default `ServerCertVerifier` with something else.
         pub fn set_certificate_verifier(&mut self, verifier: Boxx<dyn ServerCertVerifier>) {
-            self.cfg.verifier = Rc::new(verifier);
+            self.cfg.verifier = rc_xxx_new_from_box!(verifier);
         }
     }
 }

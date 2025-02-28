@@ -28,9 +28,10 @@ use crate::msgs::enums::CertificateType;
 use crate::msgs::handshake::{ClientHelloPayload, ProtocolName, ServerExtension};
 use crate::msgs::message::Message;
 use crate::suites::ExtractedSecrets;
-// XXX TBD XXX XXX
 use crate::alias::{Boxx, Rc};
-type RcBox<T> = Rc<Box<T>>;
+// XXX XXX
+// type RcBox<T> = Rc<Box<T>>;
+use crate::alias::Rc as RcBox;
 #[cfg(feature = "std")]
 use crate::time_provider::DefaultTimeProvider;
 use crate::time_provider::TimeProvider;
@@ -249,7 +250,7 @@ impl<'a> ClientHello<'a> {
 #[derive(Clone, Debug)]
 pub struct ServerConfig {
     /// Source of randomness and other crypto.
-    pub(super) provider: RcBox<CryptoProvider>,
+    pub(super) provider: Rc<CryptoProvider>,
 
     /// Ignore the client's ciphersuite order. Instead,
     /// choose the top ciphersuite in the server list

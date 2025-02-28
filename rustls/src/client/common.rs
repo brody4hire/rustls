@@ -72,8 +72,8 @@ pub(super) enum ClientAuthDetails {
     Empty { auth_context_tls13: Option<Vec<u8>> },
     /// Send a non-empty `Certificate` and a `CertificateVerify`.
     Verify {
-        certkey: Boxx<sign::CertifiedKey>,
-        signer: Box<dyn sign::Signer>,
+        certkey: Rc<sign::CertifiedKey>,
+        signer: Rc<dyn sign::Signer>,
         auth_context_tls13: Option<Vec<u8>>,
         compressor: Option<&'static dyn compress::CertCompressor>,
     },
