@@ -429,7 +429,7 @@ mod super_alias {
     pub(crate) type RcX<T> = alloc::sync::Arc<T>;
     // pub(crate) use alloc::rc::Rc as RcBox;
     // XXX XXX
-    pub(crate) type CfgRc = i32;
+    pub(crate) type CfgRc<T> = alloc::sync::Arc<T>;
     pub(crate) type ErrorRc = i32;
     pub(crate) type CfgRcRef = i32;
     pub(crate) type CfgRcX<T> = alloc::sync::Arc<T>;
