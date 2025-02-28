@@ -100,7 +100,7 @@ mod test_raw_keys {
             let client_config = make_client_config_with_raw_key_support(*kt);
             let mut server_config = make_server_config_with_raw_key_support(*kt);
 
-            server_config.cert_resolver = Arc::new(ServerCheckCertResolve {
+            server_config.cert_resolver = Rc::new(ServerCheckCertResolve {
                 expected_client_cert_types: Some(vec![CertificateType::RawPublicKey]),
                 expected_server_cert_types: Some(vec![CertificateType::RawPublicKey]),
                 ..Default::default()

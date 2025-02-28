@@ -136,7 +136,7 @@ pub struct CertifiedKey {
     pub cert: Vec<CertificateDer<'static>>,
 
     /// The certified key.
-    pub key: CfgX<dyn SigningKey>,
+    pub key: RcX<dyn SigningKey>,
 
     /// An optional OCSP response from the certificate issuer,
     /// attesting to its continued validity.
@@ -175,7 +175,7 @@ impl CertifiedKey {
     pub fn new(cert: Vec<CertificateDer<'static>>, key: CfgX<dyn SigningKey>) -> Self {
         Self {
             cert,
-            key,
+            key: rcx_from_cfgx!(key),
             ocsp: None,
         }
     }

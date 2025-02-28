@@ -414,13 +414,85 @@ mod super_alias {
     // IMPORTANT NOTICE: ALIAS(ES) SUBJECT TO CHANGE
     #[allow(clippy::disallowed_types)]
     // INTENDED for INPUT CONFIG
-    pub(crate) type CfgX<T> = alloc::sync::Arc<T>;
+    pub(crate) type CfgX<T> = alloc::boxed::Box<T>;
+    // INTENDED for ERROR CONTENTS
+    pub(crate) type ErrorRc<T> = alloc::sync::Arc<T>;
     // INTENDED for OUTPUT CONFIG - TBD MAY ALIAS to alloc::sync::Arc, alloc::rc::Rc, or portable_atomic_util::Arc
     pub(crate) type Rc<T> = alloc::sync::Arc<T>;
     // INTENDED for OUTPUT of STORED CONFIG AS A REFERENCE - TBD MAY COMBINE WITH "Rc" ALIAS ABOVE
     pub(crate) type RcXRef<'a, T> = &'a RcX<T>;
     // INTENDED for STORED CONFIG
+    // #[cfg(ignore_for_now)] // IGNORE THIS FOR NOW
     pub(crate) type RcX<T> = alloc::sync::Arc<alloc::boxed::Box<T>>;
+    #[cfg(ignore_for_now)] // IGNORE THIS FOR NOW
+    // NON-FUNCTIONING [FAKE] CONTAINER TO GET SIMPLE BUILD WORKING - JUST PANICS (!!!)
+    #[derive(Debug)]
+    pub(crate) struct RcX<T: ?Sized>(alloc::sync::Arc<T>);
+    #[cfg(ignore_for_now)] // IGNORE THIS FOR NOW
+    impl<T: ?Sized> Clone for RcX<T> {
+        fn clone(&self) -> Self {
+            panic!("XXX")
+        }
+    }
+    #[cfg(ignore_for_now)] // IGNORE THIS FOR NOW
+    impl<T: ?Sized> Deref for RcX<T> {
+        type Target = T;
+        fn deref(&self) -> &Self::Target {
+            panic!("XXX")
+        }
+    }
+    #[cfg(ignore_for_now)] // IGNORE THIS FOR NOW
+    use core::ops::Deref;
+}
+
+macro_rules! rcx_from_cfgx {
+    ($x:expr) => {
+        // XXX XXX
+        panic!("XXX")
+    };
+}
+
+macro_rules! rcx_new_with_cfg {
+    ($x:expr) => {
+        // XXX XXX
+        panic!("XXX")
+    };
+}
+
+macro_rules! ref_from_cfgx {
+    ($x:expr) => {
+        &*$x
+    };
+}
+
+macro_rules! rcxref_from_rcx {
+    ($x:expr) => {
+        // XXX TBD ???
+        // &x
+        panic!("XXX")
+    };
+}
+
+macro_rules! rc_from_rcx {
+    ($x:expr) => {
+        // XXX XXX
+        panic!("XXX")
+    };
+}
+
+macro_rules! rc_new_with_cfg {
+    ($x:expr) => {
+        // XXX XXX
+        panic!("XXX")
+    };
+}
+
+// XXX TBD ??? ???
+macro_rules! cfg_clone_from_cfg_ref {
+    ($x:expr) => {
+        // XXX XXX
+        panic!("XXX")
+    };
 }
 
 #[macro_use]

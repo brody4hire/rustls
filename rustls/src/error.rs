@@ -805,7 +805,7 @@ mod other_error {
 
     use super::Error;
     #[cfg(feature = "std")]
-    use crate::super_alias::{CfgX, Rc, RcX, RcXRef};
+    use crate::super_alias::{CfgX, Rc, RcX, RcXRef, ErrorRc};
 
     /// Any other error that cannot be expressed by a more specific [`Error`] variant.
     ///
@@ -814,7 +814,7 @@ mod other_error {
     ///
     /// Enums holding this type will never compare equal to each other.
     #[derive(Debug, Clone)]
-    pub struct OtherError(#[cfg(feature = "std")] pub CfgX<dyn StdError + Send + Sync>);
+    pub struct OtherError(#[cfg(feature = "std")] pub ErrorRc<dyn StdError + Send + Sync>);
 
     impl PartialEq<Self> for OtherError {
         fn eq(&self, _other: &Self) -> bool {
@@ -860,6 +860,7 @@ mod tests {
     use super::{
         CertRevocationListError, Error, InconsistentKeys, InvalidMessage, OtherError, UnixTime,
     };
+    use crate::super_alias::ErrorRc;
     #[cfg(feature = "std")]
     use crate::super_alias::{CfgX, Rc, RcX, RcXRef};
     use pki_types::ServerName;
@@ -966,7 +967,7 @@ mod tests {
         );
         let other = Other(OtherError(
             #[cfg(feature = "std")]
-            CfgX::from(Box::from("")),
+            ErrorRc::from(Box::from("")),
         ));
         assert_ne!(other, other);
         assert_ne!(BadEncoding, Expired);
@@ -990,7 +991,7 @@ mod tests {
         assert_eq!(UnsupportedRevocationReason, UnsupportedRevocationReason);
         let other = Other(OtherError(
             #[cfg(feature = "std")]
-            CfgX::from(Box::from("")),
+            ErrorRc::from(Box::from("")),
         ));
         assert_ne!(other, other);
         assert_ne!(BadSignature, InvalidCrlNumber);
@@ -999,7 +1000,7 @@ mod tests {
     #[test]
     #[cfg(feature = "std")]
     fn other_error_equality() {
-        let other_error = OtherError(CfgX::from(Box::from("")));
+        let other_error = OtherError(ErrorRc::from(Box::from("")));
         assert_ne!(other_error, other_error);
         let other: Error = other_error.into();
         assert_ne!(other, other);
@@ -1076,7 +1077,7 @@ mod tests {
             Error::InvalidCertRevocationList(CertRevocationListError::BadSignature),
             Error::Other(OtherError(
                 #[cfg(feature = "std")]
-                CfgX::from(Box::from("")),
+                ErrorRc::from(Box::from("")),
             )),
         ];
 

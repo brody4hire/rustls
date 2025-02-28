@@ -19,6 +19,7 @@ use crate::crypto::hpke::{
 use crate::crypto::tls13::{HkdfExpander, HkdfPrkExtract, HkdfUsingHmac, expand};
 use crate::msgs::enums::{HpkeAead, HpkeKdf, HpkeKem};
 use crate::msgs::handshake::HpkeSymmetricCipherSuite;
+use crate::super_alias::ErrorRc;
 #[cfg(feature = "std")]
 use crate::super_alias::{CfgX, Rc, RcX, RcXRef};
 use crate::{Error, OtherError};
@@ -928,7 +929,7 @@ impl<const KDF_LEN: usize> Drop for KemSharedSecret<KDF_LEN> {
 fn key_rejected_err(_e: aws_lc_rs::error::KeyRejected) -> Error {
     #[cfg(feature = "std")]
     {
-        Error::Other(OtherError(CfgX::new(_e)))
+        Error::Other(OtherError(ErrorRc::new(_e)))
     }
     #[cfg(not(feature = "std"))]
     {

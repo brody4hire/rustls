@@ -84,6 +84,7 @@ pub fn any_eddsa_type(der: &PrivatePkcs8KeyDer<'_>) -> Result<CfgX<dyn SigningKe
 /// the public, stable, API.
 #[doc(hidden)]
 pub struct RsaSigningKey {
+    // XXX TBD BOX VS ARC ???
     key: CfgX<RsaKeyPair>,
 }
 
@@ -124,7 +125,7 @@ impl SigningKey for RsaSigningKey {
         ALL_RSA_SCHEMES
             .iter()
             .find(|scheme| offered.contains(scheme))
-            .map(|scheme| RsaSigner::new(CfgX::clone(&self.key), *scheme))
+            .map(|scheme| RsaSigner::new(cfg_clone_from_cfg_ref!(&self.key), *scheme))
     }
 
     fn public_key(&self) -> Option<SubjectPublicKeyInfoDer<'_>> {
@@ -285,7 +286,7 @@ impl SigningKey for EcdsaSigningKey {
     fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<Box<dyn Signer>> {
         if offered.contains(&self.scheme) {
             Some(Box::new(EcdsaSigner {
-                key: CfgX::clone(&self.key),
+                key: cfg_clone_from_cfg_ref!(&self.key),
                 scheme: self.scheme,
             }))
         } else {
@@ -379,7 +380,7 @@ impl SigningKey for Ed25519SigningKey {
     fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<Box<dyn Signer>> {
         if offered.contains(&self.scheme) {
             Some(Box::new(Ed25519Signer {
-                key: CfgX::clone(&self.key),
+                key: cfg_clone_from_cfg_ref!(&self.key),
                 scheme: self.scheme,
             }))
         } else {

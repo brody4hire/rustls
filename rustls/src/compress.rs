@@ -294,7 +294,7 @@ pub struct CompressionCacheInner {
     /// LRU-order entries.
     ///
     /// First is least-used, last is most-used.
-    entries: Mutex<VecDeque<CfgX<CompressionCacheEntry>>>,
+    entries: Mutex<VecDeque<RcX<CompressionCacheEntry>>>,
 }
 
 impl CompressionCache {
@@ -321,7 +321,7 @@ impl CompressionCache {
         &self,
         compressor: &dyn CertCompressor,
         original: &CertificatePayloadTls13<'_>,
-    ) -> Result<CfgX<CompressionCacheEntry>, CompressionFailed> {
+    ) -> Result<Rc<CompressionCacheEntry>, CompressionFailed> {
         match self {
             Self::Disabled => Self::uncached_compression(compressor, original),
 
@@ -335,7 +335,7 @@ impl CompressionCache {
         &self,
         compressor: &dyn CertCompressor,
         original: &CertificatePayloadTls13<'_>,
-    ) -> Result<CfgX<CompressionCacheEntry>, CompressionFailed> {
+    ) -> Result<Rc<CompressionCacheEntry>, CompressionFailed> {
         let (max_size, entries) = match self {
             Self::Enabled(CompressionCacheInner { size, entries }) => (*size, entries),
             _ => unreachable!(),
@@ -358,8 +358,8 @@ impl CompressionCache {
             if item.algorithm == algorithm && item.original == encoding {
                 // this item is now MRU
                 let item = cache.remove(i).unwrap();
-                cache.push_back(CfgX::clone(&item));
-                return Ok(item);
+                cache.push_back(rcx_from_cfgx!(&item));
+                return Ok(rc_from_rcx!(item));
             }
         }
         drop(cache);
@@ -384,15 +384,15 @@ impl CompressionCache {
         if cache.len() == max_size {
             cache.pop_front();
         }
-        cache.push_back(CfgX::clone(&new_entry));
-        Ok(new_entry)
+        cache.push_back(rcx_new_with_cfg!(&new_entry));
+        Ok(rc_from_rcx!(new_entry))
     }
 
     /// Compress `original` using `compressor` at `Interactive` level.
     fn uncached_compression(
         compressor: &dyn CertCompressor,
         original: &CertificatePayloadTls13<'_>,
-    ) -> Result<CfgX<CompressionCacheEntry>, CompressionFailed> {
+    ) -> Result<Rc<CompressionCacheEntry>, CompressionFailed> {
         let algorithm = compressor.algorithm();
         let encoding = original.get_encoding();
         let uncompressed_len = encoding.len() as u32;
@@ -400,7 +400,7 @@ impl CompressionCache {
 
         // this `CompressionCacheEntry` in fact never makes it into the cache, so
         // `original` is left empty
-        Ok(CfgX::new(CompressionCacheEntry {
+        Ok(rc_new_with_cfg!(CompressionCacheEntry {
             algorithm,
             original: Vec::new(),
             compressed: CompressedCertificatePayload {

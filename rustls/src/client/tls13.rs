@@ -893,9 +893,11 @@ impl State<ClientConnectionData> for ExpectCertificateRequest {
             .cloned();
 
         let client_auth = ClientAuthDetails::resolve(
-            self.config
-                .client_auth_cert_resolver
-                .as_ref(),
+            // XXX XXX
+            // self.config
+            //     .client_auth_cert_resolver
+            //     .as_ref(),
+            ref_from_cfgx!(self.config.client_auth_cert_resolver),
             certreq.authorities_extension(),
             &compat_sigschemes,
             Some(certreq.context.0.clone()),
@@ -1421,8 +1423,8 @@ impl State<ClientConnectionData> for ExpectFinished {
         }
 
         let st = ExpectTraffic {
-            config: CfgX::clone(&st.config),
-            session_storage: CfgX::clone(&st.config.resumption.store),
+            config: rcx_from_cfgx!(&st.config),
+            session_storage: rcx_from_cfgx!(&st.config.resumption.store),
             server_name: st.server_name,
             suite: st.suite,
             transcript: st.transcript,
@@ -1447,8 +1449,8 @@ impl State<ClientConnectionData> for ExpectFinished {
 // In this state we can be sent tickets, key updates,
 // and application data.
 struct ExpectTraffic {
-    config: CfgX<ClientConfig>,
-    session_storage: CfgX<dyn ClientSessionStore>,
+    config: RcX<ClientConfig>,
+    session_storage: RcX<dyn ClientSessionStore>,
     server_name: ServerName<'static>,
     suite: &'static Tls13CipherSuite,
     transcript: HandshakeHash,
