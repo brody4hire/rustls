@@ -43,7 +43,7 @@ use crate::enums::CertificateCompressionAlgorithm;
 use crate::msgs::base::{Payload, PayloadU24};
 use crate::msgs::codec::Codec;
 use crate::msgs::handshake::{CertificatePayloadTls13, CompressedCertificatePayload};
-use crate::alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{Boxx, Rc, RcBox};
 
 /// Returns the supported `CertDecompressor` implementations enabled
 /// by crate features.

@@ -8,7 +8,7 @@ use crate::client::ResolvesClientCert;
 use crate::enums::{SignatureAlgorithm, SignatureScheme};
 use crate::error::{Error, InconsistentKeys};
 use crate::server::{ClientHello, ParsedCertificate, ResolvesServerCert};
-use crate::alias::{Boxx, Rc, RcBox};
+use crate::super_alias::{Boxx, Rc, RcBox};
 use crate::x509;
 
 use super::CryptoProvider;
