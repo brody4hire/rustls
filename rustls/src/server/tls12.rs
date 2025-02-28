@@ -28,7 +28,7 @@ use crate::msgs::handshake::{
 use crate::msgs::message::{Message, MessagePayload};
 use crate::msgs::persist;
 use crate::suites::PartiallyExtractedSecrets;
-use crate::super_alias::{CfgX, Rc, RcX, RcXRef};
+use crate::super_alias::{CfgRc, CfgX, ErrorRc, Rc, RcX, RcXRef};
 use crate::tls12::{self, ConnectionSecrets, Tls12CipherSuite};
 use crate::verify;
 
