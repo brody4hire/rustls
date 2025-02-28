@@ -71,7 +71,8 @@ impl ConfigBuilder<ClientConfig, WantsVerifier> {
         ConfigBuilder {
             state: WantsClientCert {
                 versions: self.state.versions,
-                verifier: Rc::new(verifier),
+                // XXX TBD ??? FN ???
+                verifier: Rc::new(*verifier),
                 client_ech_mode: self.state.client_ech_mode,
             },
             provider: self.provider,
@@ -129,7 +130,7 @@ pub(super) mod danger {
 #[derive(Clone)]
 pub struct WantsClientCert {
     versions: versions::EnabledVersions,
-    verifier: RcBox<dyn verify::ServerCertVerifier>,
+    verifier: Rc<dyn verify::ServerCertVerifier>,
     client_ech_mode: Option<EchMode>,
 }
 
@@ -171,7 +172,7 @@ impl ConfigBuilder<ClientConfig, WantsClientCert> {
             versions: self.state.versions,
             enable_sni: true,
             verifier: self.state.verifier,
-            key_log: Rc::new(Boxx::new(NoKeyLog {})),
+            key_log: Rc::new(NoKeyLog {}),
             enable_secret_extraction: false,
             enable_early_data: false,
             #[cfg(feature = "tls12")]
