@@ -321,7 +321,9 @@ impl ClientConfig {
             // XXX XXX
             // provider: rcx_new!(provider),
             provider: provider.into(),
-            time_provider: rcx_with_cfg!(DefaultTimeProvider),
+            // XXX XXX
+            // time_provider: rcx_with_cfg!(DefaultTimeProvider),
+            time_provider: cfgrc_with_cfg!(DefaultTimeProvider),
             side: PhantomData,
         }
     }
@@ -348,7 +350,9 @@ impl ClientConfig {
             // XXX XXX
             // provider: rcx_new!(provider),
             provider: provider.into(),
-            time_provider: rcx_new!(time_provider),
+            // XXX
+            // time_povider: rcx_new!(time_provider),
+            time_provider: time_provider.into(),
             side: PhantomData,
         }
     }

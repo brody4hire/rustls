@@ -467,6 +467,7 @@ macro_rules! cfgrc_new {
     };
 }
 
+// XXX TBD ???
 macro_rules! cfgrc_with_cfg {
     ($x:expr) => {
         alloc::sync::Arc::new(alloc::boxed::Box::new($x))
@@ -480,11 +481,11 @@ macro_rules! rcx_new {
 }
 
 // XXX TBD ???
-macro_rules! rcx_copy {
-    ($x:expr) => {
-        $x
-    };
-}
+// macro_rules! rcx_copy {
+//     ($x:expr) => {
+//         $x
+//     };
+// }
 
 macro_rules! rcx_with_cfg {
     ($x:expr) => {
@@ -492,11 +493,12 @@ macro_rules! rcx_with_cfg {
     };
 }
 
-macro_rules! rcx_into_cfgrc {
-    ($x:expr) => {
-        $x.into()
-    };
-}
+// XXX XXX GONE:
+// macro_rules! rcx_into_cfgrc {
+//     ($x:expr) => {
+//         $x.into()
+//     };
+// }
 
 // XXX TBD ???
 macro_rules! rcx_clone_into_cfgrc {

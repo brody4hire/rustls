@@ -164,7 +164,7 @@ use crate::{ClientConfig, ServerConfig};
 pub struct ConfigBuilder<Side: ConfigSide, State> {
     pub(crate) state: State,
     pub(crate) provider: CfgRcX<CryptoProvider>,
-    pub(crate) time_provider: RcX<dyn TimeProvider>,
+    pub(crate) time_provider: CfgRcX<dyn TimeProvider>,
     pub(crate) side: PhantomData<Side>,
 }
 
