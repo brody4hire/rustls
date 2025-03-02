@@ -9,7 +9,7 @@ use crate::client::{ClientConfig, EchMode, ResolvesClientCert, handy};
 use crate::error::Error;
 use crate::key_log::NoKeyLog;
 use crate::sign::{CertifiedKey, SingleCertAndKey};
-use crate::super_alias::{CfgRc, CfgRcRef, CfgRcX, CfgX, ErrorRc, Rc1, RcX};
+use crate::super_alias::{CfgRc, CfgRcRef, CfgRcX, CfgX, ErrorRc, Rc1, Rc2, RcX};
 use crate::versions::TLS13;
 use crate::webpki::{self, WebPkiServerVerifier};
 use crate::{WantsVersions, compress, verify, versions};
@@ -92,7 +92,7 @@ pub(super) mod danger {
     use core::marker::PhantomData;
 
     use crate::client::WantsClientCert;
-    use crate::super_alias::{CfgRc, CfgRcRef, CfgRcX, CfgX, ErrorRc, Rc1, RcX};
+    use crate::super_alias::{CfgRc, CfgRcRef, CfgRcX, CfgX, ErrorRc, Rc1, Rc2, RcX};
     use crate::{ClientConfig, ConfigBuilder, WantsVerifier, verify};
 
     /// Accessor for dangerous configuration options.

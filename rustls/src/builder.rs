@@ -7,7 +7,7 @@ use crate::client::EchMode;
 use crate::crypto::CryptoProvider;
 use crate::error::Error;
 use crate::msgs::handshake::ALL_KEY_EXCHANGE_ALGORITHMS;
-use crate::super_alias::{CfgRc, CfgRcRef, CfgRcX, CfgX, ErrorRc, Rc1, RcX};
+use crate::super_alias::{CfgRc, CfgRcRef, CfgRcX, CfgX, ErrorRc, Rc1, Rc2, RcX};
 use crate::time_provider::TimeProvider;
 use crate::versions;
 #[cfg(doc)]

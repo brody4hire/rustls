@@ -13,7 +13,7 @@ use super::ring_like::signature::{self, EcdsaKeyPair, Ed25519KeyPair, KeyPair, R
 use crate::crypto::signer::{Signer, SigningKey, public_key_to_spki};
 use crate::enums::{SignatureAlgorithm, SignatureScheme};
 use crate::error::Error;
-use crate::super_alias::{CfgRc, CfgRcRef, CfgRcX, CfgX, ErrorRc, Rc1, RcX};
+use crate::super_alias::{CfgRc, CfgRcRef, CfgRcX, CfgX, ErrorRc, Rc1, Rc2, RcX};
 use crate::x509::{wrap_concat_in_sequence, wrap_in_octet_string};
 
 /// Parse `der` as any supported key encoding/type, returning

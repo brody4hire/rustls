@@ -433,6 +433,8 @@ mod super_alias {
     pub(crate) type ErrorRc = i32;
     pub(crate) type CfgRcRef = i32;
     pub(crate) type CfgRcX<T> = alloc::sync::Arc<T>;
+    // XXX TBD ??? ???
+    pub(crate) type Rc2<T> = alloc::sync::Arc<T>;
 }
 
 macro_rules! cfgx_into_cfgrcx {
