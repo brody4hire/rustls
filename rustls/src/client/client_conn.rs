@@ -231,7 +231,7 @@ pub struct ClientConfig {
     pub(super) versions: versions::EnabledVersions,
 
     /// How to verify the server certificate chain.
-    pub(super) verifier: RcX<dyn verify::ServerCertVerifier>,
+    pub(super) verifier: CfgRcX<dyn verify::ServerCertVerifier>,
 
     /// How to decompress the server's certificate chain.
     ///
@@ -530,7 +530,9 @@ pub(super) mod danger {
     impl DangerousClientConfig<'_> {
         /// Overrides the default `ServerCertVerifier` with something else.
         pub fn set_certificate_verifier(&mut self, verifier: CfgX<dyn ServerCertVerifier>) {
-            self.cfg.verifier = rcx_new!(verifier);
+            // XXX XXX
+            // self.cfg.verifier = rcx_new!(verifier);
+            self.cfg.verifier = verifier.into();
         }
     }
 }

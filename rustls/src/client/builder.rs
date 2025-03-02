@@ -71,7 +71,9 @@ impl ConfigBuilder<ClientConfig, WantsVerifier> {
         ConfigBuilder {
             state: WantsClientCert {
                 versions: self.state.versions,
-                verifier: rcx_new!(verifier),
+                // XXX
+                // verifier: rcx_new!(verifier),
+                verifier: CfgRcX::new(verifier),
                 client_ech_mode: self.state.client_ech_mode,
             },
             provider: self.provider,
@@ -111,7 +113,9 @@ pub(super) mod danger {
             ConfigBuilder {
                 state: WantsClientCert {
                     versions: self.cfg.state.versions,
-                    verifier: rcx_new!(verifier),
+                    // XXX XXX
+                    // verifier: rcx_new!(verifier),
+                    verifier: CfgRcX::new(verifier),
                     client_ech_mode: self.cfg.state.client_ech_mode,
                 },
                 provider: self.cfg.provider,
@@ -129,7 +133,7 @@ pub(super) mod danger {
 #[derive(Clone)]
 pub struct WantsClientCert {
     versions: versions::EnabledVersions,
-    verifier: RcX<dyn verify::ServerCertVerifier>,
+    verifier: CfgRcX<dyn verify::ServerCertVerifier>,
     client_ech_mode: Option<EchMode>,
 }
 
@@ -172,7 +176,9 @@ impl ConfigBuilder<ClientConfig, WantsClientCert> {
             client_auth_cert_resolver: cfgrc_new!(client_auth_cert_resolver),
             versions: self.state.versions,
             enable_sni: true,
-            verifier: rcx_copy!(self.state.verifier),
+            // XXX XXX
+            // verifier: rcx_copy!(self.state.verifier),
+            verifier: self.state.verifier,
             key_log: cfgrc_with_cfg!(NoKeyLog {}),
             enable_secret_extraction: false,
             enable_early_data: false,
