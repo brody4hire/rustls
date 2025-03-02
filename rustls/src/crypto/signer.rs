@@ -62,7 +62,8 @@ pub trait SigningKey: Debug + Send + Sync {
     ///
     /// Expresses the choice by returning something that implements `Signer`,
     /// using the chosen scheme.
-    fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<Rc1<dyn Signer>>;
+    // XXX TBD ???
+    fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<CfgRcX<dyn Signer>>;
 
     /// Get the RFC 5280-compliant SubjectPublicKeyInfo (SPKI) of this [`SigningKey`] if available.
     fn public_key(&self) -> Option<SubjectPublicKeyInfoDer<'_>> {
