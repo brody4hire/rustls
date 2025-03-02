@@ -97,7 +97,8 @@ impl ClientAuthDetails {
             if let Some(signer) = certkey.key.choose_scheme(sigschemes) {
                 debug!("Attempting client auth");
                 return Self::Verify {
-                    certkey: cfgrcx_from_cfgrc!(certkey),
+                    // XXX TBD ???
+                    certkey,
                     signer,
                     auth_context_tls13,
                     compressor,
