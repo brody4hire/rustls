@@ -445,7 +445,9 @@ impl ServerConfig {
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
-            provider: rcx_new!(provider),
+            // XXX XXX
+            // provider: rcx_new!(provider),
+            provider: provider.into(),
             time_provider: rcx_with_cfg!(DefaultTimeProvider),
             side: PhantomData,
         }
@@ -471,7 +473,9 @@ impl ServerConfig {
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
-            provider: rcx_new!(provider),
+            // XXX XXX
+            // provider: rcx_new!(provider),
+            provider: provider.into(),
             time_provider: rcx_new!(time_provider),
             side: PhantomData,
         }

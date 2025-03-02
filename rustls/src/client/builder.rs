@@ -163,7 +163,9 @@ impl ConfigBuilder<ClientConfig, WantsClientCert> {
         client_auth_cert_resolver: CfgX<dyn ResolvesClientCert>,
     ) -> ClientConfig {
         ClientConfig {
-            provider: rcx_copy!(self.provider),
+            // XXX XXX
+            // provider: rcx_copy!(self.provider),
+            provider: self.provider.into(),
             alpn_protocols: Vec::new(),
             resumption: Resumption::default(),
             max_fragment_size: None,

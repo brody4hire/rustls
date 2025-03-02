@@ -99,7 +99,9 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
     /// Sets a custom [`ResolvesServerCert`].
     pub fn with_cert_resolver(self, cert_resolver: CfgX<dyn ResolvesServerCert>) -> ServerConfig {
         ServerConfig {
-            provider: rcx_copy!(self.provider),
+            // XXX XXX
+            // provider: rcx_copy!(self.provider),
+            provider: self.provider.into(),
             verifier: self.state.verifier,
             cert_resolver: cfgrc_new!(cert_resolver),
             ignore_client_order: false,

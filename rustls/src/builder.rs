@@ -163,14 +163,14 @@ use crate::{ClientConfig, ServerConfig};
 #[derive(Clone)]
 pub struct ConfigBuilder<Side: ConfigSide, State> {
     pub(crate) state: State,
-    pub(crate) provider: RcX<CryptoProvider>,
+    pub(crate) provider: CfgRcX<CryptoProvider>,
     pub(crate) time_provider: RcX<dyn TimeProvider>,
     pub(crate) side: PhantomData<Side>,
 }
 
 impl<Side: ConfigSide, State> ConfigBuilder<Side, State> {
     /// Return the crypto provider used to construct this builder.
-    pub fn crypto_provider(&self) -> &CfgX<CryptoProvider> {
+    pub fn crypto_provider(&self) -> CfgRcRef<CryptoProvider> {
         &self.provider
     }
 }
