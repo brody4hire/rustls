@@ -412,10 +412,10 @@ mod test_macros;
 /// with another implementation such as `portable_atomic_util::Arc` in one central location.
 mod super_alias {
     #[allow(clippy::disallowed_types)]
-    // pub(crate) type Arc<T> = alloc::sync::Arc<T>;
+    // pub(crate) type Arc<T> = alloc::rc::Rc<T>;
     pub(crate) type CfgX<T> = alloc::boxed::Box<T>;
     // pub(crate) use alloc::boxed::Box as Boxx;
-    // pub(crate) type Rc<T> = alloc::sync::Arc<T>;
+    // pub(crate) type Rc<T> = alloc::rc::Rc<T>;
     // pub(crate) use alloc::rc::Rc;
     // pub(crate) type Arc<T> = alloc::rc::Rc<T>;
     // pub(crate) use Rc as Arc;
@@ -424,17 +424,17 @@ mod super_alias {
     // pub(crate) type RcBox<T> = Arc<alloc::boxed::Box<T>>;
     // pub(crate) type RcBox<T> = Rc<alloc::boxed::Box<T>>;
     // pub(crate) use alloc::rc::Rc;
-    pub(crate) type Rc1<T> = alloc::sync::Arc<T>;
+    pub(crate) type Rc1<T> = alloc::rc::Rc<T>;
     // pub(crate) type RcX<T> = Rc<T>;
-    pub(crate) type RcX<T> = alloc::sync::Arc<T>;
+    pub(crate) type RcX<T> = alloc::rc::Rc<T>;
     // pub(crate) use alloc::rc::Rc as RcBox;
     // XXX XXX
-    pub(crate) type CfgRc<T> = alloc::sync::Arc<T>;
+    pub(crate) type CfgRc<T> = alloc::rc::Rc<T>;
     pub(crate) type ErrorRc = i32;
     pub(crate) type CfgRcRef = i32;
-    pub(crate) type CfgRcX<T> = alloc::sync::Arc<T>;
+    pub(crate) type CfgRcX<T> = alloc::rc::Rc<T>;
     // XXX TBD ??? ???
-    pub(crate) type Rc2<T> = alloc::sync::Arc<T>;
+    pub(crate) type Rc2<T> = portable_atomic_util::Arc<T>;
 }
 
 macro_rules! cfgx_into_cfgrcx {
@@ -451,19 +451,19 @@ macro_rules! cfgx_into_rcx {
 
 macro_rules! cfgrc_new {
     ($x:expr) => {
-        alloc::sync::Arc::new($x)
+        alloc::rc::Rc::new($x)
     };
 }
 
 macro_rules! cfgrc_with_cfg {
     ($x:expr) => {
-        alloc::sync::Arc::new($x)
+        alloc::rc::Rc::new($x)
     };
 }
 
 macro_rules! rcx_new {
     ($x:expr) => {
-        alloc::sync::Arc::new($x)
+        alloc::rc::Rc::new($x)
     };
 }
 
@@ -483,7 +483,7 @@ macro_rules! rcx_new_from_cfgx {
 
 macro_rules! rcx_with_cfg {
     ($x:expr) => {
-        alloc::sync::Arc::new($x)
+        alloc::rc::Rc::new($x)
     };
 }
 
@@ -516,14 +516,14 @@ macro_rules! cfgrcx_from_cfgrc {
 
 macro_rules! cfgrcx_with_cfg {
     ($x:expr) => {
-        alloc::sync::Arc::new($x)
+        alloc::rc::Rc::new($x)
     };
 }
 
 // XXX TBD ???
 macro_rules! cfgrcx_new_from_cfgx {
     ($x:expr) => {
-        alloc::sync::Arc::new(*$x)
+        alloc::rc::Rc::new(*$x)
     };
 }
 

@@ -171,7 +171,7 @@ impl server::ProducesTickets for NeverProducesTickets {
 ///
 /// [RFC 7250]: https://tools.ietf.org/html/rfc7250
 #[derive(Clone, Debug)]
-pub struct AlwaysResolvesServerRawPublicKeys(RcX<sign::CertifiedKey>);
+pub struct AlwaysResolvesServerRawPublicKeys(Rc2<sign::CertifiedKey>);
 
 impl AlwaysResolvesServerRawPublicKeys {
     /// Create a new `AlwaysResolvesServerRawPublicKeys` instance.
@@ -181,8 +181,8 @@ impl AlwaysResolvesServerRawPublicKeys {
 }
 
 impl server::ResolvesServerCert for AlwaysResolvesServerRawPublicKeys {
-    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<RcX<sign::CertifiedKey>> {
-        Some(RcX::clone(&self.0))
+    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<Rc2<sign::CertifiedKey>> {
+        Some(Rc2::clone(&self.0))
     }
 
     fn only_raw_public_keys(&self) -> bool {
@@ -254,11 +254,12 @@ mod sni_resolver {
     }
 
     impl server::ResolvesServerCert for ResolvesServerCertUsingSni {
-        fn resolve(&self, client_hello: ClientHello<'_>) -> Option<RcX<sign::CertifiedKey>> {
+        fn resolve(&self, client_hello: ClientHello<'_>) -> Option<Rc2<sign::CertifiedKey>> {
             if let Some(name) = client_hello.server_name() {
                 // XXX XXX XXX
                 // self.by_name.get(name).cloned()
-                panic!("XXX")
+                // panic!("XXX")
+                xxx_ignore_expression_and_panic_with_todo!(self.by_name.get(name).cloned())
             } else {
                 // This kind of resolver requires SNI
                 None

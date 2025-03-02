@@ -119,7 +119,7 @@ pub trait ResolvesClientCert: fmt::Debug + Send + Sync {
         &self,
         root_hint_subjects: &[&[u8]],
         sigschemes: &[SignatureScheme],
-    ) -> Option<CfgRc<sign::CertifiedKey>>;
+    ) -> Option<Rc2<sign::CertifiedKey>>;
 
     /// Return true if the client only supports raw public keys.
     ///

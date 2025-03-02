@@ -95,11 +95,11 @@ pub trait Signer: Debug + Send + Sync {
 ///
 /// [`ConfigBuilder::with_cert_resolver()`]: crate::ConfigBuilder::with_cert_resolver
 #[derive(Debug)]
-pub struct SingleCertAndKey(Rc1<CertifiedKey>);
+pub struct SingleCertAndKey(Rc2<CertifiedKey>);
 
 impl From<CertifiedKey> for SingleCertAndKey {
     fn from(certified_key: CertifiedKey) -> Self {
-        Self(Rc1::new(certified_key))
+        Self(Rc2::new(certified_key))
     }
 }
 
@@ -108,8 +108,10 @@ impl ResolvesClientCert for SingleCertAndKey {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<CfgRc<CertifiedKey>> {
-        Some(rcx_clone_into_cfgrc!(&self.0))
+    ) -> Option<Rc2<CertifiedKey>> {
+        // XXX XXX
+        // Some(rcx_clone_into_cfgrc!(&self.0))
+        Some(Rc2::clone(&self.0))
     }
 
     fn has_certs(&self) -> bool {
@@ -118,8 +120,10 @@ impl ResolvesClientCert for SingleCertAndKey {
 }
 
 impl ResolvesServerCert for SingleCertAndKey {
-    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<CfgRc<CertifiedKey>> {
-        Some(rcx_clone_into_cfgrc!(&self.0))
+    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<Rc2<CertifiedKey>> {
+        // XXX XXX
+        // Some(rcx_clone_into_cfgrc!(&self.0))
+        Some(Rc2::clone(&self.0))
     }
 }
 
@@ -137,7 +141,7 @@ pub struct CertifiedKey {
     pub cert: Vec<CertificateDer<'static>>,
 
     /// The certified key.
-    pub key: CfgRc<dyn SigningKey>,
+    pub key: Rc2<dyn SigningKey>,
 
     /// An optional OCSP response from the certificate issuer,
     /// attesting to its continued validity.
