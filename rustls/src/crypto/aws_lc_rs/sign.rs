@@ -155,7 +155,7 @@ impl Debug for RsaSigningKey {
 }
 
 struct RsaSigner {
-    key: CfgRc<RsaKeyPair>,
+    key: CfgRcX<RsaKeyPair>,
     scheme: SignatureScheme,
     encoding: &'static dyn signature::RsaEncoding,
 }
@@ -251,7 +251,8 @@ impl SigningKey for EcdsaSigningKey {
     fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<Box<dyn Signer>> {
         if offered.contains(&self.scheme) {
             Some(Box::new(EcdsaSigner {
-                key: CfgX::clone(&self.key),
+                // XXX XXX XXX
+                key: xxx_ignore_expression_and_panic_with_todo!(CfgRc::clone(&self.key)),
                 scheme: self.scheme,
             }))
         } else {
@@ -284,7 +285,7 @@ impl Debug for EcdsaSigningKey {
 }
 
 struct EcdsaSigner {
-    key: CfgX<EcdsaKeyPair>,
+    key: CfgRcX<EcdsaKeyPair>,
     scheme: SignatureScheme,
 }
 
@@ -346,7 +347,8 @@ impl SigningKey for Ed25519SigningKey {
     fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<Box<dyn Signer>> {
         if offered.contains(&self.scheme) {
             Some(Box::new(Ed25519Signer {
-                key: CfgX::clone(&self.key),
+                // XXX XXX XXX
+                key: xxx_ignore_expression_and_panic_with_todo!(CfgX::clone(&self.key)),
                 scheme: self.scheme,
             }))
         } else {
@@ -372,6 +374,7 @@ impl Debug for Ed25519SigningKey {
 }
 
 struct Ed25519Signer {
+    // XXX XXX
     key: CfgX<Ed25519KeyPair>,
     scheme: SignatureScheme,
 }

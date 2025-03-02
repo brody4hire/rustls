@@ -73,7 +73,8 @@ pub(super) enum ClientAuthDetails {
     /// Send a non-empty `Certificate` and a `CertificateVerify`.
     Verify {
         certkey: Rc1<sign::CertifiedKey>,
-        signer: Rc1<dyn sign::Signer>,
+        // XXX XXX
+        signer: CfgX<dyn sign::Signer>,
         auth_context_tls13: Option<Vec<u8>>,
         compressor: Option<&'static dyn compress::CertCompressor>,
     },
