@@ -91,7 +91,7 @@ pub fn any_eddsa_type(der: &PrivatePkcs8KeyDer<'_>) -> Result<CfgX<dyn SigningKe
 /// the public, stable, API.
 #[doc(hidden)]
 pub struct RsaSigningKey {
-    key: CfgRc<RsaKeyPair>,
+    key: Rc2<RsaKeyPair>,
 }
 
 static ALL_RSA_SCHEMES: &[SignatureScheme] = &[
@@ -121,7 +121,7 @@ impl RsaSigningKey {
         })?;
 
         Ok(Self {
-            key: CfgRc::new(key_pair),
+            key: Rc2::new(key_pair),
         })
     }
 }
@@ -131,7 +131,7 @@ impl SigningKey for RsaSigningKey {
         ALL_RSA_SCHEMES
             .iter()
             .find(|scheme| offered.contains(scheme))
-            .map(|scheme| RsaSigner::new(CfgRc::clone(&self.key), *scheme))
+            .map(|scheme| RsaSigner::new(Rc2::clone(&self.key), *scheme))
     }
 
     fn public_key(&self) -> Option<SubjectPublicKeyInfoDer<'_>> {
@@ -155,13 +155,13 @@ impl Debug for RsaSigningKey {
 }
 
 struct RsaSigner {
-    key: CfgRcX<RsaKeyPair>,
+    key: Rc2<RsaKeyPair>,
     scheme: SignatureScheme,
     encoding: &'static dyn signature::RsaEncoding,
 }
 
 impl RsaSigner {
-    fn new(key: CfgRc<RsaKeyPair>, scheme: SignatureScheme) -> Box<dyn Signer> {
+    fn new(key: Rc2<RsaKeyPair>, scheme: SignatureScheme) -> Box<dyn Signer> {
         let encoding: &dyn signature::RsaEncoding = match scheme {
             SignatureScheme::RSA_PKCS1_SHA256 => &signature::RSA_PKCS1_SHA256,
             SignatureScheme::RSA_PKCS1_SHA384 => &signature::RSA_PKCS1_SHA384,
@@ -285,7 +285,7 @@ impl Debug for EcdsaSigningKey {
 }
 
 struct EcdsaSigner {
-    key: CfgRcX<EcdsaKeyPair>,
+    key: Rc2<EcdsaKeyPair>,
     scheme: SignatureScheme,
 }
 
