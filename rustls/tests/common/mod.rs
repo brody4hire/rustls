@@ -584,7 +584,7 @@ pub fn make_server_config_with_client_verifier(
 
 pub fn make_server_config_with_raw_key_support(kt: KeyType) -> ServerConfig {
     let mut client_verifier = MockClientVerifier::new(|| Ok(ClientCertVerified::assertion()), kt);
-    let server_cert_resolver = Rc::new(AlwaysResolvesServerRawPublicKeys::new(
+    let server_cert_resolver = Arc::new(AlwaysResolvesServerRawPublicKeys::new(
         kt.certified_key_with_raw_pub_key()
             .unwrap(),
     ));

@@ -1316,7 +1316,7 @@ struct ServerCheckCertResolve {
 }
 
 impl ResolvesServerCert for ServerCheckCertResolve {
-    fn resolve(&self, client_hello: ClientHello) -> Option<Rc<sign::CertifiedKey>> {
+    fn resolve(&self, client_hello: ClientHello) -> Option<Rc2<sign::CertifiedKey>> {
         if client_hello
             .signature_schemes()
             .is_empty()
@@ -1614,7 +1614,7 @@ fn server_cert_resolve_reduces_sigalgs_for_ecdsa_ciphersuite() {
 struct ServerCheckNoSni {}
 
 impl ResolvesServerCert for ServerCheckNoSni {
-    fn resolve(&self, client_hello: ClientHello) -> Option<Rc<sign::CertifiedKey>> {
+    fn resolve(&self, client_hello: ClientHello) -> Option<Rc2<sign::CertifiedKey>> {
         assert!(client_hello.server_name().is_none());
 
         None
@@ -1967,7 +1967,7 @@ impl ResolvesClientCert for ClientCheckCertResolve {
         &self,
         root_hint_subjects: &[&[u8]],
         sigschemes: &[SignatureScheme],
-    ) -> Option<Rc<sign::CertifiedKey>> {
+    ) -> Option<Rc2<sign::CertifiedKey>> {
         self.query_count
             .fetch_add(1, Ordering::SeqCst);
 
