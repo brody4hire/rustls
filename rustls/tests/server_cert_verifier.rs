@@ -225,8 +225,6 @@ fn cas_extension_in_client_hello_if_server_verifier_requests_it() {
     }
 }
 
-// XXX
-#[cfg(xxx)]
 #[test]
 fn client_can_request_certain_trusted_cas() {
     // These keys have CAs with different names, which our test needs.

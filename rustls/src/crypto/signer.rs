@@ -95,11 +95,11 @@ pub trait Signer: Debug + Send + Sync {
 ///
 /// [`ConfigBuilder::with_cert_resolver()`]: crate::ConfigBuilder::with_cert_resolver
 #[derive(Debug)]
-pub struct SingleCertAndKey(Rc2<CertifiedKey>);
+pub struct SingleCertAndKey(CfgRc<CertifiedKey>);
 
 impl From<CertifiedKey> for SingleCertAndKey {
     fn from(certified_key: CertifiedKey) -> Self {
-        Self(Rc2::new(certified_key))
+        Self(CfgRc::new(certified_key))
     }
 }
 
@@ -108,10 +108,10 @@ impl ResolvesClientCert for SingleCertAndKey {
         &self,
         _root_hint_subjects: &[&[u8]],
         _sigschemes: &[SignatureScheme],
-    ) -> Option<Rc2<CertifiedKey>> {
+    ) -> Option<CfgRc<CertifiedKey>> {
         // XXX XXX
         // Some(rcx_clone_into_cfgrc!(&self.0))
-        Some(Rc2::clone(&self.0))
+        Some(CfgRc::clone(&self.0))
     }
 
     fn has_certs(&self) -> bool {
@@ -120,10 +120,10 @@ impl ResolvesClientCert for SingleCertAndKey {
 }
 
 impl ResolvesServerCert for SingleCertAndKey {
-    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<Rc2<CertifiedKey>> {
+    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<CfgRc<CertifiedKey>> {
         // XXX XXX
         // Some(rcx_clone_into_cfgrc!(&self.0))
-        Some(Rc2::clone(&self.0))
+        Some(CfgRc::clone(&self.0))
     }
 }
 

@@ -68,7 +68,7 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
         key_der: PrivateKeyDer<'static>,
     ) -> Result<ServerConfig, Error> {
         let certified_key = CertifiedKey::from_der(cert_chain, key_der, self.crypto_provider())?;
-        Ok(self.with_cert_resolver(CfgX::new(SingleCertAndKey::from(certified_key))))
+        Ok(self.with_cert_resolver(CfgRc::new(SingleCertAndKey::from(certified_key))))
     }
 
     /// Sets a single certificate chain, matching private key and optional OCSP
@@ -93,11 +93,11 @@ impl ConfigBuilder<ServerConfig, WantsServerCert> {
         let mut certified_key =
             CertifiedKey::from_der(cert_chain, key_der, self.crypto_provider())?;
         certified_key.ocsp = Some(ocsp);
-        Ok(self.with_cert_resolver(CfgX::new(SingleCertAndKey::from(certified_key))))
+        Ok(self.with_cert_resolver(CfgRc::new(SingleCertAndKey::from(certified_key))))
     }
 
     /// Sets a custom [`ResolvesServerCert`].
-    pub fn with_cert_resolver(self, cert_resolver: CfgX<dyn ResolvesServerCert>) -> ServerConfig {
+    pub fn with_cert_resolver(self, cert_resolver: CfgRc<dyn ResolvesServerCert>) -> ServerConfig {
         ServerConfig {
             provider: rcx_copy!(self.provider),
             verifier: self.state.verifier,
