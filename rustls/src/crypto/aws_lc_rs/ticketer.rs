@@ -32,8 +32,8 @@ impl Ticketer {
     ///
     /// [RFC 5077 §4]: https://www.rfc-editor.org/rfc/rfc5077#section-4
     #[cfg(feature = "std")]
-    pub fn new() -> Result<CfgX<dyn ProducesTickets>, Error> {
-        Ok(CfgX::new(crate::ticketer::TicketRotator::new(
+    pub fn new() -> Result<CfgRc<dyn ProducesTickets>, Error> {
+        Ok(CfgRc::new(crate::ticketer::TicketRotator::new(
             6 * 60 * 60,
             make_ticket_generator,
         )?))
@@ -49,8 +49,8 @@ impl Ticketer {
     #[cfg(not(feature = "std"))]
     pub fn new<M: crate::lock::MakeMutex>(
         time_provider: &'static dyn TimeProvider,
-    ) -> Result<CfgX<dyn ProducesTickets>, Error> {
-        Ok(CfgX::new(crate::ticketer::TicketSwitcher::new::<M>(
+    ) -> Result<CfgRc<dyn ProducesTickets>, Error> {
+        Ok(CfgRc::new(crate::ticketer::TicketSwitcher::new::<M>(
             6 * 60 * 60,
             make_ticket_generator,
             time_provider,
