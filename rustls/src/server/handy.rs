@@ -208,7 +208,7 @@ mod sni_resolver {
     /// on client-supplied server name (via SNI).
     #[derive(Debug)]
     pub struct ResolvesServerCertUsingSni {
-        by_name: HashMap<String, CfgX<sign::CertifiedKey>>,
+        by_name: HashMap<String, Rc2<sign::CertifiedKey>>,
     }
 
     impl ResolvesServerCertUsingSni {
@@ -247,7 +247,7 @@ mod sni_resolver {
 
             if let ServerName::DnsName(name) = server_name {
                 self.by_name
-                    .insert(name.as_ref().to_string(), CfgX::new(ck));
+                    .insert(name.as_ref().to_string(), Rc2::new(ck));
             }
             Ok(())
         }
@@ -256,10 +256,8 @@ mod sni_resolver {
     impl server::ResolvesServerCert for ResolvesServerCertUsingSni {
         fn resolve(&self, client_hello: ClientHello<'_>) -> Option<Rc2<sign::CertifiedKey>> {
             if let Some(name) = client_hello.server_name() {
-                // XXX XXX XXX
-                // self.by_name.get(name).cloned()
-                // panic!("XXX")
-                xxx_ignore_expression_and_panic_with_todo!(self.by_name.get(name).cloned())
+                self.by_name.get(name).cloned()
+                    .map(|x| x.into())
             } else {
                 // This kind of resolver requires SNI
                 None
