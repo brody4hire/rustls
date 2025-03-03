@@ -216,7 +216,7 @@ impl Debug for RsaSigner {
 ///
 /// Currently this is only implemented for ECDSA keys.
 struct EcdsaSigningKey {
-    key: CfgX<EcdsaKeyPair>,
+    key: Rc2<EcdsaKeyPair>,
     scheme: SignatureScheme,
 }
 
@@ -241,7 +241,7 @@ impl EcdsaSigningKey {
         };
 
         Ok(Self {
-            key: CfgX::new(key_pair),
+            key: Rc2::new(key_pair),
             scheme,
         })
     }
@@ -251,8 +251,7 @@ impl SigningKey for EcdsaSigningKey {
     fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<Box<dyn Signer>> {
         if offered.contains(&self.scheme) {
             Some(Box::new(EcdsaSigner {
-                // XXX XXX XXX
-                key: xxx_ignore_expression_and_panic_with_todo!(CfgRc::clone(&self.key)),
+                key: Rc2::clone(&self.key),
                 scheme: self.scheme,
             }))
         } else {
