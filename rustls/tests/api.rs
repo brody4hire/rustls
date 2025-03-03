@@ -94,15 +94,13 @@ mod test_raw_keys {
         }
     }
 
-    // XXX TODO
-    #[cfg(xxx)]
     #[test]
     fn correct_certificate_type_extensions_from_client_hello() {
         for kt in ALL_KEY_TYPES {
             let client_config = make_client_config_with_raw_key_support(*kt);
             let mut server_config = make_server_config_with_raw_key_support(*kt);
 
-            server_config.cert_resolver = Arc::new(ServerCheckCertResolve {
+            server_config.cert_resolver = Rc::new(ServerCheckCertResolve {
                 expected_client_cert_types: Some(vec![CertificateType::RawPublicKey]),
                 expected_server_cert_types: Some(vec![CertificateType::RawPublicKey]),
                 ..Default::default()
@@ -1410,8 +1408,6 @@ fn server_cert_resolve_with_sni() {
     }
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
 #[test]
 fn server_cert_resolve_with_alpn() {
     for kt in ALL_KEY_TYPES {
@@ -1419,7 +1415,7 @@ fn server_cert_resolve_with_alpn() {
         client_config.alpn_protocols = vec!["foo".into(), "bar".into()];
 
         let mut server_config = make_server_config(*kt);
-        server_config.cert_resolver = Arc::new(ServerCheckCertResolve {
+        server_config.cert_resolver = Rc::new(ServerCheckCertResolve {
             expected_alpn: Some(vec![b"foo".to_vec(), b"bar".to_vec()]),
             ..Default::default()
         });
@@ -1433,15 +1429,13 @@ fn server_cert_resolve_with_alpn() {
     }
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
 #[test]
 fn client_trims_terminating_dot() {
     for kt in ALL_KEY_TYPES {
         let client_config = make_client_config(*kt);
         let mut server_config = make_server_config(*kt);
 
-        server_config.cert_resolver = Arc::new(ServerCheckCertResolve {
+        server_config.cert_resolver = Rc::new(ServerCheckCertResolve {
             expected_sni: Some("some-host.com".into()),
             ..Default::default()
         });
@@ -2044,8 +2038,6 @@ fn default_signature_schemes(version: ProtocolVersion) -> Vec<SignatureScheme> {
     v
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
 #[test]
 fn client_cert_resolve_default() {
     // Test that in the default configuration that a client cert resolver gets the expected
@@ -2065,8 +2057,6 @@ fn client_cert_resolve_default() {
     }
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
 #[test]
 fn client_cert_resolve_server_no_hints() {
     // Test that a server can provide no hints and the client cert resolver gets the expected
@@ -2297,8 +2287,8 @@ fn client_flush_does_nothing() {
     assert!(matches!(client.writer().flush(), Ok(())));
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
+// XXX TODO
+#[cfg(xxx)]
 #[allow(clippy::no_effect)]
 #[test]
 fn server_is_send_and_sync() {
@@ -2307,8 +2297,8 @@ fn server_is_send_and_sync() {
     &server as &dyn Sync;
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
+// XXX TODO
+#[cfg(xxx)]
 #[allow(clippy::no_effect)]
 #[test]
 fn client_is_send_and_sync() {
@@ -3358,15 +3348,13 @@ fn server_exposes_offered_sni_smashed_to_lowercase() {
     }
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
 #[test]
 fn server_exposes_offered_sni_even_if_resolver_fails() {
     let kt = KeyType::Rsa2048;
     let resolver = rustls::server::ResolvesServerCertUsingSni::new();
 
     let mut server_config = make_server_config(kt);
-    server_config.cert_resolver = Arc::new(resolver);
+    server_config.cert_resolver = Rc::new(resolver);
     let server_config = Arc::new(server_config);
 
     for version in rustls::ALL_VERSIONS {
@@ -3388,8 +3376,8 @@ fn server_exposes_offered_sni_even_if_resolver_fails() {
     }
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
+// XXX TODO
+#[cfg(xxx)]
 #[test]
 fn sni_resolver_works() {
     let kt = KeyType::Rsa2048;
@@ -3428,8 +3416,8 @@ fn sni_resolver_works() {
     );
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
+// XXX TODO
+#[cfg(xxx)]
 #[test]
 fn sni_resolver_rejects_wrong_names() {
     let kt = KeyType::Rsa2048;
@@ -3478,8 +3466,8 @@ fn certificate_error_expecting_name(expected: &str) -> CertificateError {
     }
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
+// XXX TODO
+#[cfg(xxx)]
 #[test]
 fn sni_resolver_lower_cases_configured_names() {
     let kt = KeyType::Rsa2048;
@@ -3506,8 +3494,8 @@ fn sni_resolver_lower_cases_configured_names() {
     assert_eq!(err, Ok(()));
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
+// XXX TODO
+#[cfg(xxx)]
 #[test]
 fn sni_resolver_lower_cases_queried_names() {
     // actually, the handshake parser does this, but the effect is the same.
@@ -3535,8 +3523,8 @@ fn sni_resolver_lower_cases_queried_names() {
     assert_eq!(err, Ok(()));
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
+// XXX TODO
+#[cfg(xxx)]
 #[test]
 fn sni_resolver_rejects_bad_certs() {
     let kt = KeyType::Rsa2048;
@@ -4006,8 +3994,8 @@ impl KeyLog for KeyLogToVec {
     }
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
+// XXX TODO
+#[cfg(xxx)]
 #[cfg(feature = "tls12")]
 #[test]
 fn key_log_for_tls12() {
