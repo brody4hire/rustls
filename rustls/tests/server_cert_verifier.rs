@@ -184,8 +184,11 @@ fn cas_extension_in_client_hello_if_server_verifier_requests_it() {
     )
     .build()
     .unwrap();
+    // XXX XXX
+    let x: Arc<dyn ServerCertVerifier> = server_verifier;
     let cas_sending_server_verifier = Rc::new(ServerCertVerifierWithCasExt {
-        verifier: server_verifier.clone(),
+        // XXX XXX
+        verifier: x.into(),
         ca_names: vec![
             KeyType::Rsa2048
                 .ca_distinguished_name()
@@ -344,7 +347,7 @@ impl ResolvesServerCert for ResolvesCertChainByCaName {
 
 #[derive(Debug)]
 struct ServerCertVerifierWithCasExt {
-    verifier: Rc<dyn ServerCertVerifier>,
+    verifier: Rc2<dyn ServerCertVerifier>,
     ca_names: Vec<DistinguishedName>,
 }
 

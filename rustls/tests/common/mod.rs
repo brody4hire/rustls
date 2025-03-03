@@ -700,9 +700,11 @@ pub fn make_client_config_with_verifier(
     versions: &[&'static rustls::SupportedProtocolVersion],
     verifier_builder: ServerCertVerifierBuilder,
 ) -> ClientConfig {
+    // XXX XXX
+    let x: Arc<dyn ServerCertVerifier> = verifier_builder.build().unwrap();
     client_config_builder_with_versions(versions)
         .dangerous()
-        .with_custom_certificate_verifier(verifier_builder.build().unwrap())
+        .with_custom_certificate_verifier(x.into())
         .with_no_client_auth()
 }
 
