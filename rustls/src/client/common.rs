@@ -72,7 +72,7 @@ pub(super) enum ClientAuthDetails {
     Empty { auth_context_tls13: Option<Vec<u8>> },
     /// Send a non-empty `Certificate` and a `CertificateVerify`.
     Verify {
-        certkey: CfgRc<sign::CertifiedKey>,
+        certkey: Rc2<sign::CertifiedKey>,
         // XXX XXX
         signer: CfgX<dyn sign::Signer>,
         auth_context_tls13: Option<Vec<u8>>,

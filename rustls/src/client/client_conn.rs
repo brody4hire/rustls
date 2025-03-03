@@ -94,7 +94,7 @@ pub trait ClientSessionStore: fmt::Debug + Send + Sync {
 
 /// A trait for the ability to choose a certificate chain and
 /// private key for the purposes of client authentication.
-pub trait ResolvesClientCert: fmt::Debug {
+pub trait ResolvesClientCert: fmt::Debug + Send + Sync {
     /// Resolve a client certificate chain/private key to use as the client's
     /// identity.
     ///
@@ -119,7 +119,7 @@ pub trait ResolvesClientCert: fmt::Debug {
         &self,
         root_hint_subjects: &[&[u8]],
         sigschemes: &[SignatureScheme],
-    ) -> Option<CfgRcX<sign::CertifiedKey>>;
+    ) -> Option<Rc2<sign::CertifiedKey>>;
 
     /// Return true if the client only supports raw public keys.
     ///
