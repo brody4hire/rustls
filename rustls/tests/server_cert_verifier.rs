@@ -185,10 +185,10 @@ fn cas_extension_in_client_hello_if_server_verifier_requests_it() {
     .build()
     .unwrap();
     // XXX XXX
-    let x: Arc<dyn ServerCertVerifier> = server_verifier;
+    let x: Option<Arc<dyn ServerCertVerifier>> = Some(Arc::new(server_verifier));
     let cas_sending_server_verifier = Rc::new(ServerCertVerifierWithCasExt {
         // XXX XXX
-        verifier: x.into(),
+        verifier: x.unwrap().into(),
         ca_names: vec![
             KeyType::Rsa2048
                 .ca_distinguished_name()

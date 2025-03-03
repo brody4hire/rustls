@@ -701,10 +701,12 @@ pub fn make_client_config_with_verifier(
     verifier_builder: ServerCertVerifierBuilder,
 ) -> ClientConfig {
     // XXX XXX
-    let x: Arc<dyn ServerCertVerifier> = verifier_builder.build().unwrap();
+    // let x: Arc<dyn ServerCertVerifier> = verifier_builder.build().unwrap();
+    let x1: Result<Arc<dyn ServerCertVerifier>, ()> = Ok(Arc::new(verifier_builder.build().unwrap()));
+    // let x2: Arc<dyn ServerCertVerifier> = x1.unwrap();
     client_config_builder_with_versions(versions)
         .dangerous()
-        .with_custom_certificate_verifier(x.into())
+        .with_custom_certificate_verifier(x1.unwrap().into())
         .with_no_client_auth()
 }
 

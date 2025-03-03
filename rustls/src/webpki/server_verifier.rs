@@ -112,7 +112,7 @@ impl ServerCertVerifierBuilder {
     /// This function will return a [`VerifierBuilderError`] if:
     /// 1. No trust anchors have been provided.
     /// 2. DER encoded CRLs have been provided that can not be parsed successfully.
-    pub fn build(self) -> Result<CfgX<WebPkiServerVerifier>, VerifierBuilderError> {
+    pub fn build(self) -> Result<WebPkiServerVerifier, VerifierBuilderError> {
         if self.roots.is_empty() {
             return Err(VerifierBuilderError::NoRootAnchors);
         }
