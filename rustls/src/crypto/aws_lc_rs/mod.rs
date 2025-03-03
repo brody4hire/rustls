@@ -85,7 +85,7 @@ impl KeyProvider for AwsLcRs {
     fn load_private_key(
         &self,
         key_der: PrivateKeyDer<'static>,
-    ) -> Result<CfgX<dyn SigningKey>, Error> {
+    ) -> Result<Rc2<dyn SigningKey>, Error> {
         sign::any_supported_type(&key_der)
     }
 

@@ -342,7 +342,7 @@ pub trait KeyProvider: Send + Sync + Debug {
     fn load_private_key(
         &self,
         key_der: PrivateKeyDer<'static>,
-    ) -> Result<CfgX<dyn SigningKey>, Error>;
+    ) -> Result<Rc2<dyn SigningKey>, Error>;
 
     /// Return `true` if this is backed by a FIPS-approved implementation.
     ///

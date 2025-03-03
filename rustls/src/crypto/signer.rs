@@ -177,10 +177,10 @@ impl CertifiedKey {
     ///
     /// The cert chain must not be empty. The first certificate in the chain
     /// must be the end-entity certificate.
-    pub fn new(cert: Vec<CertificateDer<'static>>, key: CfgX<dyn SigningKey>) -> Self {
+    pub fn new(cert: Vec<CertificateDer<'static>>, key: Rc2<dyn SigningKey>) -> Self {
         Self {
             cert,
-            key: key.into(),
+            key: key,
             ocsp: None,
         }
     }

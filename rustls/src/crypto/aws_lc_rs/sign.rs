@@ -17,18 +17,27 @@ use crate::super_alias::{CfgRc, CfgRcRef, CfgRcX, CfgX, ErrorRc, Rc1, Rc2, RcX};
 
 /// Parse `der` as any supported key encoding/type, returning
 /// the first which works.
-pub fn any_supported_type(der: &PrivateKeyDer<'_>) -> Result<CfgX<dyn SigningKey>, Error> {
+pub fn any_supported_type(der: &PrivateKeyDer<'_>) -> Result<Rc2<dyn SigningKey>, Error> {
+    // XXX TBD XXX XXX
+    fn f(x: CfgX<dyn SigningKey>) -> Rc2<dyn SigningKey> {
+        // ---
+        x.into()
+    }
     if let Ok(rsa) = RsaSigningKey::new(der) {
-        return Ok(CfgX::new(rsa));
+        // return Ok(Rc2::new(rsa.into()));
+        // return Ok(CfgX::<dyn SigningKey>::new(rsa).into());
+        return Ok(f(CfgX::new(rsa)))
     }
 
     if let Ok(ecdsa) = any_ecdsa_type(der) {
-        return Ok(ecdsa);
+        // return Ok(ecdsa);
+        return Ok(f(ecdsa))
     }
 
     if let PrivateKeyDer::Pkcs8(pkcs8) = der {
         if let Ok(eddsa) = any_eddsa_type(pkcs8) {
-            return Ok(eddsa);
+            // return Ok(eddsa);
+            return Ok(f(eddsa))
         }
     }
 
