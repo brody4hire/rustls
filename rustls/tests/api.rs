@@ -4534,8 +4534,6 @@ impl rustls::client::ClientSessionStore for ClientStorage {
     }
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
 #[test]
 fn tls13_stateful_resumption() {
     let kt = KeyType::Rsa2048;
@@ -4543,7 +4541,7 @@ fn tls13_stateful_resumption() {
     let client_config = Arc::new(client_config);
 
     let mut server_config = make_server_config(kt);
-    let storage = Arc::new(ServerStorage::new());
+    let storage = Rc::new(ServerStorage::new());
     server_config.session_storage = storage.clone();
     let server_config = Arc::new(server_config);
 
@@ -4597,8 +4595,6 @@ fn tls13_stateful_resumption() {
     assert_eq!(server.handshake_kind(), Some(HandshakeKind::Resumed));
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
 #[test]
 fn tls13_stateless_resumption() {
     let kt = KeyType::Rsa2048;
@@ -4607,7 +4603,7 @@ fn tls13_stateless_resumption() {
 
     let mut server_config = make_server_config(kt);
     server_config.ticketer = provider::Ticketer::new().unwrap();
-    let storage = Arc::new(ServerStorage::new());
+    let storage = Rc::new(ServerStorage::new());
     server_config.session_storage = storage.clone();
     let server_config = Arc::new(server_config);
 
