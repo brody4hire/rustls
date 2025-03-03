@@ -322,7 +322,7 @@ impl Debug for EcdsaSigner {
 ///
 /// Currently this is only implemented for Ed25519 keys.
 struct Ed25519SigningKey {
-    key: CfgX<Ed25519KeyPair>,
+    key: Rc2<Ed25519KeyPair>,
     scheme: SignatureScheme,
 }
 
@@ -332,7 +332,7 @@ impl Ed25519SigningKey {
     fn new(der: &PrivatePkcs8KeyDer<'_>, scheme: SignatureScheme) -> Result<Self, Error> {
         match Ed25519KeyPair::from_pkcs8_maybe_unchecked(der.secret_pkcs8_der()) {
             Ok(key_pair) => Ok(Self {
-                key: CfgX::new(key_pair),
+                key: Rc2::new(key_pair),
                 scheme,
             }),
             Err(e) => Err(Error::General(format!(
@@ -346,8 +346,7 @@ impl SigningKey for Ed25519SigningKey {
     fn choose_scheme(&self, offered: &[SignatureScheme]) -> Option<Box<dyn Signer>> {
         if offered.contains(&self.scheme) {
             Some(Box::new(Ed25519Signer {
-                // XXX XXX XXX
-                key: xxx_ignore_expression_and_panic_with_todo!(CfgX::clone(&self.key)),
+                key: Rc2::clone(&self.key),
                 scheme: self.scheme,
             }))
         } else {
@@ -373,8 +372,7 @@ impl Debug for Ed25519SigningKey {
 }
 
 struct Ed25519Signer {
-    // XXX XXX
-    key: CfgX<Ed25519KeyPair>,
+    key: Rc2<Ed25519KeyPair>,
     scheme: SignatureScheme,
 }
 
