@@ -3376,8 +3376,6 @@ fn server_exposes_offered_sni_even_if_resolver_fails() {
     }
 }
 
-// XXX TODO
-#[cfg(xxx)]
 #[test]
 fn sni_resolver_works() {
     let kt = KeyType::Rsa2048;
@@ -3387,12 +3385,12 @@ fn sni_resolver_works() {
     resolver
         .add(
             "localhost",
-            sign::CertifiedKey::new(kt.get_chain(), signing_key.clone()),
+            sign::CertifiedKey::new(kt.get_chain(), signing_key),
         )
         .unwrap();
 
     let mut server_config = make_server_config(kt);
-    server_config.cert_resolver = Arc::new(resolver);
+    server_config.cert_resolver = Rc::new(resolver);
     let server_config = Arc::new(server_config);
 
     let mut server1 = ServerConnection::new(Arc::clone(&server_config)).unwrap();
@@ -3466,8 +3464,6 @@ fn certificate_error_expecting_name(expected: &str) -> CertificateError {
     }
 }
 
-// XXX TODO
-#[cfg(xxx)]
 #[test]
 fn sni_resolver_lower_cases_configured_names() {
     let kt = KeyType::Rsa2048;
@@ -3479,12 +3475,12 @@ fn sni_resolver_lower_cases_configured_names() {
         Ok(()),
         resolver.add(
             "LOCALHOST",
-            sign::CertifiedKey::new(kt.get_chain(), signing_key.clone())
+            sign::CertifiedKey::new(kt.get_chain(), signing_key)
         )
     );
 
     let mut server_config = make_server_config(kt);
-    server_config.cert_resolver = Arc::new(resolver);
+    server_config.cert_resolver = Rc::new(resolver);
     let server_config = Arc::new(server_config);
 
     let mut server1 = ServerConnection::new(Arc::clone(&server_config)).unwrap();
@@ -3494,8 +3490,6 @@ fn sni_resolver_lower_cases_configured_names() {
     assert_eq!(err, Ok(()));
 }
 
-// XXX TODO
-#[cfg(xxx)]
 #[test]
 fn sni_resolver_lower_cases_queried_names() {
     // actually, the handshake parser does this, but the effect is the same.
@@ -3508,12 +3502,12 @@ fn sni_resolver_lower_cases_queried_names() {
         Ok(()),
         resolver.add(
             "localhost",
-            sign::CertifiedKey::new(kt.get_chain(), signing_key.clone())
+            sign::CertifiedKey::new(kt.get_chain(), signing_key)
         )
     );
 
     let mut server_config = make_server_config(kt);
-    server_config.cert_resolver = Arc::new(resolver);
+    server_config.cert_resolver = Rc::new(resolver);
     let server_config = Arc::new(server_config);
 
     let mut server1 = ServerConnection::new(Arc::clone(&server_config)).unwrap();
@@ -3523,10 +3517,8 @@ fn sni_resolver_lower_cases_queried_names() {
     assert_eq!(err, Ok(()));
 }
 
-// XXX TODO
-#[cfg(xxx)]
 #[test]
-fn sni_resolver_rejects_bad_certs() {
+fn sni_resolver_rejects_bad_certs_1() {
     let kt = KeyType::Rsa2048;
     let mut resolver = rustls::server::ResolvesServerCertUsingSni::new();
     let signing_key = RsaSigningKey::new(&kt.get_key()).unwrap();
@@ -3536,16 +3528,24 @@ fn sni_resolver_rejects_bad_certs() {
         Err(Error::NoCertificatesPresented),
         resolver.add(
             "localhost",
-            sign::CertifiedKey::new(vec![], signing_key.clone())
+            sign::CertifiedKey::new(vec![], signing_key)
         )
     );
+}
+
+#[test]
+fn sni_resolver_rejects_bad_certs_2() {
+    let kt = KeyType::Rsa2048;
+    let mut resolver = rustls::server::ResolvesServerCertUsingSni::new();
+    let signing_key = RsaSigningKey::new(&kt.get_key()).unwrap();
+    let signing_key: Arc<dyn sign::SigningKey> = Arc::new(signing_key);
 
     let bad_chain = vec![CertificateDer::from(vec![0xa0])];
     assert_eq!(
         Err(Error::InvalidCertificate(CertificateError::BadEncoding)),
         resolver.add(
             "localhost",
-            sign::CertifiedKey::new(bad_chain, signing_key.clone())
+            sign::CertifiedKey::new(bad_chain, signing_key)
         )
     );
 }
@@ -3994,13 +3994,11 @@ impl KeyLog for KeyLogToVec {
     }
 }
 
-// XXX TODO
-#[cfg(xxx)]
 #[cfg(feature = "tls12")]
 #[test]
 fn key_log_for_tls12() {
-    let client_key_log = Arc::new(KeyLogToVec::new("client"));
-    let server_key_log = Arc::new(KeyLogToVec::new("server"));
+    let client_key_log = Rc::new(KeyLogToVec::new("client"));
+    let server_key_log = Rc::new(KeyLogToVec::new("server"));
 
     let kt = KeyType::Rsa2048;
     let mut client_config = make_client_config_with_versions(kt, &[&rustls::version::TLS12]);
@@ -4033,12 +4031,10 @@ fn key_log_for_tls12() {
     assert_eq!(client_full_log[0].secret, client_resume_log[0].secret);
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
 #[test]
 fn key_log_for_tls13() {
-    let client_key_log = Arc::new(KeyLogToVec::new("client"));
-    let server_key_log = Arc::new(KeyLogToVec::new("server"));
+    let client_key_log = Rc::new(KeyLogToVec::new("client"));
+    let server_key_log = Rc::new(KeyLogToVec::new("server"));
 
     let kt = KeyType::Rsa2048;
     let mut client_config = make_client_config_with_versions(kt, &[&rustls::version::TLS13]);
@@ -4802,18 +4798,14 @@ fn early_data_is_limited_on_client() {
     assert_eq!(&received_early_data[..], [0xaa; 1234]);
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
 fn early_data_configs_allowing_client_to_send_excess_data() -> (Arc<ClientConfig>, Arc<ServerConfig>)
 {
-    let (client_config, server_config) = early_data_configs();
+    let (mut client_config, server_config) = early_data_configs();
 
     // adjust client session storage to corrupt received max_early_data_size
-    let mut client_config = Arc::into_inner(client_config).unwrap();
     let mut storage = ClientStorage::new();
     storage.alter_max_early_data_size(1234, 2024);
-    client_config.resumption = Resumption::store(Arc::new(storage));
-    let client_config = Arc::new(client_config);
+    client_config.resumption = Resumption::store(Rc::new(storage));
 
     // warm up
     let (mut client, mut server) = make_pair_for_arc_configs(&client_config, &server_config);
@@ -4821,8 +4813,6 @@ fn early_data_configs_allowing_client_to_send_excess_data() -> (Arc<ClientConfig
     (client_config, server_config)
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
 #[test]
 fn server_detects_excess_early_data() {
     let (client_config, server_config) = early_data_configs_allowing_client_to_send_excess_data();
@@ -4857,8 +4847,6 @@ fn server_detects_excess_early_data() {
     );
 }
 
-    // XXX TODO
-    #[cfg(xxx)]
 // regression test for https://github.com/rustls/rustls/issues/2096
 #[test]
 fn server_detects_excess_streamed_early_data() {
