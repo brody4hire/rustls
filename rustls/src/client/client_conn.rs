@@ -224,14 +224,16 @@ pub struct ClientConfig {
     pub time_provider: RcX<dyn TimeProvider>,
 
     /// Source of randomness and other crypto.
-    pub(super) provider: RcX<CryptoProvider>,
+    pub(super) provider: Rc2<CryptoProvider>,
 
     /// Supported versions, in no particular order.  The default
     /// is all supported versions.
     pub(super) versions: versions::EnabledVersions,
 
     /// How to verify the server certificate chain.
-    pub(super) verifier: RcX<dyn verify::ServerCertVerifier>,
+    // XXX XXX
+    // pub(super) verifier: Rc2<dyn verify::ServerCertVerifier>,
+    pub(super) verifier: CfgRcX<dyn verify::ServerCertVerifier>,
 
     /// How to decompress the server's certificate chain.
     ///
@@ -273,7 +275,7 @@ impl ClientConfig {
     /// and safe protocol version defaults.
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
-    #[cfg(feature = "std-x")]
+    #[cfg(feature = "std")]
     pub fn builder() -> ConfigBuilder<Self, WantsVerifier> {
         Self::builder_with_protocol_versions(versions::DEFAULT_VERSIONS)
     }
@@ -290,14 +292,14 @@ impl ClientConfig {
     ///   the crate features and process default.
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
-    #[cfg(feature = "std-x")]
+    #[cfg(feature = "std")]
     pub fn builder_with_protocol_versions(
         versions: &[&'static versions::SupportedProtocolVersion],
     ) -> ConfigBuilder<Self, WantsVerifier> {
         // Safety assumptions:
         // 1. that the provider has been installed (explicitly or implicitly)
         // 2. that the process-level default provider is usable with the supplied protocol versions.
-        Self::builder_with_provider(CfgX::clone(
+        Self::builder_with_provider(Rc2::clone(
             CryptoProvider::get_default_or_install_from_crate_features(),
         ))
         .with_protocol_versions(versions)
@@ -314,7 +316,7 @@ impl ClientConfig {
     /// For more information, see the [`ConfigBuilder`] documentation.
     #[cfg(feature = "std")]
     pub fn builder_with_provider(
-        provider: CfgX<CryptoProvider>,
+        provider: Rc2<CryptoProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
@@ -371,7 +373,7 @@ impl ClientConfig {
     }
 
     /// Return the crypto provider used to construct this client configuration.
-    pub fn crypto_provider(&self) -> &Rc1<CryptoProvider> {
+    pub fn crypto_provider(&self) -> &Rc2<CryptoProvider> {
         &self.provider
     }
 
@@ -455,7 +457,7 @@ impl Resumption {
     /// Use a custom [`ClientSessionStore`] implementation to store sessions.
     ///
     /// By default, enables resuming a TLS 1.2 session with a session id or RFC 5077 ticket.
-    pub fn store(store: CfgX<dyn ClientSessionStore>) -> Self {
+    pub fn store(store: CfgRc<dyn ClientSessionStore>) -> Self {
         Self {
             store: cfgx_into_cfgrcx!(store),
             tls12_resumption: Tls12Resumption::SessionIdOrTickets,
@@ -525,8 +527,10 @@ pub(super) mod danger {
 
     impl DangerousClientConfig<'_> {
         /// Overrides the default `ServerCertVerifier` with something else.
-        pub fn set_certificate_verifier(&mut self, verifier: CfgX<dyn ServerCertVerifier>) {
-            self.cfg.verifier = cfgx_into_rcx!(verifier);
+        pub fn set_certificate_verifier(&mut self, verifier: CfgRc<dyn ServerCertVerifier>) {
+            // XXX XXX
+            // self.cfg.verifier = cfgx_into_rcx!(verifier);
+            self.cfg.verifier = verifier;
         }
     }
 }

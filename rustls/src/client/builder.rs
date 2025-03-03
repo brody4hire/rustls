@@ -66,12 +66,14 @@ impl ConfigBuilder<ClientConfig, WantsVerifier> {
     /// [`webpki::WebPkiServerVerifier::builder_with_provider`] for more information.
     pub fn with_webpki_verifier(
         self,
-        verifier: CfgX<WebPkiServerVerifier>,
+        verifier: CfgRc<WebPkiServerVerifier>,
     ) -> ConfigBuilder<ClientConfig, WantsClientCert> {
         ConfigBuilder {
             state: WantsClientCert {
                 versions: self.state.versions,
-                verifier: rcx_new_from_cfgx!(verifier),
+                // XXX TBD ???
+                // verifier: rcx_new_from_cfgx!(verifier),
+                verifier: verifier,
                 client_ech_mode: self.state.client_ech_mode,
             },
             provider: self.provider,
@@ -106,12 +108,14 @@ pub(super) mod danger {
         /// Set a custom certificate verifier.
         pub fn with_custom_certificate_verifier(
             self,
-            verifier: CfgX<dyn verify::ServerCertVerifier>,
+            verifier: CfgRc<dyn verify::ServerCertVerifier>,
         ) -> ConfigBuilder<ClientConfig, WantsClientCert> {
             ConfigBuilder {
                 state: WantsClientCert {
                     versions: self.cfg.state.versions,
-                    verifier: cfgx_into_cfgrcx!(verifier),
+                    // XXX XXX
+                    // verifier: cfgx_into_cfgrcx!(verifier),
+                    verifier: verifier,
                     client_ech_mode: self.cfg.state.client_ech_mode,
                 },
                 provider: self.cfg.provider,
@@ -129,6 +133,8 @@ pub(super) mod danger {
 #[derive(Clone)]
 pub struct WantsClientCert {
     versions: versions::EnabledVersions,
+    // XXX XXX XXX
+    // verifier: Rc2<dyn verify::ServerCertVerifier>,
     verifier: CfgRcX<dyn verify::ServerCertVerifier>,
     client_ech_mode: Option<EchMode>,
 }
@@ -170,7 +176,9 @@ impl ConfigBuilder<ClientConfig, WantsClientCert> {
             client_auth_cert_resolver: cfgx_into_cfgrcx!(client_auth_cert_resolver),
             versions: self.state.versions,
             enable_sni: true,
-            verifier: rcx_copy!(self.state.verifier),
+            // XXX XXX XXX
+            // verifier: rcx_copy!(self.state.verifier),
+            verifier: self.state.verifier,
             key_log: cfgrc_with_cfg!(NoKeyLog {}),
             enable_secret_extraction: false,
             enable_early_data: false,

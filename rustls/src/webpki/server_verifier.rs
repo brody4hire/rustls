@@ -23,6 +23,7 @@ use crate::{Error, RootCertStore, SignatureScheme};
 /// For more information, see the [`WebPkiServerVerifier`] documentation.
 #[derive(Debug, Clone)]
 pub struct ServerCertVerifierBuilder {
+    // XXX TBD ??? ???
     roots: CfgX<RootCertStore>,
     crls: Vec<CertificateRevocationListDer<'static>>,
     revocation_check_depth: RevocationCheckDepth,
@@ -111,7 +112,7 @@ impl ServerCertVerifierBuilder {
     /// This function will return a [`VerifierBuilderError`] if:
     /// 1. No trust anchors have been provided.
     /// 2. DER encoded CRLs have been provided that can not be parsed successfully.
-    pub fn build(self) -> Result<CfgX<WebPkiServerVerifier>, VerifierBuilderError> {
+    pub fn build(self) -> Result<CfgRc<WebPkiServerVerifier>, VerifierBuilderError> {
         if self.roots.is_empty() {
             return Err(VerifierBuilderError::NoRootAnchors);
         }
@@ -153,7 +154,7 @@ impl WebPkiServerVerifier {
     pub fn builder(roots: CfgX<RootCertStore>) -> ServerCertVerifierBuilder {
         Self::builder_with_provider(
             roots,
-            CfgX::clone(CryptoProvider::get_default_or_install_from_crate_features()),
+            Rc2::clone(CryptoProvider::get_default_or_install_from_crate_features()),
         )
     }
 
@@ -167,7 +168,7 @@ impl WebPkiServerVerifier {
     /// For more information, see the [`ServerCertVerifierBuilder`] documentation.
     pub fn builder_with_provider(
         roots: CfgX<RootCertStore>,
-        provider: CfgX<CryptoProvider>,
+        provider: Rc2<CryptoProvider>,
     ) -> ServerCertVerifierBuilder {
         ServerCertVerifierBuilder::new(roots, provider.signature_verification_algorithms)
     }

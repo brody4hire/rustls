@@ -224,14 +224,14 @@ impl CryptoProvider {
     /// Call this early in your process to configure which provider is used for
     /// the provider.  The configuration should happen before any use of
     /// [`ClientConfig::builder()`] or [`ServerConfig::builder()`].
-    pub fn install_default(self) -> Result<(), CfgX<Self>> {
+    pub fn install_default(self) -> Result<(), Rc2<Self>> {
         static_default::install_default(self)
     }
 
     /// Returns the default `CryptoProvider` for this process.
     ///
     /// This will be `None` if no default has been set yet.
-    pub fn get_default() -> Option<&'static CfgX<Self>> {
+    pub fn get_default() -> Option<&'static Rc2<Self>> {
         static_default::get_default()
     }
 
@@ -240,7 +240,7 @@ impl CryptoProvider {
     /// - gets the pre-installed default, or
     /// - installs one `from_crate_features()`, or else
     /// - panics about the need to call [`CryptoProvider::install_default()`]
-    pub(crate) fn get_default_or_install_from_crate_features() -> &'static CfgX<Self> {
+    pub(crate) fn get_default_or_install_from_crate_features() -> &'static Rc2<Self> {
         if let Some(provider) = Self::get_default() {
             return provider;
         }
@@ -707,27 +707,27 @@ mod static_default {
     #[cfg(feature = "std")]
     pub(crate) fn install_default(
         default_provider: CryptoProvider,
-    ) -> Result<(), CfgX<CryptoProvider>> {
-        PROCESS_DEFAULT_PROVIDER.set(CfgX::new(default_provider))
+    ) -> Result<(), Rc2<CryptoProvider>> {
+        PROCESS_DEFAULT_PROVIDER.set(Rc2::new(default_provider))
     }
 
     #[cfg(not(feature = "std"))]
     pub(crate) fn install_default(
         default_provider: CryptoProvider,
-    ) -> Result<(), CfgX<CryptoProvider>> {
+    ) -> Result<(), Rc2<CryptoProvider>> {
         PROCESS_DEFAULT_PROVIDER
-            .set(Box::new(CfgX::new(default_provider)))
+            .set(Box::new(Rc2::new(default_provider)))
             .map_err(|e| *e)
     }
 
-    pub(crate) fn get_default() -> Option<&'static CfgX<CryptoProvider>> {
+    pub(crate) fn get_default() -> Option<&'static Rc2<CryptoProvider>> {
         PROCESS_DEFAULT_PROVIDER.get()
     }
 
     #[cfg(feature = "std")]
-    static PROCESS_DEFAULT_PROVIDER: OnceLock<CfgX<CryptoProvider>> = OnceLock::new();
+    static PROCESS_DEFAULT_PROVIDER: OnceLock<Rc2<CryptoProvider>> = OnceLock::new();
     #[cfg(not(feature = "std"))]
-    static PROCESS_DEFAULT_PROVIDER: OnceBox<CfgX<CryptoProvider>> = OnceBox::new();
+    static PROCESS_DEFAULT_PROVIDER: OnceBox<Rc2<CryptoProvider>> = OnceBox::new();
 }
 
 #[cfg(test)]

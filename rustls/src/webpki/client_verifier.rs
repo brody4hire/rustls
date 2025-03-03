@@ -274,7 +274,7 @@ impl WebPkiClientVerifier {
     pub fn builder(roots: CfgX<RootCertStore>) -> ClientCertVerifierBuilder {
         Self::builder_with_provider(
             roots,
-            CfgX::clone(CryptoProvider::get_default_or_install_from_crate_features()),
+            Rc2::clone(CryptoProvider::get_default_or_install_from_crate_features()),
         )
     }
 
@@ -290,7 +290,7 @@ impl WebPkiClientVerifier {
     /// For more information, see the [`ClientCertVerifierBuilder`] documentation.
     pub fn builder_with_provider(
         roots: CfgX<RootCertStore>,
-        provider: CfgX<CryptoProvider>,
+        provider: Rc2<CryptoProvider>,
     ) -> ClientCertVerifierBuilder {
         ClientCertVerifierBuilder::new(roots, provider.signature_verification_algorithms)
     }

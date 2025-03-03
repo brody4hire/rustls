@@ -247,7 +247,7 @@ impl<'a> ClientHello<'a> {
 #[derive(Clone, Debug)]
 pub struct ServerConfig {
     /// Source of randomness and other crypto.
-    pub(super) provider: RcX<CryptoProvider>,
+    pub(super) provider: Rc2<CryptoProvider>,
 
     /// Ignore the client's ciphersuite order. Instead,
     /// choose the top ciphersuite in the server list
@@ -399,7 +399,7 @@ impl ServerConfig {
     /// and safe protocol version defaults.
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
-    #[cfg(feature = "std-x")]
+    #[cfg(feature = "std")]
     pub fn builder() -> ConfigBuilder<Self, WantsVerifier> {
         Self::builder_with_protocol_versions(versions::DEFAULT_VERSIONS)
     }
@@ -416,14 +416,14 @@ impl ServerConfig {
     ///   the crate features and process default.
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
-    #[cfg(feature = "std-x")]
+    #[cfg(feature = "std")]
     pub fn builder_with_protocol_versions(
         versions: &[&'static versions::SupportedProtocolVersion],
     ) -> ConfigBuilder<Self, WantsVerifier> {
         // Safety assumptions:
         // 1. that the provider has been installed (explicitly or implicitly)
         // 2. that the process-level default provider is usable with the supplied protocol versions.
-        Self::builder_with_provider(CfgRcX::clone(
+        Self::builder_with_provider(Rc2::clone(
             CryptoProvider::get_default_or_install_from_crate_features(),
         ))
         .with_protocol_versions(versions)
@@ -438,13 +438,15 @@ impl ServerConfig {
     /// version is not supported by the provider's ciphersuites.
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
-    #[cfg(feature = "std-x")]
+    #[cfg(feature = "std")]
     pub fn builder_with_provider(
-        provider: CfgRcX<CryptoProvider>,
+        provider: Rc2<CryptoProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
-            provider: rcx_new!(provider),
+            // XXX XXX
+            // provider: rcx_new!(provider),
+            provider: provider.clone(),
             time_provider: rcx_with_cfg!(DefaultTimeProvider),
             side: PhantomData,
         }
@@ -465,7 +467,7 @@ impl ServerConfig {
     ///
     /// For more information, see the [`ConfigBuilder`] documentation.
     pub fn builder_with_details(
-        provider: CfgRc<CryptoProvider>,
+        provider: Rc2<CryptoProvider>,
         time_provider: CfgRc<dyn TimeProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
@@ -498,7 +500,7 @@ impl ServerConfig {
     }
 
     /// Return the crypto provider used to construct this client configuration.
-    pub fn crypto_provider(&self) -> &CfgRcX<CryptoProvider> {
+    pub fn crypto_provider(&self) -> &Rc2<CryptoProvider> {
         &self.provider
     }
 
