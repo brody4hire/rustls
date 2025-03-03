@@ -447,7 +447,9 @@ impl ServerConfig {
             // XXX XXX
             // provider: rcx_new!(provider),
             provider: provider.clone(),
-            time_provider: rcx_with_cfg!(DefaultTimeProvider),
+            // XXX
+            // time_provider: rcx_with_cfg!(DefaultTimeProvider),
+            time_provider: cfgrc_with_cfg!(DefaultTimeProvider),
             side: PhantomData,
         }
     }
@@ -468,7 +470,8 @@ impl ServerConfig {
     /// For more information, see the [`ConfigBuilder`] documentation.
     pub fn builder_with_details(
         provider: Rc2<CryptoProvider>,
-        time_provider: CfgRc<dyn TimeProvider>,
+        // XXX TBD ???
+        time_provider: CfgX<dyn TimeProvider>,
     ) -> ConfigBuilder<Self, WantsVersions> {
         ConfigBuilder {
             state: WantsVersions {},
@@ -476,7 +479,7 @@ impl ServerConfig {
             provider,
             // XXX XXX XXX
             // time_provider: rcx_new!(time_provider),
-            time_provider,
+            time_provider: time_provider.into(),
             side: PhantomData,
         }
     }

@@ -457,9 +457,12 @@ impl Resumption {
     /// Use a custom [`ClientSessionStore`] implementation to store sessions.
     ///
     /// By default, enables resuming a TLS 1.2 session with a session id or RFC 5077 ticket.
-    pub fn store(store: CfgRc<dyn ClientSessionStore>) -> Self {
+    // XXX XXX
+    pub fn store(store: RcX<dyn ClientSessionStore>) -> Self {
         Self {
-            store: cfgx_into_cfgrcx!(store),
+            // XXX
+            // store: cfgx_into_cfgrcx!(store),
+            store: store.into(),
             tls12_resumption: Tls12Resumption::SessionIdOrTickets,
         }
     }
@@ -527,10 +530,11 @@ pub(super) mod danger {
 
     impl DangerousClientConfig<'_> {
         /// Overrides the default `ServerCertVerifier` with something else.
-        pub fn set_certificate_verifier(&mut self, verifier: CfgRc<dyn ServerCertVerifier>) {
+        // XXX XXX
+        pub fn set_certificate_verifier(&mut self, verifier: CfgX<dyn ServerCertVerifier>) {
             // XXX XXX
             // self.cfg.verifier = cfgx_into_rcx!(verifier);
-            self.cfg.verifier = verifier;
+            self.cfg.verifier = verifier.into();
         }
     }
 }

@@ -426,13 +426,13 @@ mod super_alias {
     // pub(crate) use alloc::rc::Rc;
     pub(crate) type Rc1<T> = alloc::rc::Rc<T>;
     // pub(crate) type RcX<T> = Rc<T>;
-    pub(crate) type RcX<T> = alloc::rc::Rc<T>;
+    pub(crate) type RcX<T> = portable_atomic_util::Arc<alloc::boxed::Box<T>>;
     // pub(crate) use alloc::rc::Rc as RcBox;
     // XXX XXX
     pub(crate) type CfgRc<T> = alloc::rc::Rc<T>;
     pub(crate) type ErrorRc = i32;
     pub(crate) type CfgRcRef = i32;
-    pub(crate) type CfgRcX<T> = alloc::rc::Rc<T>;
+    pub(crate) type CfgRcX<T> = portable_atomic_util::Arc<alloc::boxed::Box<T>>;
     // XXX TBD ??? ???
     pub(crate) type Rc2<T> = portable_atomic_util::Arc<T>;
 }
@@ -456,9 +456,12 @@ macro_rules! cfgrc_new {
     };
 }
 
+// XXX XXX
 macro_rules! cfgrc_with_cfg {
     ($x:expr) => {
-        alloc::rc::Rc::new($x)
+        // XXX
+        // alloc::rc::Rc::new($x)
+        CfgRcX::new(alloc::boxed::Box::new($x))
     };
 }
 
@@ -482,9 +485,11 @@ macro_rules! rcx_new_from_cfgx {
     };
 }
 
+// XXX XXX
 macro_rules! rcx_with_cfg {
     ($x:expr) => {
-        alloc::rc::Rc::new($x)
+        // alloc::rc::Rc::new($x)
+        panic!("XXX")
     };
 }
 
@@ -517,14 +522,19 @@ macro_rules! cfgrcx_from_cfgrc {
 
 macro_rules! cfgrcx_with_cfg {
     ($x:expr) => {
-        alloc::rc::Rc::new($x)
+        // XXX
+        // alloc::rc::Rc::new($x)
+        CfgRcX::new(alloc::boxed::Box::new($x))
     };
 }
 
 // XXX TBD ???
 macro_rules! cfgrcx_new_from_cfgx {
     ($x:expr) => {
-        alloc::rc::Rc::new(*$x)
+        // XXX XXX
+        // alloc::rc::Rc::new(*$x)
+        // CfgRcX::new(*$x)
+        panic!("XXX")
     };
 }
 
@@ -545,7 +555,7 @@ macro_rules! rc_xxx_from_box {
 // XXX TODO RENAME
 macro_rules! ref_from_rc_xxx {
     ($x:expr) => {
-        &*$x
+        &**$x
     };
 }
 

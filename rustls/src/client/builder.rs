@@ -66,14 +66,16 @@ impl ConfigBuilder<ClientConfig, WantsVerifier> {
     /// [`webpki::WebPkiServerVerifier::builder_with_provider`] for more information.
     pub fn with_webpki_verifier(
         self,
-        verifier: CfgRc<WebPkiServerVerifier>,
+        // XXX XXX
+        verifier: CfgX<WebPkiServerVerifier>,
     ) -> ConfigBuilder<ClientConfig, WantsClientCert> {
         ConfigBuilder {
             state: WantsClientCert {
                 versions: self.state.versions,
                 // XXX TBD ???
                 // verifier: rcx_new_from_cfgx!(verifier),
-                verifier: verifier,
+                // verifier: verifier.into(),
+                verifier: CfgRcX::new(verifier),
                 client_ech_mode: self.state.client_ech_mode,
             },
             provider: self.provider,
@@ -108,14 +110,15 @@ pub(super) mod danger {
         /// Set a custom certificate verifier.
         pub fn with_custom_certificate_verifier(
             self,
-            verifier: CfgRc<dyn verify::ServerCertVerifier>,
+            // XXX
+            verifier: CfgX<dyn verify::ServerCertVerifier>,
         ) -> ConfigBuilder<ClientConfig, WantsClientCert> {
             ConfigBuilder {
                 state: WantsClientCert {
                     versions: self.cfg.state.versions,
                     // XXX XXX
                     // verifier: cfgx_into_cfgrcx!(verifier),
-                    verifier: verifier,
+                    verifier: verifier.into(),
                     client_ech_mode: self.cfg.state.client_ech_mode,
                 },
                 provider: self.cfg.provider,

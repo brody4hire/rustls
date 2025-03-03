@@ -307,7 +307,8 @@ mod client_hello {
                     &mut self.transcript,
                     self.using_ems,
                     cx,
-                    &*self.config.ticketer,
+                    // XXX
+                    &**self.config.ticketer,
                     now,
                 )?;
             }
@@ -927,7 +928,8 @@ impl State<ServerConnectionData> for ExpectFinished {
                     &mut self.transcript,
                     self.using_ems,
                     cx,
-                    &*self.config.ticketer,
+                    // XXX
+                    &**self.config.ticketer,
                     now,
                 )?;
             }
