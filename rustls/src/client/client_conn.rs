@@ -446,7 +446,7 @@ impl Resumption {
     ///
     /// This is the default `Resumption` choice, and enables resuming a TLS 1.2 session with
     /// a session id or RFC 5077 ticket.
-    #[cfg(feature = "std-x")]
+    #[cfg(feature = "std")]
     pub fn in_memory_sessions(num: usize) -> Self {
         Self {
             store: rcx_with_cfg!(super::handy::ClientSessionMemoryCache::new(num)),
@@ -486,10 +486,10 @@ impl Default for Resumption {
     /// Create an in-memory session store resumption with up to 256 server names, allowing
     /// a TLS 1.2 session to resume with a session id or RFC 5077 ticket.
     fn default() -> Self {
-        #[cfg(feature = "std-x")]
+        #[cfg(feature = "std")]
         let ret = Self::in_memory_sessions(256);
 
-        #[cfg(not(feature = "std-x"))]
+        #[cfg(not(feature = "std"))]
         let ret = Self::disabled();
 
         ret
