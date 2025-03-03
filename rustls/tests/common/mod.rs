@@ -35,7 +35,10 @@ use webpki::anchor_from_trusted_cert;
 use super::provider;
 
 // Import `Arc` here for tests - can be overwritten to test with another `Arc` such as `portable_atomic_util::Arc`
-pub use std::sync::Arc;
+// pub use std::sync::Arc;
+pub use std::boxed::Box as Arc;
+pub use std::rc::Rc as Rc;
+pub use portable_atomic_util::Arc as Rc2;
 
 macro_rules! embed_files {
     (
@@ -411,11 +414,11 @@ impl KeyType {
         )))
     }
 
-    pub fn certified_key_with_cert_chain(&self) -> Result<Arc<CertifiedKey>, Error> {
+    pub fn certified_key_with_cert_chain(&self) -> Result<Rc<CertifiedKey>, Error> {
         let private_key = provider::default_provider()
             .key_provider
             .load_private_key(self.get_key())?;
-        Ok(Arc::new(CertifiedKey::new(self.get_chain(), private_key)))
+        Ok(Rc::new(CertifiedKey::new(self.get_chain(), private_key)))
     }
 
     fn get_crl(&self, role: &str, r#type: &str) -> CertificateRevocationListDer<'static> {
@@ -593,7 +596,7 @@ pub fn make_server_config_with_raw_key_support(kt: KeyType) -> ServerConfig {
 }
 
 pub fn make_client_config_with_raw_key_support(kt: KeyType) -> ClientConfig {
-    let server_verifier = Arc::new(MockServerVerifier::expects_raw_public_keys());
+    let server_verifier = Rc::new(MockServerVerifier::expects_raw_public_keys());
     let client_cert_resolver = Arc::new(AlwaysResolvesClientRawPublicKeys::new(
         kt.get_certified_client_key().unwrap(),
     ));
@@ -608,7 +611,7 @@ pub fn make_client_config_with_cipher_suite_and_raw_key_support(
     kt: KeyType,
     cipher_suite: SupportedCipherSuite,
 ) -> ClientConfig {
-    let server_verifier = Arc::new(MockServerVerifier::expects_raw_public_keys());
+    let server_verifier = Rc::new(MockServerVerifier::expects_raw_public_keys());
     let client_cert_resolver = Arc::new(AlwaysResolvesClientRawPublicKeys::new(
         kt.get_certified_client_key().unwrap(),
     ));
@@ -1340,7 +1343,7 @@ impl RawTls {
     }
 }
 
-pub fn aes_128_gcm_with_1024_confidentiality_limit() -> Arc<CryptoProvider> {
+pub fn aes_128_gcm_with_1024_confidentiality_limit() -> Rc2<CryptoProvider> {
     const CONFIDENTIALITY_LIMIT: u64 = 1024;
 
     // needed to extend lifetime of Tls13CipherSuite to 'static
@@ -1387,7 +1390,7 @@ pub fn aes_128_gcm_with_1024_confidentiality_limit() -> Arc<CryptoProvider> {
     .into()
 }
 
-pub fn unsafe_plaintext_crypto_provider() -> Arc<CryptoProvider> {
+pub fn unsafe_plaintext_crypto_provider() -> Rc2<CryptoProvider> {
     static TLS13_PLAIN_SUITE: OnceLock<rustls::Tls13CipherSuite> = OnceLock::new();
 
     let tls13 = TLS13_PLAIN_SUITE.get_or_init(|| {

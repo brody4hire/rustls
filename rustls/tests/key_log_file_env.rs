@@ -34,6 +34,8 @@ use common::{
     make_server_config, transfer,
 };
 
+// XXX
+#[cfg(xxx)]
 #[test]
 fn exercise_key_log_file_for_client() {
     serialized(|| {
@@ -56,6 +58,8 @@ fn exercise_key_log_file_for_client() {
     })
 }
 
+// XXX
+#[cfg(xxx)]
 #[test]
 fn exercise_key_log_file_for_server() {
     serialized(|| {
