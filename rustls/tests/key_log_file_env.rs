@@ -30,12 +30,10 @@ use super::*;
 
 mod common;
 use common::{
-    Arc, KeyType, do_handshake, make_client_config_with_versions, make_pair_for_arc_configs,
+    Arc, KeyType, Rc, do_handshake, make_client_config_with_versions, make_pair_for_arc_configs,
     make_server_config, transfer,
 };
 
-// XXX
-#[cfg(xxx)]
 #[test]
 fn exercise_key_log_file_for_client() {
     serialized(|| {
@@ -44,7 +42,7 @@ fn exercise_key_log_file_for_client() {
 
         for version in rustls::ALL_VERSIONS {
             let mut client_config = make_client_config_with_versions(KeyType::Rsa2048, &[version]);
-            client_config.key_log = Arc::new(rustls::KeyLogFile::new());
+            client_config.key_log = Rc::new(rustls::KeyLogFile::new());
 
             let (mut client, mut server) =
                 make_pair_for_arc_configs(&Arc::new(client_config), &server_config);
@@ -58,15 +56,13 @@ fn exercise_key_log_file_for_client() {
     })
 }
 
-// XXX
-#[cfg(xxx)]
 #[test]
 fn exercise_key_log_file_for_server() {
     serialized(|| {
         let mut server_config = make_server_config(KeyType::Rsa2048);
 
         unsafe { env::set_var("SSLKEYLOGFILE", "./sslkeylogfile.txt") };
-        server_config.key_log = Arc::new(rustls::KeyLogFile::new());
+        server_config.key_log = Rc::new(rustls::KeyLogFile::new());
 
         let server_config = Arc::new(server_config);
 

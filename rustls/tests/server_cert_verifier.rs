@@ -245,10 +245,13 @@ fn client_can_request_certain_trusted_cas() {
             .collect(),
     );
 
+    // XXX TBD ???
+    let cert_resolver = Rc::new(cert_resolver);
+
     let server_config = Arc::new(
         server_config_builder()
             .with_no_client_auth()
-            .with_cert_resolver(Arc::new(cert_resolver.clone())),
+            .with_cert_resolver(cert_resolver.clone()),
     );
 
     let mut cas_unaware_error_count = 0;
@@ -311,10 +314,10 @@ fn client_can_request_certain_trusted_cas() {
 }
 
 #[derive(Debug, Clone)]
-pub struct ResolvesCertChainByCaName(Vec<(DistinguishedName, Rc2<CertifiedKey>)>);
+pub struct ResolvesCertChainByCaName(Vec<(DistinguishedName, Rc<CertifiedKey>)>);
 
 impl ResolvesServerCert for ResolvesCertChainByCaName {
-    fn resolve(&self, client_hello: ClientHello<'_>) -> Option<Rc2<CertifiedKey>> {
+    fn resolve(&self, client_hello: ClientHello<'_>) -> Option<Rc<CertifiedKey>> {
         let Some(cas_extension) = client_hello.certificate_authorities() else {
             println!(
                 "ResolvesCertChainByCaName: no CAs extension in ClientHello, returning default cert"
