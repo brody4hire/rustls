@@ -31,9 +31,10 @@ impl Ticketer {
     /// using AES 256 for encryption and HMAC-SHA256 for ciphertext authentication.
     ///
     /// [RFC 5077 §4]: https://www.rfc-editor.org/rfc/rfc5077#section-4
+    // XXX XXX
     #[cfg(feature = "std")]
-    pub fn new() -> Result<CfgRc<dyn ProducesTickets>, Error> {
-        Ok(CfgRc::new(crate::ticketer::TicketRotator::new(
+    pub fn new() -> Result<CfgX<dyn ProducesTickets>, Error> {
+        Ok(CfgX::new(crate::ticketer::TicketRotator::new(
             6 * 60 * 60,
             make_ticket_generator,
         )?))

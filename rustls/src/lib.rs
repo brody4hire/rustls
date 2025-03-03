@@ -429,7 +429,7 @@ mod super_alias {
     pub(crate) type RcX<T> = portable_atomic_util::Arc<alloc::boxed::Box<T>>;
     // pub(crate) use alloc::rc::Rc as RcBox;
     // XXX XXX
-    pub(crate) type CfgRc<T> = alloc::rc::Rc<T>;
+    pub(crate) type CfgRc<T> = portable_atomic_util::Arc<T>;
     pub(crate) type ErrorRc = i32;
     pub(crate) type CfgRcRef = i32;
     pub(crate) type CfgRcX<T> = portable_atomic_util::Arc<alloc::boxed::Box<T>>;
